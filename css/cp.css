@@ -1,0 +1,38 @@
+table[id^="vwm_polls_options"] td.drag {
+	width: 15px !important;
+}
+
+table[id^="vwm_polls_options"] td.color {
+	width: 115px;
+}
+
+table[id^="vwm_polls_options"] td.color input {
+	width: 105px;
+}
+
+table[id^="vwm_polls_options"] td.type {
+	width: 115px;
+}
+
+table[id^="vwm_polls_options"] td.type select {
+	width: 110px;
+}
+
+tbody.ui-sortable td.drag {
+	cursor: row-resize;
+	background: url(data:image/gif;base64,R0lGODlhDwAPAKECAJOTk6Kiov///////yH5BAEKAAIALAAAAAAPAA8AAAIXlI+py+0JQpyyzoeX3TTmf3ScBZYmVgAAOw==) no-repeat 50% 50%;
+}
+
+tfoot input[type="button"] {
+	display: block;
+	width: 15px;
+}
+
+table.vwm_polls_results td {
+	width: 50%;
+}
+
+table.vwm_polls_results ul {
+	list-style-type: square;
+	margin-left: 20px;
+}
