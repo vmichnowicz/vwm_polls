@@ -25,7 +25,7 @@ class Vwm_polls {
 	private $already_voted = FALSE;
 
 	// User details
-	private $member_id, $session_id, $group_id, $ip_address, $timestamp;
+	private $member_id, $group_id, $ip_address, $timestamp;
 
 	/**
 	 * Constructor
@@ -111,7 +111,6 @@ class Vwm_polls {
 	private function user_details()
 	{
 		$this->member_id = $this->EE->session->userdata('member_id') ? $this->EE->session->userdata('member_id') : NULL;
-		$this->session_id = $this->EE->session->userdata('session_id') ? $this->EE->session->userdata('session_id') : NULL;
 		$this->group_id = $this->EE->session->userdata('group_id') ? $this->EE->session->userdata('group_id') : NULL;
 		$this->ip_address = $this->EE->session->userdata('ip_address');
 		$this->timestamp = time();
