@@ -424,7 +424,6 @@ class Vwm_polls_m extends CI_Model {
 			'poll_option_id' => $option_id,
 			'member_id' => $this->session->userdata('member_id'),
 			'ip_address' => $this->session->userdata('ip_address'),
-			'session_id' => $this->session->userdata('session_id'),
 			'timestamp' => time()
 		);
 
