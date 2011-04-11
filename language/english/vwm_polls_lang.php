@@ -53,16 +53,16 @@ $lang = array(
 	'votes'							=> 'Votes',
 
 	// Chart types
-	'chart_bar' => 'Bar',
-	'chart_pie' => 'Pie',
+	'chart_bar'						=> 'Bar',
+	'chart_pie'						=> 'Pie',
 
 	// Poll option orders
-	'order_asc' => 'Ascending',
-	'order_desc' => 'Descending',
-	'order_alphabetical' => 'Alphabetical',
-	'order_reverse_alphabetical' => 'Reverse Alphabetical',
-	'order_random' => 'Random',
-	'order_custom' => 'Custom',
+	'order_asc'						=> 'Ascending',
+	'order_desc'					=> 'Descending',
+	'order_alphabetical'			=> 'Alphabetical',
+	'order_reverse_alphabetical'	=> 'Reverse Alphabetical',
+	'order_random'					=> 'Random',
+	'order_custom'					=> 'Custom',
 
 	// Other fieldtype text
 	'type_defined'					=> 'Defined',
