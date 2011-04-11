@@ -399,7 +399,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'multiple_votes' => $this->default_settings['multiple_votes'],
 			'multiple_options' => $this->default_settings['multiple_options'],
 			'multiple_options_limit' =>  $this->default_settings['multiple_options_limit'],
-			'options_order' => $this->default_settings['option_order'],
+			'options_order' => $this->default_settings['options_order'],
 			'results_chart_type' => $this->default_settings['results_chart_type'],
 			'results_chart_width' => $this->default_settings['results_chart_width'],
 			'results_chart_height' => $this->default_settings['results_chart_height']
