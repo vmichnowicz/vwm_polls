@@ -74,22 +74,34 @@ class Vwm_polls_m extends CI_Model {
 	 */
 	public function user_can_access_module($class)
 	{
-		// Get module ID
-		self::$module_id = $this->db
-			->where('module_name', $class)
-			->limit(1)
-			->get('modules')
-			->row()
-			->module_id;
+		// Current users group ID
+		$group_id = (int)$this->session->userdata('group_id');
 
-		// See if the current user group is not allowed to access this module
-		$query = $this->db
-			->where('module_id', self::$module_id)
-			->where('group_id', $this->session->userdata('group_id'))
-			->limit(1)
-			->get('module_member_groups');
+		// If the current user is a super user
+		if ($group_id === 1)
+		{
+			return TRUE;
+		}
+		// If the current user is not a super user
+		else
+		{
+			// Get module ID
+			self::$module_id = $this->db
+				->where('module_name', $class)
+				->limit(1)
+				->get('modules')
+				->row()
+				->module_id;
 
-		return $query->num_rows() > 0 ? FALSE : TRUE;
+			// See if the current user group is allowed to access this module
+			$query = $this->db
+				->where('module_id', self::$module_id)
+				->where('group_id', $group_id)
+				->limit(1)
+				->get('module_member_groups');
+
+			return $query->num_rows() > 0 ? TRUE : FALSE;
+		}
 	}
 
 	/**
