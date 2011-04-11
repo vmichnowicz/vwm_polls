@@ -128,7 +128,7 @@ class Vwm_polls_m extends CI_Model {
 	 * @access public
 	 * @param int			Entry ID
 	 * @param int			Field ID
-	 * @param string		Option order ("custom", "alphabetical", "reverse_alphabetical", or "random")
+	 * @param string		Option order ("custom", "alphabetical", "reverse_alphabetical", "asc", "desc", or "random")
 	 * @retrun array		Returns the poll_options array
 	 */
 	public function poll_options($order = 'custom')
@@ -139,9 +139,6 @@ class Vwm_polls_m extends CI_Model {
 
 		switch ($order)
 		{
-			case 'custom':
-				$this->db->order_by('custom_order', 'ASC');
-				break;
 			case 'alphabetical':
 				$this->db->order_by('text', 'ASC');
 				break;
@@ -156,6 +153,9 @@ class Vwm_polls_m extends CI_Model {
 				break;
 			case 'random':
 				$this->db->order_by('id', 'RANDOM');
+				break;
+			default: // Defalut to "custom"
+				$this->db->order_by('custom_order', 'ASC');
 				break;
 		}
 
@@ -195,7 +195,7 @@ class Vwm_polls_m extends CI_Model {
 	 * Get other poll options and add to poll_options array
 	 *
 	 * @access public
-	 * @retrun object
+	 * @return object
 	 */
 	public function poll_other_options()
 	{
