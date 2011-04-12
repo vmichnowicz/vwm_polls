@@ -17,7 +17,6 @@
  */
 class Vwm_polls_m extends CI_Model {
 
-	private static $module_id;
 	private $entry_id, $field_id, $field_name;
 	public $poll_options = array();
 	public $valid_poll_option_ids = array();
@@ -59,49 +58,6 @@ class Vwm_polls_m extends CI_Model {
 		$this->field_name = 'field_id_' . $this->field_id;
 
 		return $this;
-	}
-
-	/**
-	 * See if the current user group has access this module
-	 *
-	 * Since the "ajax_..." methods in mod.vwm_polls.php have an action ID,
-	 * anyone can post data to them. We need to make sure that no guest users,
-	 * for example, can update option orders or add options.
-	 * 
-	 * @access public
-	 * @param string		Class name (should be "Vwm_polls")
-	 * @return bool
-	 */
-	public function user_can_access_module($class)
-	{
-		// Current users group ID
-		$group_id = (int)$this->session->userdata('group_id');
-
-		// If the current user is a super user
-		if ($group_id === 1)
-		{
-			return TRUE;
-		}
-		// If the current user is not a super user
-		else
-		{
-			// Get module ID
-			self::$module_id = $this->db
-				->where('module_name', $class)
-				->limit(1)
-				->get('modules')
-				->row()
-				->module_id;
-
-			// See if the current user group is allowed to access this module
-			$query = $this->db
-				->where('module_id', self::$module_id)
-				->where('group_id', $group_id)
-				->limit(1)
-				->get('module_member_groups');
-
-			return $query->num_rows() > 0 ? TRUE : FALSE;
-		}
 	}
 
 	/**

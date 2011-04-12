@@ -54,8 +54,11 @@ class Vwm_polls {
 	 */
 	public function ajax_update_order()
 	{
+		// Load member model
+		$this->EE->load->model('member_model');
+
 		// Make sure this user can access this module method
-		if ( ! $this->EE->vwm_polls_m->user_can_access_module(__CLASS__))
+		if ( ! $this->EE->member_model->can_access_module(__CLASS__))
 		{
 			return;
 		}
@@ -81,8 +84,11 @@ class Vwm_polls {
 	 */
 	public function ajax_add_option()
 	{
+		// Load member model
+		$this->EE->load->model('member_model');
+		
 		// Make sure this user can access this module method
-		if ( ! $this->EE->vwm_polls_m->user_can_access_module(__CLASS__))
+		if ( ! $this->EE->member_model->can_access_module(__CLASS__))
 		{
 			return;
 		}
