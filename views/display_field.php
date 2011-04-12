@@ -3,7 +3,7 @@
 <div id="vwm_polls_tabs_<?php echo $field_id; ?>">
 	
 	<!-- Tabs -->
-	<ul>
+	<ul class="tabs">
 		<li><a href="#vwm_polls_options_container_<?php echo $field_id; ?>">Options</a></li>
 		<li><a href="#vwm_polls_settings_container_<?php echo $field_id; ?>">Settings</a></li>
 		<?php if ($total_votes): ?>
@@ -55,7 +55,7 @@
 
 		<h3><?php echo lang('poll_settings'); ?></h3>
 
-		<table class="mainTable" cellpadding="0px" cellspacing="0px" border="0px">
+		<table class="mainTable vwm_polls_settings" cellpadding="0px" cellspacing="0px" border="0px">
 			<thead>
 				<tr>
 					<th><?php echo lang('setting'); ?></th>
