@@ -145,7 +145,7 @@ class Vwm_polls_m extends CI_Model {
 		{
 			foreach ($query->result() as $row)
 			{
-				$this->poll_options[$row->poll_option_id]['other_votes'][] = $row->text;
+				$this->poll_options[$row->poll_option_id]['other_votes'][] = htmlspecialchars($row->text, ENT_QUOTES, 'UTF-8');
 			}
 		}
 

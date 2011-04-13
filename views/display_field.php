@@ -43,7 +43,7 @@
 						<td class="drag"></td>
 						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>"/></td>
 						<td class="type"><?php echo form_dropdown('vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', array('defined' => lang('type_defined'), 'other' => lang('type_other')), $option['type']); ?></td>
-						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][text]" id="vwm_polls_option_<?php echo $option['id']; ?>" value="<?php echo htmlspecialchars($option['text'], ENT_QUOTES, 'UTF-8'); ?>" /></td>
+						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][text]" id="vwm_polls_option_<?php echo $option['id']; ?>" value="<?php echo $option['text']; ?>" /></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -123,7 +123,7 @@
 				<tbody>
 					<?php foreach ($options as $option): ?>
 						<tr>
-							<td><?php echo htmlspecialchars($option['text'], ENT_QUOTES, 'UTF-8'); ?></td>
+							<td><?php echo $option['text']; ?></td>
 							<td>
 								<?php if ($option['votes']): ?>
 									<?php if (isset($option['other_votes'])): ?><a href="javascript:void(0);"><?php endif; ?>
@@ -132,7 +132,7 @@
 									<?php if (isset($option['other_votes'])): ?>
 										<ul>
 											<?php foreach ($option['other_votes'] as $other): ?>
-												<li><?php echo htmlspecialchars($other, ENT_QUOTES, 'UTF-8'); ?></li>
+												<li><?php echo $other; ?></li>
 											<?php endforeach; ?>
 										</ul>
 									<?php endif; ?>
