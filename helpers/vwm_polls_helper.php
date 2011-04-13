@@ -73,7 +73,7 @@ function google_chart($poll_settings, $poll_options)
 
 	foreach ($poll_options as $option)
 	{
-		$chdl[ $option['id'] ] = rawurlencode($option['text']);
+		$chdl[ $option['id'] ] = $option['text'];
 		$chd[ $option['id'] ] = $option['votes'];
 		$chco[ $option['id'] ] = $option['color'];
 	}
