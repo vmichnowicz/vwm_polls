@@ -61,24 +61,6 @@ class Vwm_polls_m extends CI_Model {
 	}
 
 	/**
-	 * Get all member groups
-	 *
-	 * @access public
-	 * @return array
-	 */
-	public function member_groups()
-	{
-		$query = $this->db->get('member_groups');
-
-		foreach ($query->result() as $row)
-		{
-			$data[$row->group_id] = $row->group_title;
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Get poll options for a given poll
 	 *
 	 * @access public

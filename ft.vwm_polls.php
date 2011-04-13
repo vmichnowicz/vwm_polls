@@ -56,8 +56,29 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$this->EE->load->helper('vwm_polls');
 		$this->EE->load->model('vwm_polls_m');
 
-		// Set member groups
-		self::$member_groups = $this->EE->vwm_polls_m->member_groups();
+		// Get member groups
+		$this->member_groups();
+	}
+
+	/**
+	 * Get all member groups
+	 *
+	 * @access private
+	 * @return void
+	 */
+	private function member_groups()
+	{
+		if ( ! self::$member_groups)
+		{
+			$this->EE->load->model('member_model');
+			$member_groups = $this->EE->member_model->get_member_groups();
+
+			// Set member group ID as array key
+			foreach ($member_groups->result_array() as $group)
+			{
+				self::$member_groups[$group['group_id']] = $group['group_title'];
+			}
+		}
 	}
 
 	/**
