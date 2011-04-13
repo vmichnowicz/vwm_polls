@@ -190,6 +190,13 @@ class Vwm_polls {
 	 */
 	public function vote()
 	{
+		// Check XID
+		if ( ! $this->EE->security->secure_forms_check($this->EE->input->post('XID')))
+		{
+			$this->errors[] = $this->EE->lang->line('invalid_xid');
+			die( $this->show_errors() );
+		}
+
 		$this->EE->load->helper('html');
 
 		$redirect = $this->EE->input->post('redirect');
@@ -213,7 +220,7 @@ class Vwm_polls {
 		// Make sure this poll exists
 		if ( ! $this->poll_settings)
 		{
-			$this->EE->lang->line('poll_not_exist');
+			$this->errors[] = $this->EE->lang->line('poll_not_exist');
 			die( $this->show_errors() );
 		}
 

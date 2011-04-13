@@ -18,6 +18,7 @@ $lang = array(
 	'vwm_polls_module_description'	=> 'Polling module &amp; fieldtype',
 
 	// Error messages
+	'invalid_xid'					=> 'Invalid XID. Please enable cookies.',
 	'poll_not_open'					=> 'Poll is not open at this time.',
 	'poll_not_exist'				=> 'Poll does not exist.',
 	'no_options_submitted'			=> 'No poll options submitted.',
