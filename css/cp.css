@@ -57,8 +57,9 @@ ul.tabs li.ui-state-active a  {
 	background-color: #ecf1f4;
 	position: relative;
 	top: 1px;
-	color: #8ea1ad;
+	color: #8ea1ad !important;
 	text-shadow: 0px 1px 0px #fff;
+	cursor: default !important;
 }
 
 ul.tabs li.ui-state-default a:hover {
