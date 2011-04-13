@@ -130,7 +130,7 @@ class Vwm_polls_m extends CI_Model {
 	}
 
 	/**
-	 * Get other poll options and add to poll_options array
+	 * Get all other votes for this poll and add to poll_options array
 	 *
 	 * @access public
 	 * @return object
@@ -191,44 +191,6 @@ class Vwm_polls_m extends CI_Model {
 		}
 
 		return $votes;
-	}
-
-	/**
-	 * Get all other votes for this poll and add to poll options array
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function other_votes()
-	{
-		$other_votes = array();
-
-		// Get all other votes that are in our valid_poll_option_ids array
-		$query = $this->EE->db
-			->where_in('poll_option_id', $valid_poll_option_ids)
-			->get('vwm_polls_other_votes');
-
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$other_votes[$row->poll_option_id][] = $row->text;
-			}
-		}
-		
-		// If this poll has no recorder other votes we can skip the following
-		if ($other_votes)
-		{
-			// Loop through all of our poll options
-			foreach ($this->poll_options as &$option)
-			{
-				// If this poll option has some associated other poll votes
-				if (array_key_exists($option['id'], $other_votes) )
-				{
-					$option['other_votes'] = $other_votes[ $option['id'] ];
-				}
-			}
-		}
 	}
 
 	/**

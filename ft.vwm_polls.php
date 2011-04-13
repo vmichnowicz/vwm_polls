@@ -131,7 +131,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 				->field_id($this->field_id) // Set field ID
 				->poll_options();
 
-			$poll_options = $this->EE->vwm_polls_m->poll_other_options()->poll_options;
+			$poll_options = $this->EE->vwm_polls_m->poll_other_options()->poll_options; // Make sure we add in all "other" votes
 
 			// Google chart time
 			$chart = google_chart($poll_settings, $poll_options);
