@@ -51,7 +51,7 @@ It requires PHP 5.2 or greater.
 
 The `field_id` attribute is important to note.
 In the example code `poll_1` refers to the field name that you give the field in the EE control panel.
-If you do not name your field `field_1`, then you will have to change this value accordingly.
+If you do not name your field `poll_1`, then you will have to change this value accordingly.
 
 It is also important to show both "closed" and "open" polls.
 VWM Polls looks at the status of the entry to see if the poll should be open or closed.
