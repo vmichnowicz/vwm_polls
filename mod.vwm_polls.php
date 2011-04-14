@@ -145,6 +145,9 @@ class Vwm_polls {
 		// Get poll settings
 		$this->poll_settings = $this->EE->vwm_polls_m->poll_settings();
 
+		// If there are no settings for this poll
+		if ( ! $this->poll_settings) { return; }
+
 		// Get poll options
 		$this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
 		$this->EE->vwm_polls_m->poll_options_template_prep();

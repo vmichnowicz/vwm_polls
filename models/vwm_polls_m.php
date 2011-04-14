@@ -303,7 +303,12 @@ class Vwm_polls_m extends CI_Model {
 		if ($query->num_rows() > 0)
 		{
 			$data = $query->row_array();
-			$settings = json_decode($data[$this->field_name], TRUE);
+
+			// Make sure this field has poll settings
+			if (isset($data[$this->field_name]))
+			{
+				$settings = json_decode($data[$this->field_name], TRUE);
+			}
 		}
 
 		return $settings;
