@@ -1,6 +1,7 @@
 # VWM Polls
 
 * [Website](http://github.com/vmichnowicz/vwm_polls)
+* [Wiki](https://github.com/vmichnowicz/vwm_polls/wiki)
 * Version: 0.1-beta
 
 ## Description
