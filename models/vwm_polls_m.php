@@ -137,8 +137,10 @@ class Vwm_polls_m extends CI_Model {
 	 */
 	public function poll_other_options()
 	{
+		$where_in = $this->poll_options ? array_keys($this->poll_options) : '';
+
 		$query = $this->db
-			->where_in('poll_option_id', array_keys($this->poll_options))
+			->where_in('poll_option_id', $where_in)
 			->get('vwm_polls_other_votes');
 
 		if ($query->num_rows() > 0)
