@@ -119,7 +119,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		// Load our JavaScipt (but only if we need to)
 		$this->load_css_and_javascript();
 
-		// If this is an existing entry
+		// If this is an existing entry that has poll settings
 		if ($data)
 		{
 			// Get the settings for this particular poll
@@ -136,7 +136,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			// Google chart time
 			$chart = google_chart($poll_settings, $poll_options);
 		}
-		// If this is a new entry
+		// If we dont have any poll settings (either a new entry OR an existing entry with no poll settings)
 		else
 		{
 			// Load default settings
@@ -151,8 +151,25 @@ class Vwm_polls_ft extends EE_Fieldtype {
 				'results_chart_height'		=> (int)$this->settings['results_chart_height']
 			);
 
-			// Since this is a new poll we will not have any poll options or chart data
-			$poll_options = array();
+			// If this is an existing entry but does not have any poll settings
+			if ($this->EE->input->get('entry_id'))
+			{
+				// Get all poll options
+				$this->EE->vwm_polls_m
+					->entry_id( $this->EE->input->get('entry_id') ) // Set entry ID
+					->field_id($this->field_id) // Set field ID
+					->poll_options();
+
+				$poll_options = $this->EE->vwm_polls_m->poll_other_options()->poll_options; // Make sure we add in all "other" votes
+			}
+
+			// If this is a new poll we will not have any poll options
+			else
+			{
+				$poll_options = array();
+			}
+
+			// Since we have no poll data we will have no results
 			$chart = NULL;
 		}
 
