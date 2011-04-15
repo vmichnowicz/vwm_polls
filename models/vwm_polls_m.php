@@ -234,12 +234,33 @@ class Vwm_polls_m extends CI_Model {
 		// If there is no text (delete option)
 		else
 		{
-			$this->db
-				->where('id', $id)
-				->where('entry_id', $this->entry_id)
-				->where('field_id', $this->field_id)
-				->delete('vwm_polls_options');
+			$this->remove_option($id);
 		}
+	}
+
+	/**
+	 * Delete a poll option
+	 *
+	 * @access public
+	 * @param int			Option ID
+	 * @return bool
+	 */
+	public function remove_option($id)
+	{
+		// Remove all "other" votes
+		$this->db
+			->where('poll_option_id', $id)
+			->delete('vwm_polls_other_votes');
+
+		// Remove poll option
+		$this->db
+			->where('id', $id)
+			->where('entry_id', $this->entry_id)
+			->where('field_id', $this->field_id)
+			->limit(1)
+			->delete('vwm_polls_options');
+
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 
 	/**
