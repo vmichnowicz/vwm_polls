@@ -45,12 +45,7 @@ class Vwm_polls_upd {
 
 		// For exp_actions
 		$action_vote = array('class' => 'Vwm_polls', 'method' => 'vote');
-		$action_ajax_add_option = array('class' => 'Vwm_polls', 'method' => 'ajax_add_option');
-		$action_ajax_update_order = array('class' => 'Vwm_polls', 'method' => 'ajax_update_order');
-
 		$this->EE->db->insert('actions', $action_vote);
-		$this->EE->db->insert('actions', $action_ajax_add_option);
-		$this->EE->db->insert('actions', $action_ajax_update_order);
 
 		// Get database prefix
 		$prefix = $this->EE->db->dbprefix;
