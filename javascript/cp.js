@@ -49,8 +49,8 @@ function make_sortable(sort_me) {
 				obj[id] = i;
 			});
 
-			$.post(BASE_URL, {
-				ACT: ajax_update_order_action_id, // Action ID
+			$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
+				XID: EE.XID,
 				options: obj
 			});
 		}
@@ -83,30 +83,24 @@ function add_option(new_option) {
 
 	// If this is an existing entry
 	if (entry_id > 0) {
-		$.post(BASE_URL, {
-				ACT: $(new_option).find('input[name="vwm_polls_ajax_add_option_action_id"]').val(), // Action ID
+		$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_add_option', {
+				XID: EE.XID, // XID
 				text: text, // Option text
 				type: type, // Option type
 				color: color, // Option color
 				order: $(options_table).find('tbody tr').length, // Our order is index 0 so we don't need to +1
 				entry_id: entry_id, // Entry ID
 				field_id: field_id // Field ID
-			}, function(data, status) {
-				// Success
-				if (status == 'success') {
-					// AJAX load some new options up in here!
-					$(options_table).load(window.location.href + ' #' + options_table_id + ' > *', function() {
-						// Let's make this sortable again, shall we?
-						make_sortable($(this).find('tbody'));
-					});
+			}, function(data) {
+				
+				// AJAX load some new options up in here!
+				$(options_table).load(window.location.href + ' #' + options_table_id + ' > *', function() {
+					// Let's make this sortable again, shall we?
+					make_sortable($(this).find('tbody'));
+				});
 
-					// Clear text input
-					$(new_option).find('input[name="vwm_polls_new_option_text"]').val('');
-				}
-				// Oops
-				else {
-					console.log(status + ' : ' + data);
-				}
+				// Clear text input
+				$(new_option).find('input[name="vwm_polls_new_option_text"]').val('');
 		}, 'json');
 	}
 	// If this is a new entry

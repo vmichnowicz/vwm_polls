@@ -59,12 +59,16 @@ function google_chart($poll_settings, $poll_options)
 	{
 		case 'pie':
 			$data .= AMP . 'cht=p';
+			$chds = NULL; // Don't need this for pie charts
 			break;
 		case 'bar':
 			$data .= AMP . 'chbh=a';
 			$data .= AMP . 'cht=bhs';
+			$chds = AMP . 'chds=0,';
 			break;
 	}
+
+	$most_votes = 0;
 
 	// Chart data
 	$chd = array(); // Chart data
@@ -73,8 +77,11 @@ function google_chart($poll_settings, $poll_options)
 
 	foreach ($poll_options as $option)
 	{
+		$votes = $option['votes'];
+		$most_votes = $votes > $most_votes ? $votes : $most_votes;
+
 		$chdl[ $option['id'] ] = $option['text'];
-		$chd[ $option['id'] ] = $option['votes'];
+		$chd[ $option['id'] ] = $votes;
 		$chco[ $option['id'] ] = $option['color'];
 	}
 
@@ -86,6 +93,7 @@ function google_chart($poll_settings, $poll_options)
 	$data .= AMP . 'chdl=' . $chdl;
 	$data .= AMP . 'chf=bg,s,00000000';
 	$data .= AMP . 'chco=' . $chco;
+	$data .= $chds ? AMP . $chds . $most_votes : NULL;
 
 	return $data;
 }
