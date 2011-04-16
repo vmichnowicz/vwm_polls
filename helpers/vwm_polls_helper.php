@@ -38,6 +38,28 @@ function hex_color($color)
 }
 
 /**
+ * Calculate percentages for poll options
+ *
+ * @access public
+ * @param array			Poll options
+ * @param int			Total number of votes in this poll
+ * @return array
+ */
+function calculate_results($options, $total_votes)
+{
+	$options = array_values($options);
+
+	foreach($options as &$option)
+	{
+		$percent_decimal = $option['votes'] / $total_votes;
+		$option['percent_decimal'] = $percent_decimal;
+		$option['percent'] = round($percent_decimal * 100, 2);
+	}
+
+	return $options;
+}
+
+/**
  * Generate a Google chart
  *
  * @access public

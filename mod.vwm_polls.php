@@ -100,7 +100,9 @@ class Vwm_polls {
 			'can_vote' => $this->can_vote(),
 			'already_voted' => $this->already_voted,
 			'chart' => google_chart($this->poll_settings, $this->poll_options),
-			'options' => array_values($this->poll_options) // I guess our array indexes need to start at 0...
+			'total_votes' => $this->EE->vwm_polls_m->total_votes,
+			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
+			'options_results' => calculate_results($this->poll_options, $this->EE->vwm_polls_m->total_votes)
 		);
 
 		// Get hidden fields, class, and ID for our form
