@@ -51,9 +51,17 @@ function calculate_results($options, $total_votes)
 
 	foreach($options as &$option)
 	{
-		$percent_decimal = $option['votes'] / $total_votes;
-		$option['percent_decimal'] = $percent_decimal;
-		$option['percent'] = round($percent_decimal * 100, 2);
+		if ($total_votes)
+		{
+			$percent_decimal = $option['votes'] / $total_votes;
+			$option['percent_decimal'] = $percent_decimal;
+			$option['percent'] = round($percent_decimal * 100, 2);
+		}
+		else
+		{
+			$option['percent_decimal'] = 0;
+			$option['percent'] = 0;
+		}
 	}
 
 	return $options;
