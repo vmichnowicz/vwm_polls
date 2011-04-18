@@ -69,7 +69,7 @@ class Vwm_polls_m extends CI_Model {
 	 * @param string		Option order ("custom", "alphabetical", "reverse_alphabetical", "asc", "desc", or "random")
 	 * @retrun array		Returns the poll_options array
 	 */
-	public function poll_options($order = 'custom')
+	public function poll_options($order = 'custom', $other_votes = FALSE)
 	{
 		$this->db
 			->where('entry_id', $this->entry_id)
@@ -124,6 +124,12 @@ class Vwm_polls_m extends CI_Model {
 					'votes' => $row->votes
 				);
 			}
+		}
+
+		// If we need to grab all the "other" votes
+		if ($other_votes)
+		{
+			$this->poll_other_options();
 		}
 
 		return $this->poll_options;

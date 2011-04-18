@@ -68,9 +68,7 @@ class Vwm_polls_mcp {
 	 * @return string
 	 */
 	public function ajax_update_order()
-	{
-		$this->EE->load->model('vwm_polls_m');
-		
+	{		
 		$options = $this->EE->input->post('options') ? $this->EE->input->post('options') : array();
 
 		foreach ($options as $option_id => $option_order)

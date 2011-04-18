@@ -126,12 +126,10 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			$poll_settings = json_decode(htmlspecialchars_decode($data, ENT_QUOTES), TRUE);
 
 			// Get all poll options
-			$this->EE->vwm_polls_m
+			$poll_options = $this->EE->vwm_polls_m
 				->entry_id( $this->EE->input->get('entry_id') ) // Set entry ID
 				->field_id($this->field_id) // Set field ID
-				->poll_options();
-
-			$poll_options = $this->EE->vwm_polls_m->poll_other_options()->poll_options; // Make sure we add in all "other" votes
+				->poll_options('custom', TRUE); // Make sure we add in all "other" votes
 
 			// Google chart time
 			$chart = google_chart($poll_settings, $poll_options);

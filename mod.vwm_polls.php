@@ -332,12 +332,7 @@ class Vwm_polls {
 		// If this is an AJAX request
 		if (AJAX_REQUEST)
 		{
-			$data = array(
-				'result' => 'failure',
-				'errors' => $this->errors
-			);
-
-			$this->EE->output->send_ajax_response($data, TRUE);
+			$this->EE->output->send_ajax_response(array('errors' => $this->errors), TRUE); // Send JSON with a 500 status code
 		}
 		// No AJAX
 		else
