@@ -38,6 +38,9 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		'results_chart_height'		=> 330
 	);
 
+	private $new_poll_options = array(); // Used to hold poll options for Safecracker
+	private $current_poll_options = array();
+
 	private static $member_groups = array();
 	private static $css_and_javascript_loaded = FALSE;
 
@@ -272,6 +275,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 			// Results chart height
 			$results_chart_height = isset($data['results_chart_height']) ? (int)$data['results_chart_height'] : $this->default_settings['results_chart_width'];
+		
+			$this->new_poll_options = isset($data['options']) ? $data['options'] : array();
 		}
 
 		// JSON all up in this piece
@@ -295,8 +300,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * @access public
 	 * @return void
 	 */
-	public function post_save()
-	{
+	public function post_save($data)
+	{	
 		// Set entry ID & field ID
 		$this->EE->vwm_polls_m
 			->entry_id($this->settings['entry_id'])
@@ -320,13 +325,15 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		 * This will only ever have data after we have saved a *new* channel entry
 		 * It will never have data after saving a previously created channel entry
 		 */
-		$new_options = $this->EE->input->post('vwm_polls_new_options');
-
+		
 		// Make sure we have some new options to add
-		if ($new_options)
+		if ($this->EE->input->post('vwm_polls_new_options') OR $this->new_poll_options)
 		{
 			// Get new option text for this field ID
-			$new_options = $new_options[$this->field_id];
+			$new_cp_options = $this->EE->input->post('vwm_polls_new_options');
+			$new_cp_options = isset($new_cp_options[$this->field_id]) ? $new_cp_options[$this->field_id] : array();
+
+			$new_options = $new_cp_options ? $new_cp_options : $this->new_poll_options;
 
 			// Loop through all our new options
 			foreach($new_options as $option)
