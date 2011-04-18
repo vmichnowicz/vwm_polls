@@ -197,44 +197,84 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function save($data)
 	{
-		// Member groups
-		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote');
-		$member_groups_can_vote = isset($member_groups_can_vote[$this->field_id]) ? $member_groups_can_vote[$this->field_id] : array();
-
-		// Let's make sure these are all integers
-		foreach ($member_groups_can_vote as &$group)
+		// If this data is coming from the EE CP
+		if (json_decode( (string)$data) )
 		{
-			$group = abs( (int)$group );
+			// Member groups
+			$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote');
+			$member_groups_can_vote = isset($member_groups_can_vote[$this->field_id]) ? $member_groups_can_vote[$this->field_id] : array();
+
+			// Let's make sure these are all integers
+			foreach ($member_groups_can_vote as &$group)
+			{
+				$group = abs( (int)$group );
+			}
+
+			// Multiple votes
+			$multiple_votes = $this->EE->input->post('multiple_votes');
+			$multiple_votes = (bool)$multiple_votes[$this->field_id];
+
+			// Multiple options
+			$multiple_options = $this->EE->input->post('multiple_options');
+			$multiple_options = (bool)$multiple_options[$this->field_id];
+
+			// Multiple options limit
+			$multiple_options_limit = $this->EE->input->post('multiple_options_limit');
+			$multiple_options_limit = (int)$multiple_options_limit[$this->field_id];
+
+			// Options order
+			$options_order = $this->EE->input->post('options_order');
+			$options_order = in_array($options_order[$this->field_id], $this->valid_options['options_order']) ? $options_order[$this->field_id] : $this->default_settings['options_order'];
+
+			// Results chart type
+			$results_chart_type = $this->EE->input->post('results_chart_type');
+			$results_chart_type = in_array($results_chart_type[$this->field_id], $this->valid_options['results_chart_type']) ? $results_chart_type[$this->field_id] : $this->default_settings['results_chart_type'];
+
+			// Results chart width
+			$results_chart_width = $this->EE->input->post('results_chart_width');
+			$results_chart_width = (int)$results_chart_width[$this->field_id];
+
+			// Results chart height
+			$results_chart_height = $this->EE->input->post('results_chart_height');
+			$results_chart_height = (int)$results_chart_height[$this->field_id];
+		}
+		// The data is coming from a Safecracker form
+		else
+		{
+			// Member groups
+			$member_groups_can_vote = isset($data['member_groups_can_vote']) ? $data['member_groups_can_vote'] : array();
+
+			// Let's make sure these are all integers
+			foreach ($member_groups_can_vote as &$group)
+			{
+				$group = abs( (int)$group );
+			}
+
+			// Multiple votes
+			$multiple_votes = isset($data['multiple_votes']) ? (bool)$data['multiple_votes'] : $this->default_settings['multiple_votes'];
+
+			// Multiple options
+			$multiple_options = isset($data['multiple_options']) ? (bool)$data['multiple_options'] : $this->default_settings['multiple_options'];
+
+			// Multiple options limit
+			$multiple_options_limit = isset($data['multiple_options_limit']) ? (int)$data['multiple_options_limit'] : $this->default_settings['multiple_options_limit'];
+
+			// Options order
+			$options_order = isset($data['options_order']) ? $data['options_order'] : $this->default_settings['options_order'];
+			$options_order = in_array($options_order, $this->valid_options['options_order']) ? $options_order : $this->default_settings['options_order'];
+
+			// Results chart type
+			$results_chart_type = isset($data['results_chart_type']) ? $data['results_chart_type'] : $this->default_settings['results_chart_type'];
+			$results_chart_type = in_array($results_chart_type, $this->valid_options['results_chart_type']) ? $results_chart_type : $this->default_settings['results_chart_type'];
+
+			// Results chart width
+			$results_chart_width = isset($data['results_chart_width']) ? (int)$data['results_chart_width'] : $this->default_settings['results_chart_width'];
+
+			// Results chart height
+			$results_chart_height = isset($data['results_chart_height']) ? (int)$data['results_chart_height'] : $this->default_settings['results_chart_width'];
 		}
 
-		// Multiple votes
-		$multiple_votes = $this->EE->input->post('multiple_votes');
-		$multiple_votes = (bool)$multiple_votes[$this->field_id];
-
-		// Multiple options
-		$multiple_options = $this->EE->input->post('multiple_options');
-		$multiple_options = (bool)$multiple_options[$this->field_id];
-
-		// Multiple options limit
-		$multiple_options_limit = $this->EE->input->post('multiple_options_limit');
-		$multiple_options_limit = (int)$multiple_options_limit[$this->field_id];
-
-		// Options order
-		$options_order = $this->EE->input->post('options_order');
-		$options_order = in_array($options_order[$this->field_id], $this->valid_options['options_order']) ? $options_order[$this->field_id] : $this->default_settings['options_order'];
-
-		// Results chart type
-		$results_chart_type = $this->EE->input->post('results_chart_type');
-		$results_chart_type = in_array($results_chart_type[$this->field_id], $this->valid_options['results_chart_type']) ? $results_chart_type[$this->field_id] : $this->default_settings['results_chart_type'];
-
-		// Results chart width
-		$results_chart_width = $this->EE->input->post('results_chart_width');
-		$results_chart_width = (int)$results_chart_width[$this->field_id];
-
-		// Results chart height
-		$results_chart_height = $this->EE->input->post('results_chart_height');
-		$results_chart_height = (int)$results_chart_height[$this->field_id];
-
+		// JSON all up in this piece
 		$data = array(
 			'member_groups_can_vote' => $member_groups_can_vote,
 			'multiple_votes' => $multiple_votes,
