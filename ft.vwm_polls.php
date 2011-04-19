@@ -38,8 +38,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		'results_chart_height'		=> 330
 	);
 
-	private $new_poll_options = array(); // Used to hold poll options for Safecracker
-	private $current_poll_options = array();
+	private $safecracker_poll_options = array(); // Used to hold poll options for Safecracker
 
 	private static $member_groups = array();
 	private static $css_and_javascript_loaded = FALSE;
@@ -95,15 +94,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	private function load_css_and_javascript()
 	{
-		// If CSS and JavaScript has not been loaded - load it!
+		// If CSS and JavaScript have not been loaded - load em!
 		if ( ! self::$css_and_javascript_loaded)
 		{
 			// jQuery UI tabs
-			$this->EE->cp->add_js_script( array("ui" => array('tabs')) );
+			$this->EE->cp->add_js_script( array('ui' => array('sortable', 'tabs')) );
 
-			$this->EE->cp->add_to_head('<script type="text/javascript">var BASE_URL = "' . base_url() . '"; </script>');
-			$this->EE->cp->load_package_js('cp');
-			$this->EE->cp->load_package_css('cp');
+			$this->EE->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
+			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
 
 			// CSS and JavaScript have been loaded!
 			self::$css_and_javascript_loaded = TRUE;
@@ -276,7 +274,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			// Results chart height
 			$results_chart_height = isset($data['results_chart_height']) ? (int)$data['results_chart_height'] : $this->default_settings['results_chart_width'];
 		
-			$this->new_poll_options = isset($data['options']) ? $data['options'] : array();
+			$this->safecracker_poll_options = isset($data['vwm_polls_new_options']) ? $data['vwm_polls_new_options'] : array();
 		}
 
 		// JSON all up in this piece
@@ -327,13 +325,13 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		 */
 		
 		// Make sure we have some new options to add
-		if ($this->EE->input->post('vwm_polls_new_options') OR $this->new_poll_options)
+		if ($this->EE->input->post('vwm_polls_new_options') OR $this->safecracker_poll_options)
 		{
 			// Get new option text for this field ID
 			$new_cp_options = $this->EE->input->post('vwm_polls_new_options');
 			$new_cp_options = isset($new_cp_options[$this->field_id]) ? $new_cp_options[$this->field_id] : array();
 
-			$new_options = $new_cp_options ? $new_cp_options : $this->new_poll_options;
+			$new_options = $new_cp_options ? $new_cp_options : $this->safecracker_poll_options;
 
 			// Loop through all our new options
 			foreach($new_options as $option)
