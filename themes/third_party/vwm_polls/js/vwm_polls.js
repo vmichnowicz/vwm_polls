@@ -64,7 +64,20 @@ $(document).ready(function() {
 				// If this is a new entry (these are new poll options)
 				else
 				{
-					// Options can be sorted, however, it will not define their order after the entry is saved
+					var options = $(this).find('tr');
+					var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
+
+					// Loop through all of our new poll options and update each one to reflect their new order
+					$(options).each(function(i, option) {
+						var color = $(option).find('input[name*="color"]');
+						var type = $(option).find('select[name*="type"]');
+						var text = $(option).find('input[name*="text"]');
+
+						$(this).attr('class', 'option_' + i);
+						$(color).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][color]');
+						$(type).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][type]');
+						$(text).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][text]');
+					});
 				}
 			}
 		});
