@@ -17,7 +17,7 @@
  */
 class Vwm_polls_upd {
 
-	public $version = '0.3';
+	public $version = '0.4';
 	
 	function __construct()
 	{
