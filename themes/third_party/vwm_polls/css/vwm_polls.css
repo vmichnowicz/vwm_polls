@@ -44,15 +44,23 @@ table.vwm_polls_results ul {
 /*
  * UI Tabs
  */
-.ui-tabs-panel {
+ ul.tabs {
+	 display: none; /* Hide tabs on Safecracker form */
+}
+
+#publish ul.tabs {
+	display: block;
+}
+
+#publish .ui-tabs-panel {
 	padding: 1em .5em !important;
 }
 
-ul.tabs li.ui-state-active {
+#publish ul.tabs li.ui-state-active {
 	border-bottom: 0px none;
 }
 
-ul.tabs li.ui-state-active a  {
+#publish ul.tabs li.ui-state-active a  {
 	border-radius: 5px 5px 0px 0px;
 	background-color: #ecf1f4;
 	position: relative;
@@ -62,6 +70,6 @@ ul.tabs li.ui-state-active a  {
 	cursor: default !important;
 }
 
-ul.tabs li.ui-state-default a:hover {
+#publish ul.tabs li.ui-state-default a:hover {
 	color: #2a3940;
 }

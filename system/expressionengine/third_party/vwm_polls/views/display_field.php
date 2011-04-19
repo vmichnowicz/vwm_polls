@@ -19,7 +19,7 @@
 		<table class="mainTable" id="vwm_polls_options_<?php echo $field_id; ?>" cellpadding="0px" cellspacing="0px" border="0px">
 			<thead>
 				<tr>
-					<th><input type="hidden" name="vwm_polls_ajax_update_order_action_id" value="<?php echo $vwm_polls_ajax_update_order_action_id; ?>" /></th>
+					<th>&nbsp;</th>
 					<th><?php echo lang('option_color'); ?></th>
 					<th><?php echo lang('option_type'); ?></th>
 					<th><?php echo lang('option_text'); ?></th>
@@ -29,7 +29,6 @@
 				<tr>
 					<td class="drag">
 						<input type="button" value="+" title="Add poll option" class="vwm_polls_new_option" />
-						<input type="hidden" name="vwm_polls_ajax_add_option_action_id" value="<?php echo $vwm_polls_ajax_add_option_action_id; ?>"/>
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
 					</td>
 					<td class="color"><input type="text" name="vwm_polls_new_option_color" placeholder="<?php echo lang('hex_color_placeholder'); ?>" /></td>

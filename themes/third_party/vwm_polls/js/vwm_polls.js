@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	// Add new option input focus set to "false" by defaul
+	// Add new option input focus set to "false" by default
 	var option_focus = false;
 
 	// When new option text input (our color and text fields) gets and loses focus
@@ -40,20 +40,32 @@ $(document).ready(function() {
 			handle: 'td.drag',
 			containment: 'parent',
 			update: function() {
-				var ajax_update_order_action_id = parseInt( $(this).siblings('thead').find('input[name="vwm_polls_ajax_update_order_action_id"]').val() );
-				var options = $(this).find('input[id^="vwm_polls_option"]');
-				var obj = new Object();
 
-				$(options).each(function(i, option) {
-					var id = $(option).attr('id');
-					id = parseInt( id.replace('vwm_polls_option_', '') );
-					obj[id] = i;
-				});
+				// Grab entry ID
+				var entry_id = $('#publishForm input[name="entry_id"]').val();
 
-				$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
-					XID: EE.XID,
-					options: obj
-				});
+				// If this is an existing entry
+				if (entry_id > 0)
+				{
+					var options = $(this).find('input[id^="vwm_polls_option"]');
+					var obj = new Object();
+
+					$(options).each(function(i, option) {
+						var id = $(option).attr('id');
+						id = parseInt( id.replace('vwm_polls_option_', '') );
+						obj[id] = i;
+					});
+
+					$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
+						XID: EE.XID,
+						options: obj
+					});
+				}
+				// If this is a new entry (these are new poll options)
+				else
+				{
+					// Options can be sorted, however, it will not define their order after the entry is saved
+				}
 			}
 		});
 	}
