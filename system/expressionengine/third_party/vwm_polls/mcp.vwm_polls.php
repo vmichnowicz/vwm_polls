@@ -78,6 +78,7 @@ class Vwm_polls_mcp {
 
 			$this->EE->db->where('id', $option_id)->update('vwm_polls_options', array('custom_order' => $option_order));
 		}
+		die; // Nothing to see here
 	}
 
 }

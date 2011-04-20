@@ -56,7 +56,7 @@ $(document).ready(function() {
 						obj[id] = i;
 					});
 
-					$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
+					$.post(EE.CP_URL + '?D=cp&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
 						XID: EE.XID,
 						options: obj
 					});
