@@ -2,7 +2,9 @@ $(document).ready(function() {
 	// Add new option input focus set to "false" by default
 	var option_focus = false;
 
-	// When new option text input (our color and text fields) gets and loses focus
+	/**
+	 * When new option text input (our color and text fields) gets and loses focus
+	 */
 	$('.vwm_polls_new_option input[type="text"]').live('focusin focusout', function(e) {
 		if (e.type == 'focusin') {
 			option_focus = true;
@@ -12,28 +14,39 @@ $(document).ready(function() {
 		}
 	});
 
-	// When our form is subitted
+	/**
+	 * When the publish form is subitted
+	 */
 	$('#publishForm').submit(function(e) {
-		// If our a option text input has focus
+		// If our a option text or color input has focus
 		if (option_focus) {
+			// Stop the form submission (so we can add this poll option)
 			e.preventDefault();
 		}
 	});
 
-	// On keyup
+	/**
+	 * On keyup inside a new poll option text input
+	 */
 	$('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
-		// If the use pressed the "enter"
+		// If the use pressed the "enter" key
 		if (e.which == 13) {
 			add_option( $(this).closest('tfoot') );
 		}
 	});
 
-	// When the "add new poll option" button is clicked
+	/**
+	 * When the "add new poll option" button is clicked
+	 */
 	$('input[type="button"].vwm_polls_new_option').live('click', function() {
 		add_option( $(this).closest('tfoot') );
 	});
 
-	// Make something sortable!
+	/**
+	 * Make something sortable!
+	 *
+	 * @param object		The tbody element of all the options we want to sort
+	 */
 	function make_sortable(sort_me) {
 		$(sort_me).sortable({
 			axis: 'y',
@@ -86,7 +99,11 @@ $(document).ready(function() {
 	// Make poll options sortable
 	make_sortable('table[id^="vwm_polls_options"] tbody');
 
-	// Add a poll option
+	/**
+	 * Add a poll option
+	 *
+	 * @param object		Table row of our new option
+	 */
 	function add_option(new_option) {
 
 		// Options table info
