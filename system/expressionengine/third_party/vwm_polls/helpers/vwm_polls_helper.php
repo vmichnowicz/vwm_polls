@@ -30,10 +30,10 @@ function hex_color($color)
 		// Color can be a max of six characters
 		return substr($color, 0, 6);
 	}
-	// If no color is provided, return the default color
+	// If no color is provided, return a random color
 	else
 	{
-		return 'aabbcc';
+		return sprintf('%02X%02X%02X', mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255));
 	}
 }
 
