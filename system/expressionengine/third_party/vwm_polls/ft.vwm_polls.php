@@ -280,13 +280,11 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		 */
 		
 		// Make sure we have some new options to add
-		if ($this->EE->input->post('vwm_polls_new_options') OR $this->safecracker_poll_options)
+		if ($this->EE->input->post('vwm_polls_new_options'))
 		{
 			// Get new option text for this field ID
-			$new_cp_options = $this->EE->input->post('vwm_polls_new_options');
-			$new_cp_options = isset($new_cp_options[$this->field_id]) ? $new_cp_options[$this->field_id] : array();
-
-			$new_options = $new_cp_options ? $new_cp_options : $this->safecracker_poll_options;
+			$new_options = $this->EE->input->post('vwm_polls_new_options');
+			$new_options = isset($new_options[$this->field_id]) ? $new_options[$this->field_id] : array();
 
 			// Loop through all our new options
 			foreach($new_options as $option)
