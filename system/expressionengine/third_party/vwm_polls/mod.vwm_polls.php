@@ -224,8 +224,10 @@ class Vwm_polls {
 			if (AJAX_REQUEST)
 			{
 				// Get updated poll options
-				$updated_options = $this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
+				$this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
+
 				$updated_total_votes = $this->EE->vwm_polls_m->total_votes;
+				$updated_options = calculate_results($this->EE->vwm_polls_m->poll_options, $updated_total_votes);
 				$updated_chart = str_replace('&amp;', '&', google_chart($this->poll_settings, $updated_options)); // The ampersands in "&amp;" end up getting encoded again...
 
 				$data = array(
