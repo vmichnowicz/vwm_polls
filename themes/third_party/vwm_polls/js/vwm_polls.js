@@ -194,4 +194,21 @@ $(document).ready(function() {
 	$('table.vwm_polls_results a').click(function() {
 		$(this).siblings('ul').slideToggle('slow');
 	});
+	
+	// Toggle min & max poll options
+	$('#multiple_options').bind('change', function() {
+		
+		var min = $('#multiple_options_maximum').closest('tr');
+		var max = $('#multiple_options_max').closest('tr');
+		
+		if ( $(this).val() == 1 ) {
+			$(min).show();
+			$(max).show();
+		}
+		else {
+			$(min).hide();
+			$(max).hide();
+		}
+		
+	});
 });

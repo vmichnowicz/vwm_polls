@@ -75,8 +75,12 @@
 					<td><?php echo form_dropdown('multiple_options[' . $field_id . ']', array(lang('no'), lang('yes')), $data['multiple_options'], 'id="multiple_options"'); ?></td>
 				</tr>
 				<tr>
-					<td><?php echo lang('multiple_options_limit', 'multiple_options_limit'); ?></td>
-					<td><input type="text" name="multiple_options_limit[<?php echo $field_id; ?>]" id="multiple_options_limit" value="<?php echo $data['multiple_options_limit']; ?>" /></td>
+					<td><?php echo lang('multiple_options_min', 'multiple_options_min'); ?></td>
+					<td><input type="text" name="multiple_options_min[<?php echo $field_id; ?>]" id="multiple_options_min" value="<?php echo $data['multiple_options_min']; ?>" /></td>
+				</tr>
+				<tr>
+					<td><?php echo lang('multiple_options_max', 'multiple_options_max'); ?></td>
+					<td><input type="text" name="multiple_options_max[<?php echo $field_id; ?>]" id="multiple_options_max" value="<?php echo $data['multiple_options_max']; ?>" /></td>
 				</tr>
 				<tr>
 					<td><?php echo lang('options_order', 'options_order'); ?></td>
