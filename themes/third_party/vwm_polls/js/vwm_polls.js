@@ -196,19 +196,43 @@ $(document).ready(function() {
 	});
 	
 	// Toggle min & max poll options
-	$('#multiple_options').bind('change', function() {
+	(function() {
+		// Min & max inputs
+		var min = $('#multiple_options_min');
+		var max = $('#multiple_options_max');
 		
-		var min = $('#multiple_options_maximum').closest('tr');
-		var max = $('#multiple_options_max').closest('tr');
+		// Multiple option select input
+		var multiple_options = $('#multiple_options');
 		
-		if ( $(this).val() == 1 ) {
-			$(min).show();
-			$(max).show();
+		// Hide and reset min & max inputs
+		function hide_min_max() {
+			$(min).val(0).closest('tr').hide();
+			$(max).val(0).closest('tr').hide();
 		}
-		else {
-			$(min).hide();
-			$(max).hide();
+		
+		// Show min and max inputs
+		function show_min_max() {
+			$(min).closest('tr').show();
+			$(max).closest('tr').show();
 		}
 		
-	});
+		// On page load, if multiple options are disabled, hide min and max inputs
+		if ( $(multiple_options).val() == 0 ) {
+			hide_min_max()
+		}
+		
+		// When the multiple option select input is changed
+		$(multiple_options).change(function() {
+			if ( $(this).val() == 1 ) {
+				show_min_max();
+			}
+			else {
+				hide_min_max();
+			}
+		});
+		
+	})();
+	
+	
+	
 });
