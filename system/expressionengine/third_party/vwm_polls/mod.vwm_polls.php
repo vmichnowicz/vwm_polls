@@ -347,13 +347,42 @@ class Vwm_polls {
 		// If this is an AJAX request
 		if (AJAX_REQUEST)
 		{
-			$this->EE->output->send_ajax_response(array('errors' => $this->errors), TRUE); // Send JSON with a 500 status code
+			$this->EE->output->send_ajax_response(array('errors' => $this->errors, 'xid' => $this->refresh_xid()), TRUE); // Send JSON with a 500 status code
 		}
 		// No AJAX
 		else
 		{
 			$this->EE->output->show_user_error('submission', $this->errors);
 		}
+	}
+	
+	/**
+	 * Refresh the XID
+	 * 
+	 * After a user submits a poll that has errors the XID is destroyed. We must
+	 * create a new one so the user can successfully submit the poll again.
+	 * 
+	 * @return string
+	 */
+	private function refresh_xid()
+	{
+		// If secure forms are enabled
+		if ($this->EE->config->item('secure_forms') == 'y')
+		{
+			$hash = $this->EE->functions->random('encrypt');
+			$this->EE->db->query("
+				INSERT INTO exp_security_hashes (date, ip_address, hash)
+				VALUES 
+				(UNIX_TIMESTAMP(), '" . $this->EE->input->ip_address() . "', '" . $hash."')
+			");
+		}
+		// If secure forms are not enabled
+		else
+		{
+			$hash = NULL;
+		}
+		
+		return $hash;
 	}
 }
 // END CLASS
