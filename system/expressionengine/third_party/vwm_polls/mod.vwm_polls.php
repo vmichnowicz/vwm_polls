@@ -131,11 +131,15 @@ class Vwm_polls {
 	 */
 	public function vote()
 	{
-		// Check XID
-		if ( ! $this->EE->security->secure_forms_check($this->EE->input->post('XID')))
+		//EE 2.1.1 and earler do not have the secure_forms_check method
+		if (method_exists($this->EE->security, 'secure_forms_check'))
 		{
-			$this->errors[] = $this->EE->lang->line('invalid_xid');
-			die( $this->show_errors() );
+			// Check XID
+			if ( ! $this->EE->security->secure_forms_check($this->EE->input->post('XID')))
+			{
+				$this->errors[] = $this->EE->lang->line('invalid_xid');
+				die( $this->show_errors() );
+			}
 		}
 
 		$this->EE->load->helper('html');
