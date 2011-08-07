@@ -212,7 +212,7 @@ class Vwm_polls {
 		{
 			if ( ! in_array($option, $valid_poll_option_ids))
 			{
-				$this->EE->lang->line('invalid_poll_option');
+				$this->errors[] = $this->EE->lang->line('invalid_poll_option');
 				die( $this->show_errors() );
 			}
 		}
