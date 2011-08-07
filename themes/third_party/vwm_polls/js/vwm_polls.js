@@ -194,4 +194,45 @@ $(document).ready(function() {
 	$('table.vwm_polls_results a').click(function() {
 		$(this).siblings('ul').slideToggle('slow');
 	});
+	
+	// Toggle min & max poll options
+	(function() {
+		// Min & max inputs
+		var min = $('#multiple_options_min');
+		var max = $('#multiple_options_max');
+		
+		// Multiple option select input
+		var multiple_options = $('#multiple_options');
+		
+		// Hide and reset min & max inputs
+		function hide_min_max() {
+			$(min).val(0).closest('tr').hide();
+			$(max).val(0).closest('tr').hide();
+		}
+		
+		// Show min and max inputs
+		function show_min_max() {
+			$(min).closest('tr').show();
+			$(max).closest('tr').show();
+		}
+		
+		// On page load, if multiple options are disabled, hide min and max inputs
+		if ( $(multiple_options).val() == 0 ) {
+			hide_min_max()
+		}
+		
+		// When the multiple option select input is changed
+		$(multiple_options).change(function() {
+			if ( $(this).val() == 1 ) {
+				show_min_max();
+			}
+			else {
+				hide_min_max();
+			}
+		});
+		
+	})();
+	
+	
+	
 });

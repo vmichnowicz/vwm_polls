@@ -31,7 +31,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	public $default_settings = array(
 		'multiple_votes'			=> FALSE,
 		'multiple_options'			=> FALSE,
-		'multiple_options_limit'	=> 0,
+		'multiple_options_min'		=> 0,
+		'multiple_options_max'		=> 0,
 		'options_order'				=> 'custom',
 		'results_chart_type'		=> 'pie',
 		'results_chart_width'		=> 330,
@@ -142,7 +143,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 				'member_groups_can_vote'	=> $this->settings['member_groups_can_vote'],
 				'multiple_votes'			=> (bool)$this->settings['multiple_votes'],
 				'multiple_options'			=> (bool)$this->settings['multiple_options'],
-				'multiple_options_limit'	=> (int)$this->settings['multiple_options_limit'],
+				'multiple_options_min'		=> (int)$this->settings['multiple_options_min'],
+				'multiple_options_max'		=> (int)$this->settings['multiple_options_max'],
 				'options_order'				=> $this->settings['options_order'],
 				'results_chart_type'		=> $this->settings['results_chart_type'],
 				'results_chart_width'		=> (int)$this->settings['results_chart_width'],
@@ -212,10 +214,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		// Multiple options
 		$multiple_options = $this->EE->input->post('multiple_options');
 		$multiple_options = (bool)$multiple_options[$this->field_id];
+		
+		// Multiple options min
+		$multiple_options_min = $this->EE->input->post('multiple_options_min');
+		$multiple_options_min = (int)$multiple_options_min[$this->field_id];
 
-		// Multiple options limit
-		$multiple_options_limit = $this->EE->input->post('multiple_options_limit');
-		$multiple_options_limit = (int)$multiple_options_limit[$this->field_id];
+		// Multiple options max
+		$multiple_options_max = $this->EE->input->post('multiple_options_max');
+		$multiple_options_max = (int)$multiple_options_max[$this->field_id];
 
 		// Options order
 		$options_order = $this->EE->input->post('options_order');
@@ -238,7 +244,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'member_groups_can_vote' => $member_groups_can_vote,
 			'multiple_votes' => $multiple_votes,
 			'multiple_options' => $multiple_options,
-			'multiple_options_limit' => $multiple_options_limit,
+			'multiple_options_min' => $multiple_options_min,
+			'multiple_options_max' => $multiple_options_max,
 			'options_order' => $options_order,
 			'results_chart_type' => $results_chart_type,
 			'results_chart_width' => $results_chart_width,
@@ -344,7 +351,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$member_groups_can_vote = isset($data['member_groups_can_vote']) ? $data['member_groups_can_vote'] : $this->settings['member_groups_can_vote'];
 		$multiple_votes = isset($data['multiple_votes']) ? (bool)$data['multiple_votes'] : $this->settings['multiple_votes'];
 		$multiple_options = isset($data['multiple_options']) ? (bool)$data['multiple_options'] : $this->settings['multiple_options'];
-		$multiple_options_limit = isset($data['multiple_options_limit']) ? (int)$data['multiple_options_limit'] : $this->settings['multiple_options_limit'];
+		$multiple_options_min = isset($data['multiple_options_min']) ? (int)$data['multiple_options_min'] : $this->settings['multiple_options_min'];
+		$multiple_options_max = isset($data['multiple_options_max']) ? (int)$data['multiple_options_max'] : $this->settings['multiple_options_max'];
 		$options_order = isset($data['options_order']) ? $data['options_order'] : $this->settings['options_order'];
 		$results_chart_type = isset($data['results_chart_type']) ? $data['results_chart_type'] : $this->settings['results_chart_type'];
 		$results_chart_width = isset($data['results_chart_width']) ? (int)$data['results_chart_width'] : $this->settings['results_chart_width'];
@@ -367,11 +375,17 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			lang('multiple_options', 'multiple_options'),
 			form_dropdown('multiple_options', array(lang('no'), lang('yes')), $multiple_options, 'id="multiple_options"')
 		);
-
-		// Multiple options limit
+		
+		// Multiple options min
 		$this->EE->table->add_row(
-			lang('multiple_options_limit', 'multiple_options_limit'),
-			form_input(array('name' => 'multiple_options_limit', 'id' => 'multiple_options_limit', 'value' => $multiple_options_limit))
+			lang('multiple_options_min', 'multiple_options_min'),
+			form_input(array('name' => 'multiple_options_min', 'id' => 'multiple_options_min', 'value' => $multiple_options_min))
+		);
+
+		// Multiple options max
+		$this->EE->table->add_row(
+			lang('multiple_options_max', 'multiple_options_max'),
+			form_input(array('name' => 'multiple_options_max', 'id' => 'multiple_options_max', 'value' => $multiple_options_max))
 		);
 
 		// Options order
@@ -412,7 +426,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'member_groups_can_vote' => $this->EE->input->post('member_groups_can_vote'),
 			'multiple_votes' => $this->EE->input->post('multiple_votes'),
 			'multiple_options' => $this->EE->input->post('multiple_options'),
-			'multiple_options_limit' => $this->EE->input->post('multiple_options_limit'),
+			'multiple_options_min' => $this->EE->input->post('multiple_options_min'),
+			'multiple_options_max' => $this->EE->input->post('multiple_options_max'),
 			'options_order' => $this->EE->input->post('options_order'),
 			'results_chart_type' => $this->EE->input->post('results_chart_type'),
 			'results_chart_width' => $this->EE->input->post('results_chart_width'),
@@ -433,7 +448,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'member_groups_can_vote' => array(),
 			'multiple_votes' => $this->default_settings['multiple_votes'],
 			'multiple_options' => $this->default_settings['multiple_options'],
-			'multiple_options_limit' =>  $this->default_settings['multiple_options_limit'],
+			'multiple_options_min' =>  $this->default_settings['multiple_options_min'],
+			'multiple_options_max' =>  $this->default_settings['multiple_options_max'],
 			'options_order' => $this->default_settings['options_order'],
 			'results_chart_type' => $this->default_settings['results_chart_type'],
 			'results_chart_width' => $this->default_settings['results_chart_width'],

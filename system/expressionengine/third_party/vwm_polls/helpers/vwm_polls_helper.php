@@ -94,6 +94,8 @@ function google_chart($poll_settings, $poll_options)
 		case 'bar':
 			$data .= AMP . 'chbh=a';
 			$data .= AMP . 'cht=bhs';
+			$data .= AMP . 'chg=10,0,5,5';
+			//$data .= AMP . 'chxr=0,100';
 			$chds = AMP . 'chds=0,';
 			break;
 	}

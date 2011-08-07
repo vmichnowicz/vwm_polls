@@ -96,7 +96,7 @@ class Vwm_polls {
 		$variables[] = array(
 			'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
 			'input_name' => 'vwm_polls_options[]',
-			'max_options' => $this->poll_settings['multiple_options_limit'],
+			'max_options' => $this->poll_settings['multiple_options_max'],
 			'can_vote' => $this->can_vote(),
 			'already_voted' => $this->already_voted,
 			'chart' => google_chart($this->poll_settings, $this->poll_options),
@@ -183,14 +183,27 @@ class Vwm_polls {
 			die( $this->show_errors() );
 		}
 
-		// If this poll accecpts multiple options and a multiple options limit is set (a limit of "0" means there is no limit to the amount of options a user can select)
-		if ($this->poll_settings['multiple_options'] == TRUE AND $this->poll_settings['multiple_options_limit'] > 0)
+		// If this poll accecpts multiple options
+		if ($this->poll_settings['multiple_options'] == TRUE )
 		{
-			// If the user selects more than the allowed number of optoins
-			if (count($selected_poll_options) > $this->poll_settings['multiple_options_limit'])
+			// If multiple options minimum is set
+			if ($this->poll_settings['multiple_options_min'] > 0)
 			{
-				$this->errors[] = sprintf($this->EE->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_limit'], count($selected_poll_options));
-				die( $this->show_errors() );
+				// If the user selects less than the allowed number of options
+				if (count($selected_poll_options) < $this->poll_settings['multiple_options_min'])
+				{
+					$this->errors[] = sprintf($this->EE->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
+				}
+			}
+
+			// If multiple options limit is set (a limit of "0" means there is no limit to the amount of options a user can select)
+			if ($this->poll_settings['multiple_options_max'] > 0)
+			{
+				// If the user selects more than the allowed number of optoins
+				if (count($selected_poll_options) > $this->poll_settings['multiple_options_max'])
+				{
+					$this->errors[] = sprintf($this->EE->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_max'], count($selected_poll_options));
+				}
 			}
 		}
 
@@ -338,13 +351,42 @@ class Vwm_polls {
 		// If this is an AJAX request
 		if (AJAX_REQUEST)
 		{
-			$this->EE->output->send_ajax_response(array('errors' => $this->errors), TRUE); // Send JSON with a 500 status code
+			$this->EE->output->send_ajax_response(array('errors' => $this->errors, 'xid' => $this->refresh_xid()), TRUE); // Send JSON with a 500 status code
 		}
 		// No AJAX
 		else
 		{
 			$this->EE->output->show_user_error('submission', $this->errors);
 		}
+	}
+	
+	/**
+	 * Refresh the XID
+	 * 
+	 * After a user submits a poll that has errors the XID is destroyed. We must
+	 * create a new one so the user can successfully submit the poll again.
+	 * 
+	 * @return string
+	 */
+	private function refresh_xid()
+	{
+		// If secure forms are enabled
+		if ($this->EE->config->item('secure_forms') == 'y')
+		{
+			$hash = $this->EE->functions->random('encrypt');
+			$this->EE->db->query("
+				INSERT INTO exp_security_hashes (date, ip_address, hash)
+				VALUES 
+				(UNIX_TIMESTAMP(), '" . $this->EE->input->ip_address() . "', '" . $hash."')
+			");
+		}
+		// If secure forms are not enabled
+		else
+		{
+			$hash = NULL;
+		}
+		
+		return $hash;
 	}
 }
 // END CLASS
