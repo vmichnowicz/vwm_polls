@@ -54,7 +54,6 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 		// Load helper & model
 		$this->EE->lang->loadfile('vwm_polls');
-		$this->EE->load->helper('vwm_polls');
 		$this->EE->load->model('vwm_polls_m');
 
 		// Get member groups
@@ -132,7 +131,16 @@ class Vwm_polls_ft extends EE_Fieldtype {
 				->field_id($this->field_id) // Set field ID
 				->poll_options('custom', TRUE); // Make sure we add in all "other" votes
 
-			// Google chart time
+			/**
+			 * Google chart time
+			 * 
+			 * Let's require the VWM Polls helper (cuz I'm hood like that) and
+			 * then get us a chart.
+			 * 
+			 * @todo Figure out why the hell the EE load helper does not work
+			 * consistently
+			 */
+			require_once 'helpers/vwm_polls_helper.php';
 			$chart = google_chart($poll_settings, $poll_options);
 		}
 		// If we dont have any poll settings (either a new entry OR an existing entry with no poll settings)
