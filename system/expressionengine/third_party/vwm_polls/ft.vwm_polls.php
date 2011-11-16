@@ -19,7 +19,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'						=> 'VWM Polls',
-		'version'					=> '0.4'
+		'version'					=> '0.4.1'
 	);
 
 	public $valid_options = array(
@@ -111,7 +111,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Display Field on Publish
 	 *
 	 * @access public
-	 * @param string		existing data
+	 * @param string		Existing data
 	 * @return string
 	 */
 	public function display_field($data)
@@ -134,14 +134,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			/**
 			 * Google chart time
 			 * 
-			 * Let's require the VWM Polls helper (cuz I'm hood like that) and
-			 * then get us a chart.
+			 * Let's reference the google cart method which is a duplicate of
+			 * what is found in the helper file.
 			 * 
 			 * @todo Figure out why the hell the EE load helper does not work
-			 * consistently
+			 * consistently. Recommendation: beat head against brick wall for
+			 * ~30 minutes.
 			 */
-			require_once 'helpers/vwm_polls_helper.php';
-			$chart = google_chart($poll_settings, $poll_options);
+			$chart = $this->google_chart($poll_settings, $poll_options);
 		}
 		// If we dont have any poll settings (either a new entry OR an existing entry with no poll settings)
 		else
@@ -267,6 +267,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Update or add new poll options (Now that we have an entry ID)
 	 *
 	 * @access public
+	 * @param string
 	 * @return void
 	 */
 	public function post_save($data)
@@ -329,7 +330,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Display Global Settings
 	 *
 	 * @access public
-	 * @return form contents
+	 * @return string		Form contents
 	 */
 	public function display_global_settings()
 	{
@@ -340,7 +341,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Save Global Settings
 	 *
 	 * @access public
-	 * @return global settings
+	 * @return string		Global settings
 	 */
 	public function save_global_settings()
 	{
@@ -425,8 +426,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Save Settings
 	 *
 	 * @access public
-	 * @param string		form data
-	 * @return void
+	 * @param string		Form data
+	 * @return array
 	 */
 	public function save_settings($data)
 	{
@@ -447,7 +448,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Install Fieldtype
 	 *
 	 * @access public
-	 * @return void
+	 * @return array
 	 */
 	public function install()
 	{
@@ -464,7 +465,70 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'results_chart_height' => $this->default_settings['results_chart_height']
 		);
 	}
+
+	/**
+	 * Generate a Google chart (duplicate of function found in helper file)
+	 *
+	 * Code duplicated in vwm_polls_helper.php
+	 *
+	 * @access public
+	 * @param array			Poll settings
+	 * @param array			Poll options
+	 * @return string
+	 */
+	public function google_chart($poll_settings, $poll_options)
+	{
+		// Google charts URL
+		$data = 'http://chart.apis.google.com/chart?';
+
+		// Chart size
+		$data .= 'chs=' . $poll_settings['results_chart_width'] . 'x' . $poll_settings['results_chart_height'];
+
+		// Chart type
+		switch($poll_settings['results_chart_type'])
+		{
+			case 'pie':
+				$data .= AMP . 'cht=p';
+				$chds = NULL; // Don't need this for pie charts
+				break;
+			case 'bar':
+				$data .= AMP . 'chbh=a';
+				$data .= AMP . 'cht=bhs';
+				$data .= AMP . 'chg=10,0,5,5';
+				//$data .= AMP . 'chxr=0,100';
+				$chds = AMP . 'chds=0,';
+				break;
+		}
+
+		$most_votes = 0;
+
+		// Chart data
+		$chd = array(); // Chart data
+		$chdl = array(); // Chart labels
+		$chco = array(); // Chart colors
+
+		foreach ($poll_options as $option)
+		{
+			$votes = $option['votes'];
+			$most_votes = $votes > $most_votes ? $votes : $most_votes;
+
+			$chdl[ $option['id'] ] = $option['text'];
+			$chd[ $option['id'] ] = $votes;
+			$chco[ $option['id'] ] = $option['color'];
+		}
+
+		$chd = implode(',', $chd);
+		$chdl = implode('|', $chdl);
+		$chco = implode('|', $chco);
+
+		$data .= AMP . 'chd=t:' . $chd;
+		$data .= AMP . 'chdl=' . $chdl;
+		$data .= AMP . 'chf=bg,s,00000000';
+		$data .= AMP . 'chco=' . $chco;
+		$data .= $chds ? AMP . $chds . $most_votes : NULL;
+
+		return $data;
+	}
 }
 
-/* End of file ft.vwm_polls.php */
-/* Location: ./system/expressionengine/third_party/vwm_polls/ft.vwm_polls.php */
+// EOF

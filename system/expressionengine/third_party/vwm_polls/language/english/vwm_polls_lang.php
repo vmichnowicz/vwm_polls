@@ -78,7 +78,4 @@ $lang = array(
 	'yes'							=> 'Yes'
 );
 
-// END FILE
-
-/* End of file vwm_polls_lang.php */
-/* Location: ./system/expressionengine/third_party/language/english/vwm_polls_lang.php */
+// EOF

@@ -70,10 +70,10 @@ function calculate_results($options, $total_votes)
 /**
  * Generate a Google chart
  *
- * @access public
- * @param array			Poll data
+ * This function is duplicated in ft.vwm_polls.php
+ *
+ * @param array			Poll settings
  * @param array			Poll options
- * @param array			Poll votes
  * @return string
  */
 function google_chart($poll_settings, $poll_options)
@@ -129,3 +129,5 @@ function google_chart($poll_settings, $poll_options)
 
 	return $data;
 }
+
+// EOF
