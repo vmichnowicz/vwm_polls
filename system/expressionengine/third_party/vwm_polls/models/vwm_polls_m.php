@@ -24,6 +24,9 @@ class Vwm_polls_m extends CI_Model {
 
 	/**
 	 * Model construct
+	 *
+	 * @access public
+	 * @return void
 	 */
 	public function __construct()
 	{
@@ -390,3 +393,5 @@ class Vwm_polls_m extends CI_Model {
 	}
 
 }
+
+// EOF

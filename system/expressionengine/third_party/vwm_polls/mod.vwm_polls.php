@@ -389,7 +389,5 @@ class Vwm_polls {
 		return $hash;
 	}
 }
-// END CLASS
 
-/* End of file mod.vwm_polls.php */
-/* Location: ./system/expressionengine/third_party/vwm_polls/mod.vwm_polls.php */
+// EOF

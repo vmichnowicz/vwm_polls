@@ -17,9 +17,15 @@
  */
 class Vwm_polls_upd {
 
-	public $version = '0.4';
-	
-	function __construct()
+	public $version = '0.4.1';
+
+	/**
+	 * Constructor
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function __construct()
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
@@ -140,13 +146,11 @@ class Vwm_polls_upd {
 	 * @access	public
 	 * @return	bool
 	 */	
-	public function update($current='')
+	public function update($current = NULL)
 	{
 		return FALSE;
 	}
 	
 }
-// END CLASS
 
-/* End of file upd.vwm_polls.php */
-/* Location: ./system/expressionengine/third_party/vwm_polls/upd.vwm_polls.php */
+// EOF
