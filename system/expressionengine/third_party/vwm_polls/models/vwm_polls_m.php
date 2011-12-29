@@ -30,7 +30,8 @@ class Vwm_polls_m extends CI_Model {
 	 */
 	public function __construct()
 	{
-		// Let's get it started in here
+		// Load helper functions
+		$this->load->helper('vwm_polls');
 	}
 
 	/**
