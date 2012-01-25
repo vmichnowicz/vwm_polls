@@ -51,6 +51,9 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	public function __construct()
 	{
 		parent::__construct();
+		
+		// Maybe this will fix our unable to load model error?
+		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
 		// Load helper & model
 		$this->EE->lang->loadfile('vwm_polls');
