@@ -3,6 +3,8 @@
 /**
  * VWM Polls
  *
+ * Main polling class
+ *
  * @package		VWM Polls
  * @author		Victor Michnowicz
  * @copyright	Copyright (c) 2011 Victor Michnowicz
@@ -12,9 +14,6 @@
 
 // -----------------------------------------------------------------------------
 
-/**
- * Polling module
- */
 class Vwm_polls {
 
 	private $entry_id;
@@ -37,6 +36,9 @@ class Vwm_polls {
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
+
+		// Make damn sure module path is defined
+		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
 		// Load lang, helper, and model
 		$this->EE->lang->loadfile('vwm_polls');
@@ -132,7 +134,7 @@ class Vwm_polls {
 	public function vote()
 	{
 		//EE 2.1.1 and earler do not have the secure_forms_check method
-		if (method_exists($this->EE->security, 'secure_forms_check'))
+		if ( method_exists($this->EE->security, 'secure_forms_check') )
 		{
 			// Check XID
 			if ( ! $this->EE->security->secure_forms_check($this->EE->input->post('XID')))

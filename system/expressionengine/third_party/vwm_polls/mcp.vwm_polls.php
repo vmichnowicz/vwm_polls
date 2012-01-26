@@ -3,6 +3,8 @@
 /**
  * VWM Polls
  *
+ * Module control panel
+ *
  * @package		VWM Polls
  * @author		Victor Michnowicz
  * @copyright	Copyright (c) 2011 Victor Michnowicz
@@ -24,6 +26,9 @@ class Vwm_polls_mcp {
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
+
+		// Make damn sure module path is defined
+		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 	}
 
 	/**

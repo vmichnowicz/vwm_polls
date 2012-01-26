@@ -3,6 +3,8 @@
 /**
  * VWM Polls
  *
+ * Fieldtype
+ *
  * @package		VWM Polls
  * @author		Victor Michnowicz
  * @copyright	Copyright (c) 2011 Victor Michnowicz
@@ -12,14 +14,11 @@
 
 // -----------------------------------------------------------------------------
 
-/**
- * VWM Polls fieldtype
- */
 class Vwm_polls_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'						=> 'VWM Polls',
-		'version'					=> '0.4.1'
+		'version'					=> '0.4.2'
 	);
 
 	public $valid_options = array(
@@ -51,6 +50,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	public function __construct()
 	{
 		parent::__construct();
+
+		// Make a local reference to the ExpressionEngine super object
+		$this->EE =& get_instance();
+
+		// Make damn sure module path is defined
+		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
 		// Load helper & model
 		$this->EE->lang->loadfile('vwm_polls');
