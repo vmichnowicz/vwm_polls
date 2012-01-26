@@ -22,6 +22,10 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 
 ## Change Log
 
+### 0.4.2
+
+* Added `add_package_path()` to class constructors in order to make sure the package path was being defined by EE.
+
 ### 0.4.1
 
-* Moved some code around so the `Unable to load the requested file: helpers/vwm_polls_helper.php` *should* no longer be a problem
+* Moved some code around so the `Unable to load the requested file: helpers/vwm_polls_helper.php` *should* no longer be a problem.

@@ -3,6 +3,8 @@
 /**
  * VWM Polls
  *
+ * Module install, uninstall, update class
+ *
  * @package		VWM Polls
  * @author		Victor Michnowicz
  * @copyright	Copyright (c) 2011 Victor Michnowicz
@@ -12,12 +14,9 @@
 
 // -----------------------------------------------------------------------------
 
-/**
- * Lets install, uninstall, or update this bad boy
- */
 class Vwm_polls_upd {
 
-	public $version = '0.4.1';
+	public $version = '0.4.2';
 
 	/**
 	 * Constructor
