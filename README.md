@@ -1,4 +1,4 @@
-# VWM Surveys
+# VWM Polls
 
 VWM Polls is a polling module & fieldtype for ExpressionEngine 2.
 
