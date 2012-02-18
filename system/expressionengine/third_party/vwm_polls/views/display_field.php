@@ -41,7 +41,18 @@
 					<tr>
 						<td class="drag"></td>
 						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>"/></td>
-						<td class="type"><?php echo form_dropdown('vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', array('defined' => lang('type_defined'), 'other' => lang('type_other')), $option['type']); ?></td>
+						<td class="type">
+							<div class="pill">
+								<div class="defined">
+									<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'id' => 'defined_' . $option['id'], 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
+									<label for="<?php echo 'defined_' . $option['id']; ?>"><?php echo lang('type_defined'); ?></label>
+								</div>
+								<div class="other">
+									<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'id' => 'other_' . $option['id'], 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
+									<label for="<?php echo 'other_' . $option['id']; ?>"><?php echo lang('type_other'); ?></label>
+								</div>
+							</div>
+						</td>
 						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][text]" id="vwm_polls_option_<?php echo $option['id']; ?>" value="<?php echo $option['text']; ?>" /></td>
 					</tr>
 				<?php endforeach; ?>

@@ -232,7 +232,35 @@ $(document).ready(function() {
 		});
 		
 	})();
-	
-	
-	
+
+	/**
+	 * jQuery Pill plugin
+	 */
+	$.fn.pill = function() {
+		this.each(function() {
+			var pill = $(this);
+			var radios = $(pill).find('input[type="radio"]');
+
+			// Add "checked" class on plugin load
+			$(radios).filter(':checked').parent('div').addClass('checked');
+
+			// Toggle on radio change
+			$(radios).live('change', function() {
+				var parent = $(this).parent('div');
+				var siblings = $(parent).siblings('div');
+				$(siblings).removeClass('checked');
+				$(this).parent('div').addClass('checked');
+			});
+		});
+
+		return this;
+	}
+
+	/**
+	 * On page load get our pill runnin'
+	 */
+	$(document).ready(function() {
+		$('.pill').pill();
+	});
+
 });
