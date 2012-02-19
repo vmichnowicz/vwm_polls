@@ -47,8 +47,8 @@ $(document).ready(function() {
 	 *
 	 * @param object		The tbody element of all the options we want to sort
 	 */
-	function make_sortable(sort_me) {
-		$(sort_me).sortable({
+	var make_sortable = function make_sortable() {
+		$('body').find('table[id^="vwm_polls_options"] tbody').sortable({
 			axis: 'y',
 			handle: 'td.drag',
 			containment: 'parent',
@@ -94,10 +94,9 @@ $(document).ready(function() {
 				}
 			}
 		});
-	}
 
-	// Make poll options sortable
-	make_sortable('table[id^="vwm_polls_options"] tbody');
+		return make_sortable;
+	}();
 
 	/**
 	 * Add a poll option
@@ -137,10 +136,7 @@ $(document).ready(function() {
 				}, function(data) {
 				
 					// AJAX load some new options up in here!
-					$(options_table).load(window.location.href + ' #' + options_table_id + ' > *', function() {
-						// Let's make this sortable again, shall we?
-						make_sortable($(this).find('tbody'));
-					});
+					$(options_table).load(window.location.href + ' #' + options_table_id + ' > *');
 
 					// Clear text input
 					$(new_option).find('input[name="vwm_polls_new_option_text"]').val('');
@@ -257,10 +253,32 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * On page load get our pill runnin'
+	 * Get our pills runnin'
 	 */
-	$(document).ready(function() {
+	var pill = function pill() {
 		$('.pill').pill();
-	});
+		return pill;
+	}();
+
+	/**
+	 * Crayon Picker
+	 */
+	var crayonpicker = function crayonpicker() {
+		$('body').find('#publishForm td.color input[type="text"]').crayonpicker({
+			onChange: function(target, trigger, color) {
+				$(target).css('background-color', color);
+			}
+		});
+		return crayonpicker;
+	}();
+
+	/**
+	 * Ajax complete cleanup!
+	 */
+	$('body').ajaxComplete(function() {
+		pill();
+		crayonpicker();
+		make_sortable();
+	})
 
 });

@@ -1,3 +1,16 @@
+/**
+ * Add poll option
+ */
+input.vwm_polls_new_option {
+	background: url(data:image/gif;base64,R0lGODlhDwAPAJEDAHrcF5f/L4D/AP///yH5BAEAAAMALAAAAAAPAA8AAAIynA2ZxwcBQWtPBDldsDiPelFKsl0jCaVWGlXCC8cmC63sSXInVXYZ6JsAPYhUUKRoFAAAOw==) no-repeat 50% 50%;
+	width: 15px;
+	height: 15px;
+	border: 0px none;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+}
+
 /*
  * Fieldtype tables
  */
@@ -6,7 +19,7 @@ table[id^="vwm_polls_options"] td.drag {
 }
 
 table[id^="vwm_polls_options"] td.color {
-	width: 115px;
+	width: 30px;
 }
 
 table[id^="vwm_polls_options"] td.color input {
@@ -77,9 +90,11 @@ table.vwm_polls_results ul {
 /*
  * Pill toggle
  */
-
 .pill {
 	width: 120px;
+	font-size: 11px;
+	line-height: 25px;
+	text-transform: uppercase;
 	display: inline-block;
 	background-color: #b6b6b6;
 	border-radius: 3px;
@@ -93,6 +108,7 @@ table.vwm_polls_results ul {
 	-o-user-select: none;
 	user-select: none;
 }
+
 input[type="radio"] {
 	position: absolute;
 	display: block;
@@ -100,36 +116,79 @@ input[type="radio"] {
 	width: 0px;
 	left: -999em;
 }
+
 .pill > div {
 	float: left;
 	width: 50%;
 }
+
 .pill > div label {
 	display: inline-block;
 	border-radius: 3px;
 	text-align: center;
 	line-height: 25px;
 }
+
 .pill label {
 	color: #777;
 	cursor: pointer;
 	width: 100%;
 }
+
 .pill label:hover {
 	color: #555;
 }
+
 .pill .checked label {
 	color: #fff;
 	cursor: default;
+}
 
-}
-.pill .checked.defined label {
-	background-color: #4177bc;
+.pill .checked label {
+	background-color: #d91350;
 	text-shadow: 0px -1px 0px #36486c;
-	box-shadow: 1px 1px 0px #36486c inset, -1px -1px 0px #36486c inset, 0px 0px 15px #374053 inset;
+	box-shadow: 1px 1px 0px #9f2b4e inset, -1px -1px 0px #9f2b4e inset, 0px 0px 15px #9f2b4e inset;
 }
-.pill .checked.other label {
-	background-color: #c25c5c;
-	text-shadow: 0px -1px 0px #893535;
-	box-shadow: 1px 1px 0px #6a2929 inset, -1px -1px 0px #6a2929 inset, 0px 0px 15px #893535 inset;
+
+/**
+ * Poll option color
+ */
+
+#publishForm td.color input[type="text"] {
+	padding: 0px;
+	box-shadow: 1px 1px 0px rgba(255,255,255,.5) inset, -1px -1px 0px rgba(255,255,255,.5) inset;
+	width: 25px;
+	height: 25px;
+	text-indent: -999em;
+	cursor: pointer;
+}
+
+#publishForm td.color input[type="text"]:focus {
+	border-width: 1px;
+}
+
+/**
+ * Crayon Picker
+ */
+
+table.crayonpicker-table {
+	border: 0px none !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	border-collapse: collapse !important;
+	box-shadow: 0px 0px 15px #333;
+}
+
+table.crayonpicker-table td {
+	border: 0px none !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	border-collapse: collapse !important;
+}
+
+table.crayonpicker-table a {
+	display: block;
+	width: 25px;
+	height: 25px;
+	text-indent: -999em;
 }

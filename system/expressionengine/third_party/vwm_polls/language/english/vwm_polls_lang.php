@@ -47,9 +47,9 @@ $lang = array(
 	'poll_results'					=> 'Poll Results',
 
 	// Fieldtype table headers
-	'option_color'					=> 'Option Color',
-	'option_type'					=> 'Option Type',
-	'option_text'					=> 'Option Text',
+	'option_color'					=> 'Color',
+	'option_type'					=> 'Type',
+	'option_text'					=> 'Text',
 	'setting'						=> 'Setting',
 	'value'							=> 'Value',
 	'option'						=> 'Option',
