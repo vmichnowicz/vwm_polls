@@ -26,7 +26,7 @@
 				</tr>
 			</thead>
 			<tfoot class="vwm_polls_new_option">
-				<tr>
+				<tr class="vwm_polls_option">
 					<td class="drag">
 						<input type="button" value="" title="Add poll option" class="vwm_polls_new_option" />
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
@@ -38,9 +38,9 @@
 					</td>
 				</tr>
 			</tfoot>
-			<tbody>
+			<tbody id="vwm_polls_options_tbody">
 				<?php foreach ($options as $option): ?>
-					<tr>
+					<tr class="vwm_polls_option">
 						<td class="drag"></td>
 						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>" style="background-color: #<?php echo $option['color']; ?>"/></td>
 						<td class="type">

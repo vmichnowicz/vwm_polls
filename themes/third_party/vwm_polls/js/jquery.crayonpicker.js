@@ -1,10 +1,10 @@
 /**
- * jQuery Crayon Picker Plugin 0.1
+ * jQuery Crayon Picker Plugin 0.2
  *
  * Source: https://github.com/vmichnowicz/jquery.crayonpicker
  * Example: http://www.vmichnowicz.com/examples/crayonpicker/index.html
  *
- * Copyright (c) 2011, Victor Michnowicz (http://www.vmichnowicz.com/)
+ * Copyright (c) 2012, Victor Michnowicz (http://www.vmichnowicz.com/)
  */
 (function($) {
 
@@ -57,25 +57,33 @@
 			 * @param string
 			 * @return void
 			 */
-			onChange: function(target, trigger, color) {}
+			onChange: function(target, trigger, color) {},
+			/**
+			 * Position picker
+			 *
+			 * @access protected
+			 * @param object
+			 * @param object
+			 * @return void
+			 */
+			_position: function(target, table) {
+				// Add inline CSS to picker table
+				$(table).css({
+					top: $(target).position().top + $(target).outerHeight(true, true),
+					left: $(target).position().left
+				});
+			}
 		}, options);
 
 		return this.each(function() {
 
 			// Target properties
 			var target = $(this).attr('href') ? $( $(this).attr('href') ) : $(this);
-			var targetHeight = $(target).outerHeight(true, true);
-			var targetTop = $(target).position().top;
-			var targetLeft = $(target).position().left;
 
 			// Additional trigger to launch picker
 			var trigger = $(this).attr('href') ? $(this) : null;
 
 			$(target).addClass('crayonpicker-target');
-
-			// Picker positioning
-			var pickerTop = targetTop + targetHeight;
-			var pickerLeft = targetLeft;
 
 			var colors = ['#800000','#808000','#008000','#008080','#000080','#800080','#7f7f7f','#808080','#804000','#408000','#008040','#004080','#400080','#800040','#666666','#999999','#ff0000','#ffff00','#ffff00','#00ffff','#0000ff','#ff00ff','#4c4c4c','#b3b3b3','#ff8000','#80ff00','#00ff80','#0080ff','#8000ff','#ff0080','#333333','#cccccc','#ff6666','#ffff66','#66ff66','#66ffff','#6666ff','#ff66ff','#191919','#e6e6e6','#ffcc66','#ccff66','#66ffcc','#66ccff','#cc66ff','#ff6fcf','#000000','#ffffff'];
 			var columns = 8;
@@ -99,8 +107,7 @@
 					.css({
 						display: 'none',
 						position: 'absolute',
-						top: pickerTop,
-						left: pickerLeft
+						'z-index': 99
 					});
 
 				// For each row
@@ -160,6 +167,10 @@
 
 			// Show picker on focus
 			$(target).bind('focusin', function() {
+
+				// Position picker
+				settings._position(target, table);
+
 				// Run onOpen() function
 				settings.onOpen(target, trigger, $(target).val());
 
@@ -170,6 +181,9 @@
 			// Show picker on trigger click
 			$(trigger).bind('click', function(e) {
 				e.preventDefault();
+
+				// Position picker
+				settings._position(target, table);
 
 				// Run onOpen() function
 				settings.onOpen(target, trigger, $(target).val());

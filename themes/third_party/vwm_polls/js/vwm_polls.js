@@ -48,7 +48,7 @@ $(document).ready(function() {
 	 * @param object		The tbody element of all the options we want to sort
 	 */
 	var make_sortable = function make_sortable() {
-		$('body').find('table[id^="vwm_polls_options"] tbody').sortable({
+		$('body').find('table[id^="vwm_polls_options"] > tbody').sortable({
 			axis: 'y',
 			handle: 'td.drag',
 			containment: 'parent',
@@ -57,10 +57,12 @@ $(document).ready(function() {
 				// Grab entry ID
 				var entry_id = $('#publishForm input[name="entry_id"]').val();
 
+				var options = [];
+
 				// If this is an existing entry
 				if (entry_id > 0)
 				{
-					var options = $(this).find('input[id^="vwm_polls_option"]');
+					options = $(this).find('input[id^="vwm_polls_option"]');
 					var obj = new Object();
 
 					$(options).each(function(i, option) {
@@ -77,7 +79,7 @@ $(document).ready(function() {
 				// If this is a new entry (these are new poll options)
 				else
 				{
-					var options = $(this).find('tr');
+					options = $(this).children('tr');
 					var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
 
 					// Loop through all of our new poll options and update each one to reflect their new order
@@ -107,6 +109,7 @@ $(document).ready(function() {
 
 		// Options table info
 		var options_table = $(new_option).closest('table');
+		var options_tbody = $(options_table).children('tbody');
 		var options_table_id = $(options_table).attr('id');
 
 		// IDs
@@ -130,7 +133,7 @@ $(document).ready(function() {
 					text: text, // Option text
 					type: type, // Option type
 					color: color, // Option color
-					order: $(options_table).find('tbody tr').length, // Our order is index 0 so we don't need to +1
+					order: $(options_tbody).children('tr').length, // Our order is index 0 so we don't need to +1
 					entry_id: entry_id, // Entry ID
 					field_id: field_id // Field ID
 				}, function(data) {
@@ -145,7 +148,7 @@ $(document).ready(function() {
 		// If this is a new entry
 		else {
 			// Get last table row
-			var last_tr = $(options_table).find('tbody tr:last');
+			var last_tr = $(options_tbody).children('tr:last');
 
 			// The index of our next poll option (if empty, it will be 0)
 			var next_num = 0;
@@ -161,7 +164,7 @@ $(document).ready(function() {
 			var text_name = 'vwm_polls_new_options[' + field_id + '][' + next_num + '][text]';
 
 			// Clone last table row
-			var clone = $(new_option).find('tr').clone();
+			var clone = $(new_option).children('tr').clone();
 			$(clone).find('td:first').empty();
 			$(clone).attr('class', 'option_' + next_num);
 			$(clone).find('input[name*="color"]').attr('name', color_name);
@@ -169,10 +172,10 @@ $(document).ready(function() {
 			$(clone).find('input[name*="text"]').attr('name', text_name);
 
 			// Insert new table row
-			$(options_table).find('tbody').append(clone);
+			$(options_tbody).append(clone);
 
 			// Updade data
-			var new_row = $(options_table).find('tbody tr:last');
+			var new_row = $(options_tbody).children('tr:last');
 			$(new_row).find('input[name*="text"]').val(text);
 			$(new_row).find('input[name*="color"]').val(color);
 			$(new_row).find('select[name*="type"]').val(type);
@@ -279,6 +282,6 @@ $(document).ready(function() {
 		pill();
 		crayonpicker();
 		make_sortable();
-	})
+	});
 
 });
