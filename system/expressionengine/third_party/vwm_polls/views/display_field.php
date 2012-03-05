@@ -32,8 +32,23 @@
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
 					</td>
 					<td class="color"><input type="text" name="vwm_polls_new_option_color" placeholder="<?php echo lang('hex_color_placeholder'); ?>" /></td>
+					<td class="type">
+						<div class="pill">
+							<div class="defined">
+								<label>
+									<?php echo form_radio( array('name' => 'vwm_polls_new_option_type', 'value' => 'defined', 'checked' => TRUE)); ?>
+									<?php echo lang('type_defined'); ?>
+								</label>
+							</div>
+							<div class="other">
+								<label>
+									<?php echo form_radio( array('name' => 'vwm_polls_new_option_type', 'value' => 'other')); ?>
+									<?php echo lang('type_other'); ?>
+								</label>
+							</div>
+						</div>
+					</td>
 					<td colspan="2">
-						<input type="hidden" name="vwm_polls_new_option_type" value="defined" />
 						<input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo lang('option_text_placeholder'); ?>" />
 					</td>
 				</tr>
@@ -46,12 +61,16 @@
 						<td class="type">
 							<div class="pill">
 								<div class="defined">
-									<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'id' => 'defined_' . $option['id'], 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
-									<label for="<?php echo 'defined_' . $option['id']; ?>"><?php echo lang('type_defined'); ?></label>
+									<label>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
+										<?php echo lang('type_defined'); ?>
+									</label>
 								</div>
 								<div class="other">
-									<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'id' => 'other_' . $option['id'], 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
-									<label for="<?php echo 'other_' . $option['id']; ?>"><?php echo lang('type_other'); ?></label>
+									<label>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
+										<?php echo lang('type_other'); ?>
+									</label>
 								</div>
 							</div>
 						</td>

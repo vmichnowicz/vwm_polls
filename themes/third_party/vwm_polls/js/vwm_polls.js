@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
 	// Add new option input focus set to "false" by default
 	var option_focus = false;
 
@@ -43,11 +44,10 @@ $(document).ready(function() {
 	});
 
 	/**
-	 * Make something sortable!
-	 *
-	 * @param object		The tbody element of all the options we want to sort
+	 * Make poll options sortable!
 	 */
 	var make_sortable = function make_sortable() {
+		// Select poll options table tbody
 		$('body').find('table[id^="vwm_polls_options"] > tbody').sortable({
 			axis: 'y',
 			handle: 'td.drag',
@@ -59,7 +59,12 @@ $(document).ready(function() {
 
 				var options = [];
 
-				// If this is an existing entry
+				/**
+				 * If this is an existing entry
+				 *
+				 * @todo delay the ordering until after the "Submit" button is
+				 * pressed. Ordering these on-the-fly is kinda sketch.
+				 */
 				if (entry_id > 0)
 				{
 					options = $(this).find('input[id^="vwm_polls_option"]');
@@ -138,7 +143,7 @@ $(document).ready(function() {
 					field_id: field_id // Field ID
 				}, function(data) {
 				
-					// AJAX load some new options up in here!
+					// Ajax load some new options up in here!
 					$(options_table).load(window.location.href + ' #' + options_table_id + ' > *');
 
 					// Clear text input
@@ -147,34 +152,27 @@ $(document).ready(function() {
 		}
 		// If this is a new entry
 		else {
-			// Get last table row
-			var last_tr = $(options_tbody).children('tr:last');
 
-			// The index of our next poll option (if empty, it will be 0)
-			var next_num = 0;
+			// Get the index of our new option
+			var option_index = $(options_tbody).children('tr').length ? $(options_tbody).children('tr').length : 0;
 
-			// If we already have some poll options
-			if (last_tr.length) {
-				next_num = parseInt( $(last_tr).attr('class').replace('option_', '') ) + 1;
-			}
-
-			// Generate input names
-			var color_name = 'vwm_polls_new_options[' + field_id + '][' + next_num + '][color]';
-			var type_name = 'vwm_polls_new_options[' + field_id + '][' + next_num + '][type]';
-			var text_name = 'vwm_polls_new_options[' + field_id + '][' + next_num + '][text]';
+			// Generate new input name attributes
+			var color_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][color]';
+			var type_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][type]';
+			var text_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][text]';
 
 			// Clone last table row
 			var clone = $(new_option).children('tr').clone();
 			$(clone).find('td:first').empty();
-			$(clone).attr('class', 'option_' + next_num);
-			$(clone).find('input[name*="color"]').attr('name', color_name);
-			$(clone).find('select[name*="type"]').attr('name', type_name);
-			$(clone).find('input[name*="text"]').attr('name', text_name);
+			$(clone).attr('class', 'option_' + option_index);
+			$(clone).find(':input[name*="color"]').attr('name', color_name);
+			$(clone).find(':input[name*="type"]').attr('name', type_name);
+			$(clone).find(':input[name*="text"]').attr('name', text_name);
 
 			// Insert new table row
 			$(options_tbody).append(clone);
 
-			// Updade data
+			// Update data
 			var new_row = $(options_tbody).children('tr:last');
 			$(new_row).find('input[name*="text"]').val(text);
 			$(new_row).find('input[name*="color"]').val(color);
@@ -182,6 +180,9 @@ $(document).ready(function() {
 
 			// Clear text input
 			$(new_option).find('input[name="vwm_polls_new_option_text"]').val('');
+
+			// Cleanup as if this was an Ajax request
+			ajaxCleanup();
 		}
 	}
 
@@ -237,20 +238,20 @@ $(document).ready(function() {
 	 */
 	$.fn.pill = function() {
 		this.each(function() {
-			var pill = $(this);
-			var radios = $(pill).find('input[type="radio"]');
+				var pill = $(this);
+				var radios = $(pill).find('input[type="radio"]');
 
-			// Add "checked" class on plugin load
-			$(radios).filter(':checked').parent('div').addClass('checked');
+				// Add "checked" class on plugin load
+				$(radios).filter(':checked').closest('div').addClass('checked');
 
-			// Toggle on radio change
-			$(radios).live('change', function() {
-				var parent = $(this).parent('div');
-				var siblings = $(parent).siblings('div');
-				$(siblings).removeClass('checked');
-				$(this).parent('div').addClass('checked');
+				// Toggle on radio change
+				$(radios).live('change', function() {
+					var parent = $(this).closest('div');
+					var siblings = $(parent).siblings('div');
+					$(siblings).removeClass('checked');
+					$(this).closest('div').addClass('checked');
+				});
 			});
-		});
 
 		return this;
 	}
@@ -259,7 +260,7 @@ $(document).ready(function() {
 	 * Get our pills runnin'
 	 */
 	var pill = function pill() {
-		$('.pill').pill();
+		$('body').find('.pill').pill();
 		return pill;
 	}();
 
@@ -276,12 +277,22 @@ $(document).ready(function() {
 	}();
 
 	/**
-	 * Ajax complete cleanup!
+	 * Run cleanup function on Ajax complete!
 	 */
 	$('body').ajaxComplete(function() {
+		ajaxCleanup();
+	});
+
+	/**
+	 * Run Ajax cleanup functions!
+	 */
+	var ajaxCleanup = function ajaxCleanup() {
+		// Run cleanup functions
 		pill();
 		crayonpicker();
 		make_sortable();
-	});
+
+		return ajaxCleanup;
+	}
 
 });
