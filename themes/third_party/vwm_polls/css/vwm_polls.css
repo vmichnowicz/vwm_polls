@@ -109,7 +109,7 @@ table.vwm_polls_results ul {
 	user-select: none;
 }
 
-input[type="radio"] {
+.pill input[type="radio"] {
 	position: absolute;
 	display: block;
 	height: 0px;

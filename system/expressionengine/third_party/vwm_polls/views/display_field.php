@@ -96,7 +96,17 @@
 			<tbody>
 				<tr>
 					<td><?php echo lang('member_groups_can_vote', 'member_groups_can_vote'); ?></td>
-					<td><?php echo form_multiselect('member_groups_can_vote[' . $field_id . '][]', $member_groups, $data['member_groups_can_vote'], 'id="member_groups_can_vote"'); ?></td>
+					<td>
+						<?php echo form_dropdown("member_groups_can_vote[$field_id]", array('ALL' => lang('all'), 'NONE' => lang('none'), 'SELECT' => lang('select')), $data['member_groups_can_vote'], 'id="member_groups_can_vote"'); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo lang('select_member_groups_can_vote', "select_member_groups_can_vote_$field_id"); ?>
+					</td>
+					<td>
+						<?php echo form_multiselect("select_member_groups_can_vote[$field_id][]", $member_groups, is_array($data['select_member_groups_can_vote']) ? $data['select_member_groups_can_vote'] : NULL); ?>
+					</td>
 				</tr>
 				<tr>
 					<td><?php echo lang('multiple_votes', 'multiple_votes'); ?></td>
