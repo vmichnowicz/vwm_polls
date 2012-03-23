@@ -4,20 +4,15 @@ $(document).ready(function() {
 var option_focus = false;
 
 /**
-	* When new option text input (our color and text fields) gets and loses focus
-	*/
+ * When new option text input (our color and text fields) gets and loses focus
+ */
 $('.vwm_polls_new_option input[type="text"]').live('focusin focusout', function(e) {
-	if (e.type == 'focusin') {
-		option_focus = true;
-	}
-	else {
-		option_focus = false;
-	}
+	e.type == 'focusin' ? option_focus = true : option_focus = false;
 });
 
 /**
-	* When the publish form is subitted
-	*/
+ * When the publish form is subitted
+ */
 $('#publishForm').submit(function(e) {
 	// If our a option text or color input has focus
 	if (option_focus) {
@@ -27,8 +22,8 @@ $('#publishForm').submit(function(e) {
 });
 
 /**
-	* On keyup inside a new poll option text input
-	*/
+ * On keyup inside a new poll option text input
+ */
 $('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
 	// If the use pressed the "enter" key
 	if (e.which == 13) {
@@ -37,15 +32,15 @@ $('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
 });
 
 /**
-	* When the "add new poll option" button is clicked
-	*/
+ * When the "add new poll option" button is clicked
+ */
 $('input[type="button"].vwm_polls_new_option').live('click', function() {
 	add_option( $(this).closest('tfoot') );
 });
 
 /**
-	* Make poll options sortable!
-	*/
+ * Make poll options sortable!
+ */
 var make_sortable = function make_sortable() {
 	// Select poll options table tbody
 	$('body').find('table[id^="vwm_polls_options"] > tbody').sortable({
@@ -60,11 +55,11 @@ var make_sortable = function make_sortable() {
 			var options = [];
 
 			/**
-				* If this is an existing entry
-				*
-				* @todo delay the ordering until after the "Submit" button is
-				* pressed. Ordering these on-the-fly is kinda sketch.
-				*/
+			 * If this is an existing entry
+			 *
+			 * @todo delay the ordering until after the "Submit" button is
+			 * pressed. Ordering these on-the-fly is kinda sketch.
+			 */
 			if (entry_id > 0)
 			{
 				options = $(this).find('input[id^="vwm_polls_option"]');
@@ -106,10 +101,10 @@ var make_sortable = function make_sortable() {
 }();
 
 /**
-	* Add a poll option
-	*
-	* @param object		Table row of our new option
-	*/
+ * Add a poll option
+ *
+ * @param object		Table row of our new option
+ */
 function add_option(new_option) {
 
 	// Options table info

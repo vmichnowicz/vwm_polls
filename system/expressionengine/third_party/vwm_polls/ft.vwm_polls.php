@@ -123,6 +123,9 @@ class Vwm_polls_ft extends EE_Fieldtype {
 						$group = abs( (int)$group );
 					}
 
+					// Make sure there are no duplicate group IDs
+					array_unique($select_member_groups_can_vote, SORT_NUMERIC);
+
 					// Sort array of group IDs from lowest to highest numericarly
 					sort($select_member_groups_can_vote, SORT_NUMERIC);
 
@@ -150,6 +153,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * This could happen if a user puts more than one poll in an entry
 	 *
 	 * @access private
+	 * @param string
 	 * @return void
 	 */
 	private function load_css_and_javascript()
@@ -163,6 +167,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			$this->EE->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
 			$this->EE->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . $this->EE->config->item('cp_url') . '";</script>');
 			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
+			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
 			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/jquery.crayonpicker.js"></script>');
 
 			// CSS and JavaScript have been loaded!
@@ -181,9 +186,6 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	{
 		// Load our JavaScipt (but only if we need to)
 		$this->load_css_and_javascript();
-
-		// Load display field-specific JS
-		$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
 
 		// If this is an existing entry that has poll settings
 		if ($data)
@@ -433,9 +435,6 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	{
 		// Load our JavaScipt (but only if we need to)
 		$this->load_css_and_javascript();
-
-		// Load display settings-specific JS
-		$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_settings.js"></script>');
 
 		// Member groups
 		$member_groups_can_vote = isset($data['member_groups_can_vote']) ? $data['member_groups_can_vote'] : $this->settings['member_groups_can_vote'];
