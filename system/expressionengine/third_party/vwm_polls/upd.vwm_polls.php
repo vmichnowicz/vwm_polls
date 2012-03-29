@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.5';
+	public $version = '0.5.1';
 
 	/**
 	 * Constructor
@@ -76,11 +76,11 @@ class Vwm_polls_upd {
 				`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 				`entry_id` int(10) unsigned NOT NULL,
 				`field_id` int(10) unsigned NOT NULL,
-				`custom_order` tinyint(3) unsigned NOT NULL,
+				`custom_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
 				`type` enum('defined','other') NOT NULL DEFAULT 'defined',
-				`color` varchar(6) NOT NULL,
-				`text` varchar(128) NOT NULL,
-				`votes` mediumint(6) unsigned NOT NULL,
+				`color` varchar(6) NOT NULL DEFAULT '',
+				`text` varchar(128) NOT NULL DEFAULT '',
+				`votes` mediumint(6) unsigned NOT NULL DEFAULT '0',
 				PRIMARY KEY (`id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 		");
@@ -147,9 +147,26 @@ class Vwm_polls_upd {
 	 */	
 	public function update($current = NULL)
 	{
+		// Get database prefix
+		$prefix = $this->EE->db->dbprefix;
+
+		if ($current < '0.5.1')
+		{
+			$this->EE->db->query("
+				ALTER TABLE `{$prefix}vwm_polls_options` CHANGE `id` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+				CHANGE `entry_id` `entry_id` INT(10) UNSIGNED NOT NULL,
+				CHANGE `field_id` `field_id` INT(10) UNSIGNED NOT NULL,
+				CHANGE `custom_order` `custom_order` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+				CHANGE `type` `type` ENUM('defined', 'other') CHARACTER SET utf8 NOT NULL DEFAULT 'defined',
+				CHANGE `color` `color` VARCHAR(6) CHARACTER SET utf8 NOT NULL DEFAULT '',
+				CHANGE `text` `text` VARCHAR(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
+				CHANGE `votes` `votes` MEDIUMINT(6) UNSIGNED NOT NULL DEFAULT '0'
+			");
+		}
+
 		return TRUE;
 	}
-	
+
 }
 
 // EOF

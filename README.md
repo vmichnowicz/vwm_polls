@@ -22,6 +22,10 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 
 ## Change Log
 
+### 0.5.1
+
+* Added default values for MySQL poll options table
+
 ### 0.5
 
 * Added simple color picker for poll options
