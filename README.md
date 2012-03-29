@@ -26,6 +26,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.5.1
+
+* Added default values for MySQL poll options table
+
 ### 0.5
 
 * Added simple color picker for poll options
