@@ -226,7 +226,7 @@ class Vwm_polls_m extends CI_Model {
 		// Option text (trimmed)
 		$text = trim($text);
 
-		// If the text is has a value (update option)
+		// If the text has a value (update option)
 		if ($text)
 		{
 			$data = array(
@@ -338,7 +338,7 @@ class Vwm_polls_m extends CI_Model {
 			$data = $query->row_array();
 
 			// Make sure this field has poll settings
-			if (isset($data[$this->field_name]))
+			if ( isset($data[$this->field_name]) )
 			{
 				$settings = json_decode($data[$this->field_name], TRUE);
 			}

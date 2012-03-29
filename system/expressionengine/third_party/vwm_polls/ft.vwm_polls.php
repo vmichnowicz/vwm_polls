@@ -18,7 +18,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'						=> 'VWM Polls',
-		'version'					=> '0.4.2'
+		'version'					=> '0.5'
 	);
 
 	public $valid_options = array(
@@ -28,6 +28,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	);
 
 	public $default_settings = array(
+		'member_groups_can_vote'	=> 'ALL', // All groups can vote by default
 		'multiple_votes'			=> FALSE,
 		'multiple_options'			=> FALSE,
 		'multiple_options_min'		=> 0,
@@ -37,6 +38,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		'results_chart_width'		=> 330,
 		'results_chart_height'		=> 330
 	);
+
+	private $member_groups_can_vote;
 
 	private static $member_groups = array();
 	private static $css_and_javascript_loaded = FALSE;
@@ -61,29 +64,86 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$this->EE->lang->loadfile('vwm_polls');
 		$this->EE->load->model('vwm_polls_m');
 
-		// Get member groups
-		$this->member_groups();
+		// Set member groups
+		$this->set_member_groups();
 	}
 
 	/**
-	 * Get all member groups
+	 * Get all member groups and set member_groups property
 	 *
 	 * @access private
-	 * @return void
+	 * @return object
 	 */
-	private function member_groups()
+	private function set_member_groups()
 	{
 		if ( ! self::$member_groups)
 		{
 			$this->EE->load->model('member_model');
 			$member_groups = $this->EE->member_model->get_member_groups();
 
-			// Set member group ID as array key
 			foreach ($member_groups->result_array() as $group)
 			{
-				self::$member_groups[$group['group_id']] = $group['group_title'];
+				// Set member group ID as array key
+				self::$member_groups[ $group['group_id'] ] = $group['group_title'];
 			}
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Set the member groups can vote
+	 *
+	 * Take member_groups_can_vote ("ALL", "NONE", or "SELECT") and
+	 * $select_member_groups_can_vote (array of member group IDs) and determine
+	 * the member_groups_can_vote property.
+	 *
+	 * @access private
+	 * @param string
+	 * @param array
+	 * @return object
+	 */
+	private function set_member_groups_can_vote($member_groups_can_vote, array $select_member_groups_can_vote)
+	{
+		// Switch between "ALL", "NONE", or "SELECT"
+		switch ($member_groups_can_vote)
+		{
+			// All member groups can vote
+			case 'ALL':
+				$this->member_groups_can_vote = 'ALL';
+				break;
+			// Select member groups can vote
+			case 'SELECT':
+				// If user wants select member groups to vote
+				if ( count($select_member_groups_can_vote) > 0 )
+				{
+					// Let's make sure these are all integers
+					foreach ($select_member_groups_can_vote as &$group)
+					{
+						$group = abs( (int)$group );
+					}
+
+					// Make sure there are no duplicate group IDs
+					array_unique($select_member_groups_can_vote, SORT_NUMERIC);
+
+					// Sort array of group IDs from lowest to highest numericarly
+					sort($select_member_groups_can_vote, SORT_NUMERIC);
+
+					$this->member_groups_can_vote = $select_member_groups_can_vote;
+				}
+				// If user selected the "Select" member groups that can vote option but did not select any member groups, set to "NONE"
+				else
+				{
+					$this->member_groups_can_vote = 'NONE';
+				}
+				break;
+			// Default to no member groups that can vote, "NONE"
+			default:
+				$this->member_groups_can_vote = 'NONE';
+				break;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -93,6 +153,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * This could happen if a user puts more than one poll in an entry
 	 *
 	 * @access private
+	 * @param string
 	 * @return void
 	 */
 	private function load_css_and_javascript()
@@ -106,6 +167,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			$this->EE->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
 			$this->EE->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . $this->EE->config->item('cp_url') . '";</script>');
 			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
+			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
+			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/jquery.crayonpicker.js"></script>');
 
 			// CSS and JavaScript have been loaded!
 			self::$css_and_javascript_loaded = TRUE;
@@ -154,6 +217,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			// Load default settings
 			$poll_settings = array(
 				'member_groups_can_vote'	=> $this->settings['member_groups_can_vote'],
+				'select_member_groups_can_vote'	=> array(),
 				'multiple_votes'			=> (bool)$this->settings['multiple_votes'],
 				'multiple_options'			=> (bool)$this->settings['multiple_options'],
 				'multiple_options_min'		=> (int)$this->settings['multiple_options_min'],
@@ -187,6 +251,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		}
 
 		$poll_settings['json'] = htmlentities(json_encode($poll_settings), ENT_QUOTES, 'UTF-8');
+		$poll_settings['select_member_groups_can_vote'] = array();
+
+		// Select
+		if ( is_array($poll_settings['member_groups_can_vote']) )
+		{
+			$poll_settings['select_member_groups_can_vote'] = $poll_settings['member_groups_can_vote'];
+			$poll_settings['member_groups_can_vote'] = 'SELECT';
+		}
 
 		$data = array(
 			'data' => $poll_settings,
@@ -210,15 +282,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function save($data)
 	{
-		// Member groups
-		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote');
-		$member_groups_can_vote = isset($member_groups_can_vote[$this->field_id]) ? $member_groups_can_vote[$this->field_id] : array();
+		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote'); // Allowed member groups
+		$select_member_groups_can_vote = $this->EE->input->post('select_member_groups_can_vote'); // Select allowed member groups
 
-		// Let's make sure these are all integers
-		foreach ($member_groups_can_vote as &$group)
-		{
-			$group = abs( (int)$group );
-		}
+		$member_groups_can_vote = isset($member_groups_can_vote[$this->field_id]) ? $member_groups_can_vote[$this->field_id] : 'NONE'; // Default to "NONE"
+		$select_member_groups_can_vote = ( isset($select_member_groups_can_vote[$this->field_id]) AND is_array($select_member_groups_can_vote[$this->field_id]) AND count($select_member_groups_can_vote[$this->field_id]) > 0 ) ? $select_member_groups_can_vote[$this->field_id] : array();
+
+		// Using two pieces of POST data, determine the member groups that can vote
+		$this->set_member_groups_can_vote($member_groups_can_vote, $select_member_groups_can_vote);
 
 		// Multiple votes
 		$multiple_votes = $this->EE->input->post('multiple_votes');
@@ -254,7 +325,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 		// JSON all up in this piece
 		$data = array(
-			'member_groups_can_vote' => $member_groups_can_vote,
+			'member_groups_can_vote' => $this->member_groups_can_vote,
 			'multiple_votes' => $multiple_votes,
 			'multiple_options' => $multiple_options,
 			'multiple_options_min' => $multiple_options_min,
@@ -362,7 +433,20 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function display_settings($data)
 	{
+		// Load our JavaScipt (but only if we need to)
+		$this->load_css_and_javascript();
+
+		// Member groups
 		$member_groups_can_vote = isset($data['member_groups_can_vote']) ? $data['member_groups_can_vote'] : $this->settings['member_groups_can_vote'];
+		$select_member_groups_can_vote = array();
+
+		// Select
+		if ( is_array($member_groups_can_vote) )
+		{
+			$select_member_groups_can_vote = $member_groups_can_vote;
+			$member_groups_can_vote = 'SELECT';
+		}
+
 		$multiple_votes = isset($data['multiple_votes']) ? (bool)$data['multiple_votes'] : $this->settings['multiple_votes'];
 		$multiple_options = isset($data['multiple_options']) ? (bool)$data['multiple_options'] : $this->settings['multiple_options'];
 		$multiple_options_min = isset($data['multiple_options_min']) ? (int)$data['multiple_options_min'] : $this->settings['multiple_options_min'];
@@ -375,7 +459,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		// Member groups
 		$this->EE->table->add_row(
 			lang('member_groups_can_vote', 'member_groups_can_vote'),
-			form_multiselect('member_groups_can_vote[]', self::$member_groups, $member_groups_can_vote, 'id="member_groups_can_vote"')
+			form_dropdown('member_groups_can_vote', array('ALL' => lang('all'), 'NONE' => lang('none'), 'SELECT' => lang('select')), $member_groups_can_vote, 'id="member_groups_can_vote"')
+		);
+
+		$this->EE->table->add_row(
+			lang('select_member_groups_can_vote', 'select_member_groups_can_vote'),
+			form_multiselect('select_member_groups_can_vote[]', self::$member_groups, $select_member_groups_can_vote, 'id="select_member_groups_can_vote"')
 		);
 
 		// Multiple votes
@@ -436,8 +525,13 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function save_settings($data)
 	{
+		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote'); // "ALL", "NONE", or "SELECT"
+		$select_member_groups_can_vote = is_array($this->EE->input->post('select_member_groups_can_vote')) ? $this->EE->input->post('select_member_groups_can_vote') : array(); // Array of member group IDs
+
+		$this->set_member_groups_can_vote($member_groups_can_vote, $select_member_groups_can_vote);
+
 		return array(
-			'member_groups_can_vote' => $this->EE->input->post('member_groups_can_vote'),
+			'member_groups_can_vote' => $this->member_groups_can_vote,
 			'multiple_votes' => $this->EE->input->post('multiple_votes'),
 			'multiple_options' => $this->EE->input->post('multiple_options'),
 			'multiple_options_min' => $this->EE->input->post('multiple_options_min'),
@@ -459,7 +553,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	{
 		// Return an array of default settings
 		return array(
-			'member_groups_can_vote' => array(),
+			'member_groups_can_vote' => $this->default_settings['member_groups_can_vote'],
 			'multiple_votes' => $this->default_settings['multiple_votes'],
 			'multiple_options' => $this->default_settings['multiple_options'],
 			'multiple_options_min' =>  $this->default_settings['multiple_options_min'],

@@ -303,11 +303,20 @@ class Vwm_polls {
 			return FALSE;
 		}
 
-		// Is this poll open to this member group
-		if ( ! in_array($this->group_id, $this->poll_settings['member_groups_can_vote']))
+		// If this poll is not open to any member groups
+		if ( $this->poll_settings['member_groups_can_vote'] === 'NONE' )
 		{
 			$this->errors[] = $this->EE->lang->line('member_group_cannot_vote');
 			return FALSE;
+		}
+		// Else, is this poll is only open to select member groups
+		elseif ( is_array($this->poll_settings['member_groups_can_vote']) )
+		{
+			if ( ! in_array($this->group_id, $this->poll_settings['member_groups_can_vote']))
+			{
+				$this->errors[] = $this->EE->lang->line('member_group_cannot_vote');
+				return FALSE;
+			}
 		}
 
 		// Check cookies to see if user has already voted

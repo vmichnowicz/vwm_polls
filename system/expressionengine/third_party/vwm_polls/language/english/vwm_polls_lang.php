@@ -32,6 +32,7 @@ $lang = array(
 
 	// Display settings
 	'member_groups_can_vote'		=> 'Member groups that can vote',
+	'select_member_groups_can_vote'	=> 'Select member groups that can vote',
 	'multiple_votes'				=> 'Allow an individual to vote multiple times for the same poll',
 	'multiple_options'				=> 'Allow an individual to select multiple poll options',
 	'multiple_options_min'			=> 'Minimum amount of poll options a user can select',
@@ -41,15 +42,20 @@ $lang = array(
 	'results_chart_width'			=> 'Chart width (<acronym title="Pixels">px</acronym>)',
 	'results_chart_height'			=> 'Chart height (<acronym title="Pixels">px</acronym>)',
 
+	// Member & groups selections
+	'all'							=> 'All',
+	'none'							=> 'None',
+	'select'						=> 'Select',
+
 	// Fieldtype titles
 	'poll_options'					=> 'Poll Options',
 	'poll_settings'					=> 'Poll Settings',
 	'poll_results'					=> 'Poll Results',
 
 	// Fieldtype table headers
-	'option_color'					=> 'Option Color',
-	'option_type'					=> 'Option Type',
-	'option_text'					=> 'Option Text',
+	'option_color'					=> 'Color',
+	'option_type'					=> 'Type',
+	'option_text'					=> 'Text',
 	'setting'						=> 'Setting',
 	'value'							=> 'Value',
 	'option'						=> 'Option',

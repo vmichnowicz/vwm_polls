@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.4.2';
+	public $version = '0.5';
 
 	/**
 	 * Constructor
@@ -147,7 +147,7 @@ class Vwm_polls_upd {
 	 */	
 	public function update($current = NULL)
 	{
-		return FALSE;
+		return TRUE;
 	}
 	
 }

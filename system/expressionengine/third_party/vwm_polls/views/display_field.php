@@ -26,22 +26,54 @@
 				</tr>
 			</thead>
 			<tfoot class="vwm_polls_new_option">
-				<tr>
+				<tr class="vwm_polls_option">
 					<td class="drag">
-						<input type="button" value="+" title="Add poll option" class="vwm_polls_new_option" />
+						<input type="button" value="" title="Add poll option" class="vwm_polls_new_option" />
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
 					</td>
 					<td class="color"><input type="text" name="vwm_polls_new_option_color" placeholder="<?php echo lang('hex_color_placeholder'); ?>" /></td>
-					<td class="type"><?php echo form_dropdown('vwm_polls_new_option_type', array('defined' => lang('type_defined'), 'other' => lang('type_other'))); ?></td>
-					<td><input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo lang('option_text_placeholder'); ?>" /></td>
+					<td class="type">
+						<div class="pill">
+							<div class="defined">
+								<label>
+									<?php echo form_radio( array('name' => 'vwm_polls_new_option_type', 'value' => 'defined', 'checked' => TRUE)); ?>
+									<?php echo lang('type_defined'); ?>
+								</label>
+							</div>
+							<div class="other">
+								<label>
+									<?php echo form_radio( array('name' => 'vwm_polls_new_option_type', 'value' => 'other')); ?>
+									<?php echo lang('type_other'); ?>
+								</label>
+							</div>
+						</div>
+					</td>
+					<td colspan="2">
+						<input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo lang('option_text_placeholder'); ?>" />
+					</td>
 				</tr>
 			</tfoot>
-			<tbody>
+			<tbody id="vwm_polls_options_tbody">
 				<?php foreach ($options as $option): ?>
-					<tr>
+					<tr class="vwm_polls_option">
 						<td class="drag"></td>
-						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>"/></td>
-						<td class="type"><?php echo form_dropdown('vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', array('defined' => lang('type_defined'), 'other' => lang('type_other')), $option['type']); ?></td>
+						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>" style="background-color: #<?php echo $option['color']; ?>"/></td>
+						<td class="type">
+							<div class="pill">
+								<div class="defined">
+									<label>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
+										<?php echo lang('type_defined'); ?>
+									</label>
+								</div>
+								<div class="other">
+									<label>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
+										<?php echo lang('type_other'); ?>
+									</label>
+								</div>
+							</div>
+						</td>
 						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][text]" id="vwm_polls_option_<?php echo $option['id']; ?>" value="<?php echo $option['text']; ?>" /></td>
 					</tr>
 				<?php endforeach; ?>
@@ -64,7 +96,17 @@
 			<tbody>
 				<tr>
 					<td><?php echo lang('member_groups_can_vote', 'member_groups_can_vote'); ?></td>
-					<td><?php echo form_multiselect('member_groups_can_vote[' . $field_id . '][]', $member_groups, $data['member_groups_can_vote'], 'id="member_groups_can_vote"'); ?></td>
+					<td>
+						<?php echo form_dropdown("member_groups_can_vote[$field_id]", array('ALL' => lang('all'), 'NONE' => lang('none'), 'SELECT' => lang('select')), $data['member_groups_can_vote'], 'id="member_groups_can_vote"'); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo lang('select_member_groups_can_vote', "select_member_groups_can_vote_$field_id"); ?>
+					</td>
+					<td>
+						<?php echo form_multiselect("select_member_groups_can_vote[$field_id][]", $member_groups, is_array($data['select_member_groups_can_vote']) ? $data['select_member_groups_can_vote'] : NULL); ?>
+					</td>
 				</tr>
 				<tr>
 					<td><?php echo lang('multiple_votes', 'multiple_votes'); ?></td>

@@ -26,6 +26,15 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.5
+
+* Added simple color picker for poll options
+* Added sexy pill toggle for "defined" and "other" poll options
+* More granular group permissions allowing for easy selection of "All" member groups or "None", instead of having to select each allowed member group manually like before
+* Super hottt "+" (add option) button
+* Web 3.0 enhancements
+* Web 2.0 deprecation
+
 ### 0.4.2
 
 * Added `add_package_path()` to class constructors in order to make sure the package path was being defined by EE.

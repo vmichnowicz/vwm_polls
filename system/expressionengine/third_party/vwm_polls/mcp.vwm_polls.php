@@ -40,7 +40,7 @@ class Vwm_polls_mcp {
 	public function index()
 	{
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('vwm_polls_module_name'));
-		return 'Some stuff may go here one day.';
+		return 'Please reference the VWM Polls <a href="https://github.com/vmichnowicz/vwm_polls/wiki">GitHub wiki</a> for more information.';
 	}
 
 	/**
