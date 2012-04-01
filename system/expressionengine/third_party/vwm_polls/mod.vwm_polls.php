@@ -296,11 +296,15 @@ class Vwm_polls {
 			return FALSE;
 		}
 
-		// Has this entry expired?
-		if (time() < $row->expiration_date)
+		// If we have an expiration date
+		if ( ! empty($row->expiration_date) )
 		{
-			$this->errors[] = sprintf($this->EE->lang->line('poll_expired'), date('Y-m-d', $row->expiration_date));
-			return FALSE;
+			// Has this entry expired?
+			if (time() > $row->expiration_date)
+			{
+				$this->errors[] = sprintf($this->EE->lang->line('poll_expired'), date('Y-m-d', $row->expiration_date));
+				return FALSE;
+			}
 		}
 
 		// If this poll is not open to any member groups
