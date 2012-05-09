@@ -1,4 +1,4 @@
-# VWM Surveys
+# VWM Polls
 
 VWM Polls is a polling module & fieldtype for ExpressionEngine 2.
 
@@ -15,6 +15,10 @@ I provide the following support options:
 * [Devot:ee](http://devot-ee.com/add-ons/vwm-polls)
 * [Personal contact form](http://www.vmichnowicz.com/contact)
 * [Twitter](http://twitter.com/vmichnowicz)
+
+## Video Tutorial (Installation and Configuration)
+
+A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Example Code
 
