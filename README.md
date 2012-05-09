@@ -16,6 +16,10 @@ I provide the following support options:
 * [Personal contact form](http://www.vmichnowicz.com/contact)
 * [Twitter](http://twitter.com/vmichnowicz)
 
+## Video Tutorial (Installation and Configuration)
+
+A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
+
 ## Example Code
 
 Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the latest installation instructions and example code.
@@ -25,6 +29,10 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.5.2
+
+* Fixed poll expiration logic
 
 ### 0.5.1
 
