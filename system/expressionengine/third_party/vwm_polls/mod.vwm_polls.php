@@ -335,7 +335,7 @@ class Vwm_polls {
 			// If this member or IP address has voted in this poll
 			$query = $this->EE->db
 				->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE)
-				->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE)
+				->where('( (member_id IS NOT NULL AND member_id != 0 AND member_id = ' . $this->member_id . ') OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE)
 				->get('vwm_polls_votes');
 
 			if ($query->num_rows() > 0)

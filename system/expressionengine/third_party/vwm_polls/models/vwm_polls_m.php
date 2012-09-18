@@ -356,11 +356,13 @@ class Vwm_polls_m extends CI_Model {
 	 */
 	public function cast_vote($option_id)
 	{
+		$member_id = $this->session->userdata('member_id');
+
 		$data = array(
 			'entry_id' => $this->entry_id,
 			'field_id' => $this->field_id,
 			'poll_option_id' => $option_id,
-			'member_id' => $this->session->userdata('member_id'),
+			'member_id' => empty($member_id) ? NULL : (int)$member_id,
 			'ip_address' => $this->session->userdata('ip_address'),
 			'timestamp' => time()
 		);
