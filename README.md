@@ -30,6 +30,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.5.3
+
+* Fixed bug that restricted poll access by guest users
+
 ### 0.5.2
 
 * Fixed poll expiration logic
