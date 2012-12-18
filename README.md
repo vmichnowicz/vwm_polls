@@ -31,7 +31,8 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 * {chart} - The image URL for the Google Chart
 * {input_name} - The name for the input (currently always vwm_polls_options[])
 * {input_type} - Type of input (checkbox or radio)
-* {max_options} - The max number of options that can be present
+* {max_options} - The max number of options that can be selected (or 0 for no maximum)
+* {min_options} - The minimum number of options that must be selected (or 0 for no minimum)
 * {total_votes} - The total number of votes
 * {options} - Loop of the options
 	* {color} - The color for the option
@@ -53,6 +54,12 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.6
+
+* Removed the use of AJAX in the field type
+* Added an improved color picker and allowed direct entry of a color
+* Added an AJAX event to just fetch results
 
 ### 0.5.3
 

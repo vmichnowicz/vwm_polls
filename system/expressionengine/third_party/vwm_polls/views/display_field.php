@@ -23,6 +23,7 @@
 					<th><?php echo lang('option_color'); ?></th>
 					<th><?php echo lang('option_type'); ?></th>
 					<th><?php echo lang('option_text'); ?></th>
+					<th>&nbsp;</td>
 				</tr>
 			</thead>
 			<tfoot class="vwm_polls_new_option">
@@ -31,7 +32,7 @@
 						<input type="button" value="" title="Add poll option" class="vwm_polls_new_option" />
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
 					</td>
-					<td class="color"><input type="text" name="vwm_polls_new_option_color" placeholder="<?php echo lang('hex_color_placeholder'); ?>" /></td>
+					<td class="color"><input type="hidden" name="vwm_polls_new_option_id" value="new" /><input type="text" name="vwm_polls_new_option_color" value="FFFFFF" class="color" /></td>
 					<td class="type">
 						<div class="pill">
 							<div class="defined">
@@ -48,35 +49,39 @@
 							</div>
 						</div>
 					</td>
-					<td colspan="2">
+					<td>
 						<input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo lang('option_text_placeholder'); ?>" />
 					</td>
+					<td class="remove"><input type="button" value="" title="Remove poll option" name="vwm_polls_remove" class="vwm_polls_remove_option" /></td>
 				</tr>
 			</tfoot>
 			<tbody id="vwm_polls_options_tbody">
+				<?php $order = 0; // Echo unique order with $order not the database order field ?>
 				<?php foreach ($options as $option): ?>
 					<tr class="vwm_polls_option">
 						<td class="drag"></td>
-						<td class="color"><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][color]" value="<?php echo $option['color']; ?>" style="background-color: #<?php echo $option['color']; ?>"/></td>
+						<td class="color"><input type="hidden" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $order; ?>][id]" value="<?php echo $option['id']; ?>" /><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $order; ?>][color]" value="<?php echo $option['color']; ?>" style="background-color: #<?php echo $option['color']; ?>" class="color"/></td>
 						<td class="type">
 							<div class="pill">
 								<div class="defined">
 									<label>
-										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . ']['.$order.'][type]', 'value' => 'defined', 'checked' => $option['type'] === 'defined' ? TRUE : FALSE) ); ?>
 										<?php echo lang('type_defined'); ?>
 									</label>
 								</div>
 								<div class="other">
 									<label>
-										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . '][' . $option['id'] . '][type]', 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
+										<?php echo form_radio( array('name' => 'vwm_polls_options[' . $field_id . ']['.$order.'][type]', 'value' => 'other', 'checked' => $option['type'] === 'other' ? TRUE : FALSE) ); ?>
 										<?php echo lang('type_other'); ?>
 									</label>
 								</div>
 							</div>
 						</td>
-						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $option['id']; ?>][text]" id="vwm_polls_option_<?php echo $option['id']; ?>" value="<?php echo $option['text']; ?>" /></td>
+						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $order; ?>][text]" value="<?php echo $option['text']; ?>" placeholder="<?php echo lang('option_text_removed'); ?>" /></td>
+						<td class="remove"><input type="button" value="" title="Remove poll option" class="vwm_polls_remove_option" /></td>
 					</tr>
-				<?php endforeach; ?>
+				<?php $order++; 
+					endforeach; ?>
 			</tbody>
 		</table>
 	</div>

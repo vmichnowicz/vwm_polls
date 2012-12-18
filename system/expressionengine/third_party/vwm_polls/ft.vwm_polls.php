@@ -18,7 +18,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'						=> 'VWM Polls',
-		'version'					=> '0.5.2'
+		'version'					=> '0.6'
 	);
 
 	public $valid_options = array(
@@ -162,13 +162,13 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		if ( ! self::$css_and_javascript_loaded)
 		{
 			// jQuery UI tabs
-			$this->EE->cp->add_js_script( array('ui' => array('sortable', 'tabs')) );
+			$this->EE->cp->add_js_script( array('ui' => array('sortable', 'tabs'), 'plugin' => array('jscolor')) );
 
 			$this->EE->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
-			$this->EE->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . $this->EE->config->item('cp_url') . '";</script>');
+			$this->EE->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . $this->EE->config->item('cp_url') . '";  EE.vwm_polls_option_text_removed = "'.$this->EE->lang->line('option_text_removed').'";</script>');
 			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
 			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
-			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/jquery.crayonpicker.js"></script>');
+			//$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/jquery.crayonpicker.js"></script>');
 
 			// CSS and JavaScript have been loaded!
 			self::$css_and_javascript_loaded = TRUE;
@@ -360,30 +360,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$options = isset($options[$this->field_id]) ? $options[$this->field_id] : array();
 
 		// Loop through all poll options
-		foreach ($options as $id => $option)
+		foreach ($options as $order => $option)
 		{
-			// Update (or remove) option
-			$this->EE->vwm_polls_m->update_option($id, $option['type'], $option['color'], $option['text']);
-		}
-
-		/*
-		 * Get all new options
-		 * This will only ever have data after we have saved a *new* channel entry
-		 * It will never have data after saving a previously created channel entry
-		 */
-		
-		// Make sure we have some new options to add
-		if ($this->EE->input->post('vwm_polls_new_options'))
-		{
-			// Get new option text for this field ID
-			$new_options = $this->EE->input->post('vwm_polls_new_options');
-			$new_options = isset($new_options[$this->field_id]) ? $new_options[$this->field_id] : array();
-
-			// Loop through all our new options
-			foreach($new_options as $option)
-			{
-				// Insert new option
-				$this->EE->vwm_polls_m->insert_option($option['type'], $option['color'], $option['text']);
+			if ($option['id'] == "new") {
+				// Insert new option, since we no longer use AJAX
+				$this->EE->vwm_polls_m->insert_option($option['type'], $option['color'], $option['text'], $order);
+			} else {
+				// Update (or remove) option
+				$this->EE->vwm_polls_m->update_option($option['id'], $option['type'], $option['color'], $option['text'], $order);
 			}
 		}
 	}
