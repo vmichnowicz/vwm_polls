@@ -78,6 +78,7 @@ $lang = array(
 	'type_other'					=> 'Other',
 	'hex_color_placeholder'			=> 'Hex color',
 	'option_text_placeholder'		=> 'Option text',
+	'option_text_removed'			=> 'Option will be removed',
 	'total_votes'					=> 'Total votes',
 	'no_votes'						=> 'No votes for this option',
 	'no'							=> 'No',

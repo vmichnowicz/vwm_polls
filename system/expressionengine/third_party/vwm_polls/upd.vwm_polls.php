@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.5.3';
+	public $version = '0.6';
 
 	/**
 	 * Constructor
@@ -150,7 +150,7 @@ class Vwm_polls_upd {
 		// Get database prefix
 		$prefix = $this->EE->db->dbprefix;
 
-		if ($current < '0.5.1')
+		if (version_compare($current, '0.5.1', '<'))
 		{
 			$this->EE->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_options` CHANGE `id` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
