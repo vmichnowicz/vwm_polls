@@ -11,6 +11,22 @@ input.vwm_polls_new_option {
 	cursor: pointer;
 }
 
+/**
+ * Remove poll option
+ */
+input.vwm_polls_remove_option {
+	background: url(data:image/gif;base64,R0lGODlhDwAFAIAAAJYAAP8tFyH5BAAAAAAALAAAAAAPAAUAAAINhI8Jwe1tnmRxPoVPAQA7) no-repeat 50% 50%;
+	width: 15px;
+	height: 15px;
+	border: 0px none;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+}
+.vwm_polls_new_option input.vwm_polls_remove_option {
+	display:none;
+}
+
 /*
  * Fieldtype tables
  */
@@ -19,11 +35,11 @@ table[id^="vwm_polls_options"] td.drag {
 }
 
 table[id^="vwm_polls_options"] td.color {
-	width: 30px;
+	width: 80px;
 }
 
 table[id^="vwm_polls_options"] td.color input {
-	width: 105px;
+	width: 65px;
 }
 
 table[id^="vwm_polls_options"] td.type {
@@ -32,6 +48,10 @@ table[id^="vwm_polls_options"] td.type {
 
 table[id^="vwm_polls_options"] td.type select {
 	width: 110px;
+}
+
+table[id^="vwm_polls_options"] td.remove {
+	width: 15px;
 }
 
 tbody.ui-sortable td.drag {
@@ -155,11 +175,9 @@ table.vwm_polls_results ul {
  */
 
 #publishForm td.color input[type="text"] {
-	padding: 0px;
 	box-shadow: 1px 1px 0px rgba(255,255,255,.5) inset, -1px -1px 0px rgba(255,255,255,.5) inset;
-	width: 25px;
+	width: 65px;
 	height: 25px;
-	text-indent: -999em;
 	cursor: pointer;
 }
 

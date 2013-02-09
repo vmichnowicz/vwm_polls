@@ -54,46 +54,21 @@ var make_sortable = function make_sortable() {
 
 			var options = [];
 
-			/**
-			 * If this is an existing entry
-			 *
-			 * @todo delay the ordering until after the "Submit" button is
-			 * pressed. Ordering these on-the-fly is kinda sketch.
-			 */
-			if (entry_id > 0)
-			{
-				options = $(this).find('input[id^="vwm_polls_option"]');
-				var obj = new Object();
+			options = $(this).children('tr');
+			var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
 
-				$(options).each(function(i, option) {
-					var id = $(option).attr('id');
-					id = parseInt( id.replace('vwm_polls_option_', '') );
-					obj[id] = i;
-				});
+			// Loop through all of our new poll options and update each one to reflect their new order
+			$(options).each(function(i, option) {
+				var color = $(option).find('input[name*="color"]');
+				var type = $(option).find('select[name*="type"]');
+				var text = $(option).find('input[name*="text"]');
+				var id = $(option).find('input[name*="id"]');
 
-				$.post(EE.CP_URL + '?D=cp&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_update_order', {
-					XID: EE.XID,
-					options: obj
-				});
-			}
-			// If this is a new entry (these are new poll options)
-			else
-			{
-				options = $(this).children('tr');
-				var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
-
-				// Loop through all of our new poll options and update each one to reflect their new order
-				$(options).each(function(i, option) {
-					var color = $(option).find('input[name*="color"]');
-					var type = $(option).find('select[name*="type"]');
-					var text = $(option).find('input[name*="text"]');
-
-					$(this).attr('class', 'option_' + i);
-					$(color).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][color]');
-					$(type).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][type]');
-					$(text).attr('name', 'vwm_polls_new_options[' + field_id + '][' + i + '][text]');
-				});
-			}
+				$(color).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][color]');
+				$(type).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][type]');
+				$(text).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][text]');
+				$(id).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][id]');
+			});
 		}
 	});
 
@@ -126,50 +101,30 @@ function add_option(new_option) {
 		return;
 	}
 
-	// If this is an existing entry
-	if (entry_id > 0) {
-		$.post(EE.BASE + '&C=addons_modules&M=show_module_cp&module=vwm_polls&method=ajax_add_option', {
-				XID: EE.XID, // XID
-				text: text, // Option text
-				type: type, // Option type
-				color: color, // Option color
-				order: $(options_tbody).children('tr').length, // Our order is index 0 so we don't need to +1
-				entry_id: entry_id, // Entry ID
-				field_id: field_id // Field ID
-			}, function(data) {
-
-				// Ajax load some new options up in here!
-				$(options_table).load(window.location.href + ' #' + options_table_id + ' > *');
-
-				// Clear text input
-				$(new_option).find('input[name="vwm_polls_new_option_text"]').val('');
-		}, 'json');
-	}
-	// If this is a new entry
-	else {
-
 		// Get the index of our new option
 		var option_index = $(options_tbody).children('tr').length ? $(options_tbody).children('tr').length : 0;
 
 		// Generate new input name attributes
-		var color_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][color]';
-		var type_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][type]';
-		var text_name = 'vwm_polls_new_options[' + field_id + '][' + option_index + '][text]';
+		var color_name = 'vwm_polls_options[' + field_id + '][' + option_index + '][color]';
+		var type_name = 'vwm_polls_options[' + field_id + '][' + option_index + '][type]';
+		var text_name = 'vwm_polls_options[' + field_id + '][' + option_index + '][text]';
+		var id_name = 'vwm_polls_options[' + field_id + '][' + option_index + '][id]';
 
 		// Clone last table row
 		var clone = $(new_option).children('tr').clone();
 		$(clone).find('td:first').empty();
-		$(clone).attr('class', 'option_' + option_index);
 		$(clone).find(':input[name*="color"]').attr('name', color_name);
 		$(clone).find(':input[name*="type"]').attr('name', type_name);
 		$(clone).find(':input[name*="text"]').attr('name', text_name);
+		$(clone).find(':input[name*="id"]').attr('name', id_name);
 
 		// Insert new table row
 		$(options_tbody).append(clone);
 
 		// Update data
 		var new_row = $(options_tbody).children('tr:last');
-		$(new_row).find('input[name*="text"]').val(text);
+		$(new_row).find('input[name*="id"]').val("new"); // set id as new
+		$(new_row).find('input[name*="text"]').val(text).attr('placeholder',EE.vwm_polls_option_text_removed);
 		$(new_row).find('input[name*="color"]').val(color);
 		$(new_row).find('select[name*="type"]').val(type);
 
@@ -178,7 +133,6 @@ function add_option(new_option) {
 
 		// Cleanup as if this was an Ajax request
 		ajaxCleanup();
-	}
 }
 
 // Tabs on publish page
@@ -261,18 +215,6 @@ var pill = function pill() {
 }();
 
 /**
- * Crayon Picker
- */
-var crayonpicker = function crayonpicker() {
-	$('body').find('#publishForm td.color input[type="text"]').crayonpicker({
-		onChange: function(target, trigger, color) {
-			$(target).css('background-color', color);
-		}
-	});
-	return crayonpicker;
-}();
-
-/**
  * Run cleanup function on Ajax complete!
  */
 $('body').ajaxComplete(function() {
@@ -285,9 +227,11 @@ $('body').ajaxComplete(function() {
 var ajaxCleanup = function ajaxCleanup() {
 	// Run cleanup functions
 	pill();
-	crayonpicker();
+	jscolor.bind(); // rebind the jscolor picker
 	make_sortable();
-
+	$('.vwm_polls_remove_option').not('done').addClass('done').click(function() {
+		$(this).closest('tr').find(':input[name*="text"]').val('');
+	});
 	return ajaxCleanup;
 }
 

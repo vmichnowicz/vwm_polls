@@ -215,7 +215,7 @@ class Vwm_polls_m extends CI_Model {
 	 * @param string		Option text
 	 * @return void
 	 */
-	public function update_option($id, $type, $color, $text)
+	public function update_option($id, $type, $color, $text, $order = false)
 	{
 		// Option type (make sure it is either "defined" or "other")
 		$type = in_array($type, array('defined', 'other')) ? $type : 'defined';
@@ -234,6 +234,10 @@ class Vwm_polls_m extends CI_Model {
 				'text' => $text,
 				'color' => $color
 			);
+			
+			if ($order !== false) { // strict type check since this could be 0
+				$data['custom_order'] = $order;
+			}
 
 			$this->db
 				->where('id', $id)
@@ -297,7 +301,7 @@ class Vwm_polls_m extends CI_Model {
 		// Option text (trimmed)
 		$text = trim($text);
 
-		// If the text is has a value (update option)
+		// If the text is has a value (insert option)
 		if ($text)
 		{
 			$data = array(
@@ -356,11 +360,13 @@ class Vwm_polls_m extends CI_Model {
 	 */
 	public function cast_vote($option_id)
 	{
+		$member_id = $this->session->userdata('member_id');
+
 		$data = array(
 			'entry_id' => $this->entry_id,
 			'field_id' => $this->field_id,
 			'poll_option_id' => $option_id,
-			'member_id' => $this->session->userdata('member_id'),
+			'member_id' => empty($member_id) ? NULL : (int)$member_id,
 			'ip_address' => $this->session->userdata('ip_address'),
 			'timestamp' => time()
 		);

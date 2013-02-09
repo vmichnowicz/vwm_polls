@@ -24,7 +24,46 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the latest installation instructions and example code.
 
+## Variables
+{exp:vwm_polls:poll entry_id="{entry_id}" field_id="{poll_1:field_id}" redirect="index"} - Supplies the form tag
+* {already_voted} - If the user already voted
+* {can_vote} - If the user can vote
+* {chart} - The image URL for the Google Chart
+* {input_name} - The name for the input (currently always vwm_polls_options[])
+* {input_type} - Type of input (checkbox or radio)
+* {max_options} - The max number of options that can be selected (or 0 for no maximum)
+* {min_options} - The minimum number of options that must be selected (or 0 for no minimum)
+* {total_votes} - The total number of votes
+* {options} - Loop of the options
+	* {color} - The color for the option
+	* {id} - Option ID
+	* {order} - The order for the option
+	* {other_name} - Name for the text field for the user to enter the other option text
+	* {text} - Option Text
+	* {type} - "defined" or "other"
+	* {user_vote} - If this is the users vote
+	* {votes} - The number of votes
+* {options_results} - Loop of the options with the results
+	* Everything under {options}
+	* {percent} - The percent of the votes for this item as 2 digits (eg 98)
+	* {percent_decimal} - The percent of the votes as a non-rounded decimal (eg 0.3141569)
+	
+
+## Video Tutorial (Installation and Configuration)
+
+A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
+
 ## Change Log
+
+### 0.6
+
+* Removed the use of AJAX in the field type
+* Added an improved color picker and allowed direct entry of a color
+* Added an AJAX event to just fetch results
+
+### 0.5.3
+
+* Fixed bug that restricted poll access by guest users
 
 ### 0.5.2
 

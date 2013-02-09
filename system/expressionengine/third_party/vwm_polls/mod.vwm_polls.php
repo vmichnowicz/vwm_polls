@@ -143,7 +143,7 @@ class Vwm_polls {
 				die( $this->show_errors() );
 			}
 		}
-
+		
 		$this->EE->load->helper('html');
 
 		$redirect = $this->EE->input->post('redirect');
@@ -170,75 +170,96 @@ class Vwm_polls {
 			$this->errors[] = $this->EE->lang->line('poll_not_exist');
 			die( $this->show_errors() );
 		}
-
-		// Make sure the user submitted a poll option
-		if ( ! $selected_poll_options)
-		{
-			$this->errors[] = $this->EE->lang->line('no_options_submitted');
-			die( $this->show_errors() );
+		
+		// Results only?  (Useful to fetch the most updated results for clicking "view results" via AJAX for sites that use caching)
+		$results_only = false;
+		if (AJAX_REQUEST && $this->EE->input->post('results_only')) {
+			$results_only = true; // this will let us skip a bunch of error checks
 		}
 
-		// If this poll only accecpts one poll option and the user submitted more than one
-		if ($this->poll_settings['multiple_options'] == FALSE AND count($selected_poll_options) > 1)
-		{
-			$this->errors[] = sprintf($this->EE->lang->line('no_options_submitted'), count($selected_poll_options));
-			die( $this->show_errors() );
-		}
-
-		// If this poll accecpts multiple options
-		if ($this->poll_settings['multiple_options'] == TRUE )
-		{
-			// If multiple options minimum is set
-			if ($this->poll_settings['multiple_options_min'] > 0)
+		if (!$results_only) {
+			// Make sure the user submitted a poll option
+			if ( ! $selected_poll_options)
 			{
-				// If the user selects less than the allowed number of options
-				if (count($selected_poll_options) < $this->poll_settings['multiple_options_min'])
+				$this->errors[] = $this->EE->lang->line('no_options_submitted');
+				die( $this->show_errors() );
+			}
+			
+			// If this poll only accecpts one poll option and the user submitted more than one
+			if (($this->poll_settings['multiple_options'] == FALSE AND count($selected_poll_options) > 1))
+			{
+				$this->errors[] = sprintf($this->EE->lang->line('no_options_submitted'), count($selected_poll_options));
+				die( $this->show_errors() );
+			}
+			
+			// If this poll accecpts multiple options
+			if ($this->poll_settings['multiple_options'] == TRUE)
+			{
+				// If multiple options minimum is set
+				if ($this->poll_settings['multiple_options_min'] > 0)
 				{
-					$this->errors[] = sprintf($this->EE->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
+					// If the user selects less than the allowed number of options
+					if (count($selected_poll_options) < $this->poll_settings['multiple_options_min'])
+					{
+						$this->errors[] = sprintf($this->EE->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
+					}
+				}
+			
+				// If multiple options limit is set (a limit of "0" means there is no limit to the amount of options a user can select)
+				if ($this->poll_settings['multiple_options_max'] > 0)
+				{
+					// If the user selects more than the allowed number of optoins
+					if (count($selected_poll_options) > $this->poll_settings['multiple_options_max'])
+					{
+						$this->errors[] = sprintf($this->EE->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_max'], count($selected_poll_options));
+					}
 				}
 			}
-
-			// If multiple options limit is set (a limit of "0" means there is no limit to the amount of options a user can select)
-			if ($this->poll_settings['multiple_options_max'] > 0)
+			
+			// Make sure the user submitted a valid poll option
+			foreach ($selected_poll_options as $option)
 			{
-				// If the user selects more than the allowed number of optoins
-				if (count($selected_poll_options) > $this->poll_settings['multiple_options_max'])
+				if ( ! in_array($option, $valid_poll_option_ids))
 				{
-					$this->errors[] = sprintf($this->EE->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_max'], count($selected_poll_options));
+					$this->errors[] = $this->EE->lang->line('invalid_poll_option');
+					die( $this->show_errors() );
 				}
 			}
-		}
-
-		// Make sure the user submitted a valid poll option
-		foreach ($selected_poll_options as $option)
-		{
-			if ( ! in_array($option, $valid_poll_option_ids))
+			
+			// Lets make sure this person can vote
+			if ( ! $this->can_vote() ) {
+				die( $this->show_errors() );
+			}
+			
+			// Actually vote
+			if (! $this->errors)
 			{
-				$this->errors[] = $this->EE->lang->line('invalid_poll_option');
+				// We are gonna need some cookies up in here
+				$this->EE->input->set_cookie($this->entry_id . '-' . $this->field_id, json_encode($selected_poll_options), 31536000); // Cookie expires in ~1 year
+	
+				// Cast a vote for each poll option
+				foreach ($selected_poll_options as $option_id)
+				{
+					// Record this vote
+					$this->EE->vwm_polls_m->cast_vote($option_id);
+	
+					// If this option is of type "other"
+					if ( $this->poll_options[$option_id]['type'] == 'other')
+					{
+						// Record this "other" vote
+						$this->EE->vwm_polls_m->record_other_vote($option_id, $other_options[$option]);
+					}
+				}
+			}
+			// No vote for you!
+			else
+			{
 				die( $this->show_errors() );
 			}
 		}
-
-		// Lets make sure this person can vote
-		if ( $this->can_vote() AND ! $this->errors )
+		// Check for errors
+		if (! $this->errors)
 		{
-			// We are gonna need some cookies up in here
-			$this->EE->input->set_cookie($this->entry_id . '-' . $this->field_id, json_encode($selected_poll_options), 31536000); // Cookie expires in ~1 year
-
-			// Cast a vote for each poll option
-			foreach ($selected_poll_options as $option_id)
-			{
-				// Record this vote
-				$this->EE->vwm_polls_m->cast_vote($option_id);
-
-				// If this option is of type "other"
-				if ( $this->poll_options[$option_id]['type'] == 'other')
-				{
-					// Record this "other" vote
-					$this->EE->vwm_polls_m->record_other_vote($option_id, $other_options[$option]);
-				}
-			}
-
 			// Great success!
 			if (AJAX_REQUEST)
 			{
@@ -333,10 +354,20 @@ class Vwm_polls {
 		else
 		{
 			// If this member or IP address has voted in this poll
-			$query = $this->EE->db
-				->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE)
-				->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE)
-				->get('vwm_polls_votes');
+			$this->EE->db->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE);
+
+			// If this is a guest member
+			if ( empty($this->member_id) )
+			{
+				$this->EE->db->where('ip_address', $this->ip_address);
+			}
+			// If this is a registered member
+			else
+			{
+				$this->EE->db->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE);
+			}
+
+			$query = $this->EE->db->get('vwm_polls_votes');
 
 			if ($query->num_rows() > 0)
 			{
