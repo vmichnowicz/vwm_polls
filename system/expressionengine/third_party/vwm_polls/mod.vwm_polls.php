@@ -40,10 +40,11 @@ class Vwm_polls {
 		// Make damn sure module path is defined
 		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
-		// Load lang, helper, and model
+		// Load lang, helper, config, and model
 		$this->EE->lang->loadfile('vwm_polls');
 		$this->EE->load->helper('vwm_polls');
 		$this->EE->load->model('vwm_polls_m');
+		$this->EE->config->load('vwm_polls');
 	}
 
 	/**
@@ -350,8 +351,8 @@ class Vwm_polls {
 			$this->already_voted = TRUE;
 		}
 
-		// If there are no cookies that say the user has already voted - check the database
-		else
+		// If there are no cookies that say the user has already voted, and config is TRUE, check database for matching IP address
+		elseif ($this->EE->config->item('vwm_polls_check_ip_address') === TRUE)
 		{
 			// If this member or IP address has voted in this poll
 			$this->EE->db->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE);

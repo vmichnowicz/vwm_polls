@@ -55,6 +55,11 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.7
+
+* Support for IPv6
+* Added config option to disable IP address checking
+
 ### 0.6
 
 * Removed the use of AJAX in the field type
