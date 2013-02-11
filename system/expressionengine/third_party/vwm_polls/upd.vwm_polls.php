@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.6';
+	public $version = '0.7';
 
 	/**
 	 * Constructor
@@ -63,7 +63,7 @@ class Vwm_polls_upd {
 				`field_id` int(10) unsigned NOT NULL,
 				`poll_option_id` int(10) unsigned NOT NULL,
 				`member_id` int(10) unsigned DEFAULT NULL,
-				`ip_address` varchar(16) NOT NULL,
+				`ip_address` varchar(39) NOT NULL,
 				`timestamp` int(10) unsigned NOT NULL,
 				PRIMARY KEY (`id`),
 				KEY `entry_id` (`entry_id`,`field_id`)
@@ -161,6 +161,14 @@ class Vwm_polls_upd {
 				CHANGE `color` `color` VARCHAR(6) CHARACTER SET utf8 NOT NULL DEFAULT '',
 				CHANGE `text` `text` VARCHAR(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
 				CHANGE `votes` `votes` MEDIUMINT(6) UNSIGNED NOT NULL DEFAULT '0'
+			");
+		}
+
+		if (version_compare($current, '0.7.0', '<'))
+		{
+			$this->EE->db->query("
+				ALTER TABLE `{$prefix}vwm_polls_votes`
+				CHANGE `ip_address` varchar(39) NOT NULL
 			");
 		}
 
