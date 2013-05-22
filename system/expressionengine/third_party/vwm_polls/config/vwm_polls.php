@@ -8,10 +8,10 @@
 $config['vwm_polls_check_ip_address'] = TRUE;
 
 // Below configs not yet working...
-$config['vwm_polls_check_user_agent'] = FALSE;
 $config['vwm_polls_check_http_accept_headers'] = FALSE;
+$config['vwm_polls_check_user_agent'] = FALSE;
 $config['vwm_polls_check_window_navigator'] = FALSE; // window.navigator
 $config['vwm_polls_check_screen_size'] = FALSE; // screen.height; screen.width;
-$config['vwm_polls_check_window_navigator'] = FALSE; // var date = new Date(); var offset = date.getTimezoneOffset();
+$config['vwm_polls_check_timezone_offset'] = FALSE; // var date = new Date(); var offset = date.getTimezoneOffset();
 
 // EOF

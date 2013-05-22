@@ -69,6 +69,8 @@ class Vwm_polls {
 	 */
 	public function poll()
 	{
+		$this->EE->load->library('javascript');
+
 		$redirect = $this->EE->TMPL->fetch_param('redirect');
 		$this->entry_id = $this->EE->TMPL->fetch_param('entry_id');
 		$this->field_id = $this->EE->TMPL->fetch_param('field_id');
@@ -95,6 +97,18 @@ class Vwm_polls {
 		// Get all the info inside the template tags
 		$tagdata = $this->EE->TMPL->tagdata;
 
+		$javascript = '<script type="text/javascript">
+			var form = document.getElementById("vwm_polls_poll_' . $this->entry_id . '");
+
+			var date = new Date();
+
+			form["user_agent"].value = navigator.userAgent;
+			form["window_navigator"].value = navigator.appVersion;
+			form["screen_width"].value = screen.width;
+			form["screen_height"].value = screen.height;
+			form["timezone_offset"].value = date.getTimezoneOffset();;
+		</script>';
+
 		// Template variable data
 		$variables[] = array(
 			'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
@@ -105,7 +119,8 @@ class Vwm_polls {
 			'chart' => google_chart($this->poll_settings, $this->poll_options),
 			'total_votes' => $this->EE->vwm_polls_m->total_votes,
 			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
-			'options_results' => calculate_results($this->poll_options, $this->EE->vwm_polls_m->total_votes)
+			'options_results' => calculate_results($this->poll_options, $this->EE->vwm_polls_m->total_votes),
+			'javascript' => $javascript
 		);
 
 		// Get hidden fields, class, and ID for our form
@@ -118,12 +133,18 @@ class Vwm_polls {
 				'URI' => ($this->EE->uri->uri_string == '') ? 'index' : $this->EE->uri->uri_string,
 				'entry_id' => $this->entry_id,
 				'field_id' => $this->field_id,
-				'redirect' => $redirect
+				'redirect' => $redirect,
+				'user_agent' => NULL,
+				'http_accept_headers' => NULL,
+				'window_navigator' => NULL,
+				'screen_width' => NULL,
+				'screen_height' => NULL,
+				'timezone_offset' => NULL
 			)
 		);
 
 		// Make the magic happen
-		return $this->EE->functions->form_declaration($form_data) . $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $variables) . '</form>';
+		return $this->EE->functions->form_declaration($form_data) . $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $variables) . '</form>' . $javascript;
 	}
 
 	/**
