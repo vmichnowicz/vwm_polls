@@ -39,7 +39,8 @@ class Vwm_polls_mcp {
 	 */
 	public function index()
 	{
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('vwm_polls_module_name'));
+    ee()->view->cp_page_title = lang('vwm_polls_module_name');
+
 		return 'Please reference the VWM Polls <a href="https://github.com/vmichnowicz/vwm_polls/wiki">GitHub wiki</a> for more information.';
 	}
 
