@@ -21,6 +21,7 @@ class Vwm_polls_m extends CI_Model {
 	public $poll_options = array();
 	public $valid_poll_option_ids = array();
 	public $total_votes = 0;
+	private $hash;
 
 	/**
 	 * Model construct
@@ -61,6 +62,12 @@ class Vwm_polls_m extends CI_Model {
 		// Generate field name while we are at it
 		$this->field_name = 'field_id_' . $this->field_id;
 
+		return $this;
+	}
+
+	public function set_hash($hash)
+	{
+		$this->hash = $hash;
 		return $this;
 	}
 
@@ -368,6 +375,7 @@ class Vwm_polls_m extends CI_Model {
 			'poll_option_id' => $option_id,
 			'member_id' => empty($member_id) ? NULL : (int)$member_id,
 			'ip_address' => $this->session->userdata('ip_address'),
+			'hash' => $this->hash,
 			'timestamp' => time()
 		);
 

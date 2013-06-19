@@ -150,7 +150,7 @@ class Vwm_polls_upd {
 		// Get database prefix
 		$prefix = $this->EE->db->dbprefix;
 
-		if (version_compare($current, '0.5.1', '<'))
+		if ( version_compare($current, '0.5.1', '<') )
 		{
 			$this->EE->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_options` CHANGE `id` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -164,11 +164,19 @@ class Vwm_polls_upd {
 			");
 		}
 
-		if (version_compare($current, '0.7.0', '<'))
+		if ( version_compare($current, '0.7.0', '<') )
 		{
 			$this->EE->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_votes`
 				CHANGE `ip_address` varchar(39) NOT NULL
+			");
+		}
+
+		if ( version_compare($current, '0.8.0', '<') )
+		{
+			$this->EE->db->query("
+				ALTER TABLE `{$prefix}vwm_polls_votes`
+				ADD `hash` VARCHAR(32) NULL DEFAULT NULL AFTER `ip_address`
 			");
 		}
 

@@ -22,6 +22,12 @@ class Vwm_polls {
 	private $poll_options = array();
 	private $errors = array();
 	private $already_voted = FALSE;
+	private $user_agent;
+	private $window_navigator;
+	private $screen_width;
+	private $screen_height;
+	private $timezone_offset;
+	private $hash;
 
 	// User details
 	private $member_id, $group_id, $ip_address, $timestamp;
@@ -38,13 +44,13 @@ class Vwm_polls {
 		$this->EE =& get_instance();
 
 		// Make damn sure module path is defined
-		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
+		ee()->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
 		// Load lang, helper, config, and model
-		$this->EE->lang->loadfile('vwm_polls');
-		$this->EE->load->helper('vwm_polls');
-		$this->EE->load->model('vwm_polls_m');
-		$this->EE->config->load('vwm_polls');
+		ee()->lang->loadfile('vwm_polls');
+		ee()->load->helper('vwm_polls');
+		ee()->load->model('vwm_polls_m');
+		ee()->config->load('vwm_polls');
 	}
 
 	/**
@@ -97,6 +103,7 @@ class Vwm_polls {
 		// Get all the info inside the template tags
 		$tagdata = $this->EE->TMPL->tagdata;
 
+		// Gets appended after <form> element
 		$javascript = '<script type="text/javascript">
 			var form = document.getElementById("vwm_polls_poll_' . $this->entry_id . '");
 
@@ -120,7 +127,6 @@ class Vwm_polls {
 			'total_votes' => $this->EE->vwm_polls_m->total_votes,
 			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
 			'options_results' => calculate_results($this->poll_options, $this->EE->vwm_polls_m->total_votes),
-			'javascript' => $javascript
 		);
 
 		// Get hidden fields, class, and ID for our form
@@ -135,7 +141,6 @@ class Vwm_polls {
 				'field_id' => $this->field_id,
 				'redirect' => $redirect,
 				'user_agent' => NULL,
-				'http_accept_headers' => NULL,
 				'window_navigator' => NULL,
 				'screen_width' => NULL,
 				'screen_height' => NULL,
@@ -172,9 +177,19 @@ class Vwm_polls {
 		$this->entry_id = $this->EE->input->post('entry_id');
 		$this->field_id = $this->EE->input->post('field_id');
 
+		// Get information passed by JavaScript
+		$this->user_agent = $this->EE->input->post('user_agent');
+		$this->window_navigator = $this->EE->input->post('window_navigator');
+		$this->screen_width = $this->EE->input->post('screen_width');
+		$this->screen_height = $this->EE->input->post('screen_height');
+		$this->timezone_offset = $this->EE->input->post('timezone_offset');
+
+		$this->hash = md5( $this->user_agent . $this->window_navigator . $this->screen_width . $this->screen_height . $this->timezone_offset );
+
 		$this->poll_settings = $this->EE->vwm_polls_m
 			->entry_id($this->entry_id)
 			->field_id($this->field_id)
+			->set_hash($this->hash)
 			->poll_settings();
 
 		// Get poll options
@@ -194,9 +209,9 @@ class Vwm_polls {
 		}
 		
 		// Results only?  (Useful to fetch the most updated results for clicking "view results" via AJAX for sites that use caching)
-		$results_only = false;
+		$results_only = FALSE;
 		if (AJAX_REQUEST && $this->EE->input->post('results_only')) {
-			$results_only = true; // this will let us skip a bunch of error checks
+			$results_only = TRUE; // this will let us skip a bunch of error checks
 		}
 
 		if (!$results_only) {
@@ -433,6 +448,8 @@ class Vwm_polls {
 	 * 
 	 * After a user submits a poll that has errors the XID is destroyed. We must
 	 * create a new one so the user can successfully submit the poll again.
+	 *
+	 * EE 2.5.4 changed the schema for the security_hashes table
 	 * 
 	 * @return string
 	 */
@@ -442,11 +459,14 @@ class Vwm_polls {
 		if ($this->EE->config->item('secure_forms') == 'y')
 		{
 			$hash = $this->EE->functions->random('encrypt');
-			$this->EE->db->query("
-				INSERT INTO exp_security_hashes (date, ip_address, hash)
-				VALUES 
-				(UNIX_TIMESTAMP(), '" . $this->EE->input->ip_address() . "', '" . $hash."')
-			");
+
+			$data = array(
+				'date' => $this->EE->localize->now,
+				'session_id' => $this->EE->session->userdata('session_id'),
+				'hash' => $hash
+			);
+
+			$this->EE->db->insert('security_hashes', $data);
 		}
 		// If secure forms are not enabled
 		else
