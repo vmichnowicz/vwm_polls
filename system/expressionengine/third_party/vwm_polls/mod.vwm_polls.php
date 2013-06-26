@@ -23,7 +23,7 @@ class Vwm_polls {
 	private $errors = array();
 	private $already_voted = FALSE;
 
-	private $javascript_attribe_hash; // 32 character hash
+	private $javascript_attribute_hash; // 32 character hash
 	private $javascript_attributes = array(); // Array of all JavaScript attributes used in hash
 
 	// User details
@@ -37,9 +37,6 @@ class Vwm_polls {
 	 */
 	public function __construct()
 	{
-		// Make a local reference to the ExpressionEngine super object
-		$this->EE =& get_instance();
-
 		// Make damn sure module path is defined
 		ee()->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
@@ -61,7 +58,7 @@ class Vwm_polls {
 		$this->member_id = ee()->session->userdata('member_id') ? ee()->session->userdata('member_id') : NULL;
 		$this->group_id = ee()->session->userdata('group_id') ? ee()->session->userdata('group_id') : NULL;
 		$this->ip_address = ee()->session->userdata('ip_address');
-		$this->timestamp = time();
+		$this->timestamp = ee()->localize->now;
 	}
 
 	/**
@@ -165,11 +162,11 @@ class Vwm_polls {
 	 */
 	public function get_javascript_attribute_hash()
 	{
-		if ( empty($this->javascript_attribe_hash) && ! empty($this->javascript_attribes) )
+		if ( empty($this->javascript_attribute_hash) && ! empty($this->javascript_attributes) )
 		{
-			$this->javascript_attribe_hash = md5( implode('', $this->javascript_attribes) );
+			$this->javascript_attribute_hash = md5( implode('', $this->javascript_attributes) );
 		}
-		return $this->javascript_attribe_hash;
+		return $this->javascript_attribute_hash;
 	}
 
 	/**
@@ -194,7 +191,7 @@ class Vwm_polls {
 		$this->field_id = ee()->input->post('field_id');
 
 		// Get information passed by JavaScript
-		$this->javascript_attribes = array(
+		$this->javascript_attributes = array(
 			'user_agent' => ee()->input->post('user_agent'),
 			'window_navigator' => ee()->input->post('window_navigator'),
 			'screen_width' => ee()->input->post('screen_width'),
@@ -432,7 +429,7 @@ class Vwm_polls {
 		if ( ! empty($row->expiration_date) )
 		{
 			// Has this entry expired?
-			if (time() > $row->expiration_date)
+			if (ee()->localize->now > $row->expiration_date)
 			{
 				$this->errors[] = sprintf(ee()->lang->line('poll_expired'), date('Y-m-d', $row->expiration_date));
 				return FALSE;

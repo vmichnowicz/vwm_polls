@@ -376,7 +376,7 @@ class Vwm_polls_m extends CI_Model {
 			'member_id' => empty($member_id) ? NULL : (int)$member_id,
 			'ip_address' => $this->session->userdata('ip_address'),
 			'hash' => $this->hash,
-			'timestamp' => time()
+			'timestamp' => ee()->localize->now
 		);
 
 		// Update poll votes table

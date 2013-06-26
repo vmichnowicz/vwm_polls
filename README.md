@@ -1,6 +1,6 @@
 # VWM Polls
 
-VWM Polls is a polling module & fieldtype for ExpressionEngine 2.
+VWM Polls is a polling module & fieldtype for ExpressionEngine 2 (version 2.6.0 and up).
 
 ## License
 
@@ -54,6 +54,11 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.8
+
+* Custom JavaScript unique user checks
+* Required ExpressionEngine 2.6.0 or higher
 
 ### 0.7
 
