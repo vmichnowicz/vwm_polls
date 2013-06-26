@@ -153,6 +153,21 @@ class Vwm_polls {
 	}
 
 	/**
+	 * Get JavaScript hash
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_hash()
+	{
+		if ( empty($this->hash) )
+		{
+			$this->hash = md5( $this->user_agent . $this->window_navigator . $this->screen_width . $this->screen_height . $this->timezone_offset );
+		}
+		return $this->hash;
+	}
+
+	/**
 	 * Handle a vote
 	 *
 	 * @access public
@@ -184,12 +199,10 @@ class Vwm_polls {
 		$this->screen_height = $this->EE->input->post('screen_height');
 		$this->timezone_offset = $this->EE->input->post('timezone_offset');
 
-		$this->hash = md5( $this->user_agent . $this->window_navigator . $this->screen_width . $this->screen_height . $this->timezone_offset );
-
 		$this->poll_settings = $this->EE->vwm_polls_m
 			->entry_id($this->entry_id)
 			->field_id($this->field_id)
-			->set_hash($this->hash)
+			->set_hash( $this->get_hash() )
 			->poll_settings();
 
 		// Get poll options
@@ -388,7 +401,7 @@ class Vwm_polls {
 		}
 
 		// If there are no cookies that say the user has already voted, and config is TRUE, check database for matching IP address
-		elseif ($this->EE->config->item('vwm_polls_check_ip_address') === TRUE)
+		if ($this->EE->config->item('vwm_polls_check_ip_address') === TRUE)
 		{
 			// If this member or IP address has voted in this poll
 			$this->EE->db->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE);
@@ -404,6 +417,18 @@ class Vwm_polls {
 				$this->EE->db->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE);
 			}
 
+			$query = $this->EE->db->get('vwm_polls_votes');
+
+			if ($query->num_rows() > 0)
+			{
+				$this->already_voted = TRUE;
+			}
+		}
+
+		// If we want to check "unique" JavaScript values
+		if ($this->EE->config->item('vwm_polls_check_javascript') === TRUE)
+		{
+			$this->EE->db->where("(hash = '" . $this->get_hash() . "' AND field_id = " . $this->field_id . ')', NULL, FALSE);
 			$query = $this->EE->db->get('vwm_polls_votes');
 
 			if ($query->num_rows() > 0)
