@@ -120,7 +120,7 @@ class Vwm_polls {
 			'input_name' => 'vwm_polls_options[]',
 			'max_options' => $this->poll_settings['multiple_options_max'],
 			'can_vote' => $this->can_vote(),
-			'already_voted' => $this->already_voted,
+			'already_voted' => $this->already_voted(),
 			'chart' => google_chart($this->poll_settings, $this->poll_options),
 			'total_votes' => ee()->vwm_polls_m->total_votes,
 			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
@@ -384,8 +384,8 @@ class Vwm_polls {
 			}
 		}
 
-		// If we want to check "unique" JavaScript attribute
-		if (ee()->config->item('vwm_polls_check_javascript_attributes') === TRUE)
+		// If we want to check "unique" JavaScript attribute and we have a javascript attribute hash defined
+		if (ee()->config->item('vwm_polls_check_javascript_attributes') === TRUE && $this->get_javascript_attribute_hash() )
 		{
 			ee()->db->where("(hash = '" . $this->get_javascript_attribute_hash() . "' AND field_id = " . $this->field_id . ')', NULL, FALSE);
 			$query = ee()->db->get('vwm_polls_votes');
