@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.7';
+	public $version = '0.8';
 
 	/**
 	 * Constructor
@@ -28,6 +28,11 @@ class Vwm_polls_upd {
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
+
+		if ( version_compare(APP_VER, '2.6.0', '<') )
+		{
+			show_error("VWM Polls version $this->version requires ExpressionEngine 2.6.0 or greater. Please use version 0.7 for older versions of ExpressionEngine.");
+		}
 	}
 
 	/**
@@ -168,7 +173,7 @@ class Vwm_polls_upd {
 		{
 			$this->EE->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_votes`
-				CHANGE `ip_address` varchar(39) NOT NULL
+				CHANGE `ip_address` `ip_address` varchar(39) NOT NULL
 			");
 		}
 

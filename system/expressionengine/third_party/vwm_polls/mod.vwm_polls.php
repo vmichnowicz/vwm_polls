@@ -22,12 +22,9 @@ class Vwm_polls {
 	private $poll_options = array();
 	private $errors = array();
 	private $already_voted = FALSE;
-	private $user_agent;
-	private $window_navigator;
-	private $screen_width;
-	private $screen_height;
-	private $timezone_offset;
-	private $hash;
+
+	private $javascript_attribe_hash; // 32 character hash
+	private $javascript_attributes = array(); // Array of all JavaScript attributes used in hash
 
 	// User details
 	private $member_id, $group_id, $ip_address, $timestamp;
@@ -61,9 +58,9 @@ class Vwm_polls {
 	 */
 	private function user_details()
 	{
-		$this->member_id = $this->EE->session->userdata('member_id') ? $this->EE->session->userdata('member_id') : NULL;
-		$this->group_id = $this->EE->session->userdata('group_id') ? $this->EE->session->userdata('group_id') : NULL;
-		$this->ip_address = $this->EE->session->userdata('ip_address');
+		$this->member_id = ee()->session->userdata('member_id') ? ee()->session->userdata('member_id') : NULL;
+		$this->group_id = ee()->session->userdata('group_id') ? ee()->session->userdata('group_id') : NULL;
+		$this->ip_address = ee()->session->userdata('ip_address');
 		$this->timestamp = time();
 	}
 
@@ -75,33 +72,33 @@ class Vwm_polls {
 	 */
 	public function poll()
 	{
-		$this->EE->load->library('javascript');
+		ee()->load->library('javascript');
 
-		$redirect = $this->EE->TMPL->fetch_param('redirect');
-		$this->entry_id = $this->EE->TMPL->fetch_param('entry_id');
-		$this->field_id = $this->EE->TMPL->fetch_param('field_id');
+		$redirect = ee()->TMPL->fetch_param('redirect');
+		$this->entry_id = ee()->TMPL->fetch_param('entry_id');
+		$this->field_id = ee()->TMPL->fetch_param('field_id');
 
 		// The entry ID is required
 		if ( ! $this->entry_id ) { return FALSE; }
 
 		// Set entry ID & field ID
-		$this->poll_settings = $this->EE->vwm_polls_m
-				->entry_id($this->entry_id)
-				->field_id($this->field_id);
+		$this->poll_settings = ee()->vwm_polls_m
+			->entry_id($this->entry_id)
+			->field_id($this->field_id);
 
 		// Get poll settings
-		$this->poll_settings = $this->EE->vwm_polls_m->poll_settings();
+		$this->poll_settings = ee()->vwm_polls_m->poll_settings();
 
 		// If there are no settings for this poll
 		if ( ! $this->poll_settings) { return; }
 
 		// Get poll options
-		$this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
-		$this->EE->vwm_polls_m->poll_options_template_prep();
-		$this->poll_options = $this->EE->vwm_polls_m->poll_options;
+		ee()->vwm_polls_m->poll_options($this->poll_settings['options_order']);
+		ee()->vwm_polls_m->poll_options_template_prep();
+		$this->poll_options = ee()->vwm_polls_m->poll_options;
 
 		// Get all the info inside the template tags
-		$tagdata = $this->EE->TMPL->tagdata;
+		$tagdata = ee()->TMPL->tagdata;
 
 		// Gets appended after <form> element
 		$javascript = '<script type="text/javascript">
@@ -113,7 +110,11 @@ class Vwm_polls {
 			form["window_navigator"].value = navigator.appVersion;
 			form["screen_width"].value = screen.width;
 			form["screen_height"].value = screen.height;
-			form["timezone_offset"].value = date.getTimezoneOffset();;
+			form["timezone_offset"].value = date.getTimezoneOffset();
+			form["cookies"].value = navigator.cookieEnabled === true ? "1" : "0";
+			form["platform"].value = navigator.platform;
+			form["colors"].value = window.screen.colorDepth;
+			form["java"].value = navigator.javaEnabled() ? "1" : "0";
 		</script>';
 
 		// Template variable data
@@ -124,9 +125,9 @@ class Vwm_polls {
 			'can_vote' => $this->can_vote(),
 			'already_voted' => $this->already_voted,
 			'chart' => google_chart($this->poll_settings, $this->poll_options),
-			'total_votes' => $this->EE->vwm_polls_m->total_votes,
+			'total_votes' => ee()->vwm_polls_m->total_votes,
 			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
-			'options_results' => calculate_results($this->poll_options, $this->EE->vwm_polls_m->total_votes),
+			'options_results' => calculate_results($this->poll_options, ee()->vwm_polls_m->total_votes),
 		);
 
 		// Get hidden fields, class, and ID for our form
@@ -134,9 +135,9 @@ class Vwm_polls {
 			'id' => 'vwm_polls_poll_' . $this->entry_id,
 			'class' => 'vwm_polls_poll',
 			'hidden_fields' => array(
-				'ACT' => $this->EE->functions->fetch_action_id('Vwm_polls', 'vote'),
-				'RET' => ( ! $this->EE->TMPL->fetch_param('return'))  ? '' : $this->EE->TMPL->fetch_param('return'),
-				'URI' => ($this->EE->uri->uri_string == '') ? 'index' : $this->EE->uri->uri_string,
+				'ACT' => ee()->functions->fetch_action_id('Vwm_polls', 'vote'),
+				'RET' => ( ! ee()->TMPL->fetch_param('return'))  ? '' : ee()->TMPL->fetch_param('return'),
+				'URI' => (ee()->uri->uri_string == '') ? 'index' : ee()->uri->uri_string,
 				'entry_id' => $this->entry_id,
 				'field_id' => $this->field_id,
 				'redirect' => $redirect,
@@ -144,12 +145,16 @@ class Vwm_polls {
 				'window_navigator' => NULL,
 				'screen_width' => NULL,
 				'screen_height' => NULL,
-				'timezone_offset' => NULL
+				'timezone_offset' => NULL,
+				'cookies' => NULL,
+				'platform' => NULL,
+				'colors' => NULL,
+				'java' => NULL,
 			)
 		);
 
 		// Make the magic happen
-		return $this->EE->functions->form_declaration($form_data) . $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $variables) . '</form>' . $javascript;
+		return ee()->functions->form_declaration($form_data) . ee()->TMPL->parse_variables(ee()->TMPL->tagdata, $variables) . '</form>' . $javascript;
 	}
 
 	/**
@@ -158,13 +163,13 @@ class Vwm_polls {
 	 * @access public
 	 * @return string
 	 */
-	public function get_hash()
+	public function get_javascript_attribute_hash()
 	{
-		if ( empty($this->hash) )
+		if ( empty($this->javascript_attribe_hash) && ! empty($this->javascript_attribes) )
 		{
-			$this->hash = md5( $this->user_agent . $this->window_navigator . $this->screen_width . $this->screen_height . $this->timezone_offset );
+			$this->javascript_attribe_hash = md5( implode('', $this->javascript_attribes) );
 		}
-		return $this->hash;
+		return $this->javascript_attribe_hash;
 	}
 
 	/**
@@ -175,55 +180,57 @@ class Vwm_polls {
 	 */
 	public function vote()
 	{
-		//EE 2.1.1 and earler do not have the secure_forms_check method
-		if ( method_exists($this->EE->security, 'secure_forms_check') )
+		// Check XID
+		if ( ! ee()->security->secure_forms_check(ee()->input->post('XID')) )
 		{
-			// Check XID
-			if ( ! $this->EE->security->secure_forms_check($this->EE->input->post('XID')))
-			{
-				$this->errors[] = $this->EE->lang->line('invalid_xid');
-				die( $this->show_errors() );
-			}
+			$this->errors[] = ee()->lang->line('invalid_xid');
+			die( $this->show_errors() );
 		}
 		
-		$this->EE->load->helper('html');
+		ee()->load->helper('html');
 
-		$redirect = $this->EE->input->post('redirect');
-		$this->entry_id = $this->EE->input->post('entry_id');
-		$this->field_id = $this->EE->input->post('field_id');
+		$redirect = ee()->input->post('redirect');
+		$this->entry_id = ee()->input->post('entry_id');
+		$this->field_id = ee()->input->post('field_id');
 
 		// Get information passed by JavaScript
-		$this->user_agent = $this->EE->input->post('user_agent');
-		$this->window_navigator = $this->EE->input->post('window_navigator');
-		$this->screen_width = $this->EE->input->post('screen_width');
-		$this->screen_height = $this->EE->input->post('screen_height');
-		$this->timezone_offset = $this->EE->input->post('timezone_offset');
+		$this->javascript_attribes = array(
+			'user_agent' => ee()->input->post('user_agent'),
+			'window_navigator' => ee()->input->post('window_navigator'),
+			'screen_width' => ee()->input->post('screen_width'),
+			'screen_height' => ee()->input->post('screen_height'),
+			'timezone_offset' => ee()->input->post('timezone_offset'),
+			'cookies' => ee()->input->post('cookies'),
+			'platform' => ee()->input->post('platform'),
+			'colors' => ee()->input->post('colors'),
+			'java' => ee()->input->post('java'),
+		);
 
-		$this->poll_settings = $this->EE->vwm_polls_m
+		$this->poll_settings = ee()->vwm_polls_m
 			->entry_id($this->entry_id)
 			->field_id($this->field_id)
-			->set_hash( $this->get_hash() )
+			->set_hash( $this->get_javascript_attribute_hash() )
 			->poll_settings();
 
 		// Get poll options
-		$this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
-		$this->EE->vwm_polls_m->poll_options_template_prep();
-		$this->poll_options = $this->EE->vwm_polls_m->poll_options;
-		$valid_poll_option_ids = $this->EE->vwm_polls_m->valid_poll_option_ids;
+		ee()->vwm_polls_m->poll_options($this->poll_settings['options_order']);
+		ee()->vwm_polls_m->poll_options_template_prep();
+		$this->poll_options = ee()->vwm_polls_m->poll_options;
+		$valid_poll_option_ids = ee()->vwm_polls_m->valid_poll_option_ids;
 
-		$selected_poll_options = $this->EE->input->post('vwm_polls_options') ? $this->EE->input->post('vwm_polls_options') : array();
-		$other_options = $this->EE->input->post('vwm_polls_other_options');
+		$selected_poll_options = ee()->input->post('vwm_polls_options') ? ee()->input->post('vwm_polls_options') : array();
+		$other_options = ee()->input->post('vwm_polls_other_options');
 
 		// Make sure this poll exists
 		if ( ! $this->poll_settings)
 		{
-			$this->errors[] = $this->EE->lang->line('poll_not_exist');
+			$this->errors[] = ee()->lang->line('poll_not_exist');
 			die( $this->show_errors() );
 		}
 		
 		// Results only?  (Useful to fetch the most updated results for clicking "view results" via AJAX for sites that use caching)
 		$results_only = FALSE;
-		if (AJAX_REQUEST && $this->EE->input->post('results_only')) {
+		if (AJAX_REQUEST && ee()->input->post('results_only')) {
 			$results_only = TRUE; // this will let us skip a bunch of error checks
 		}
 
@@ -231,14 +238,14 @@ class Vwm_polls {
 			// Make sure the user submitted a poll option
 			if ( ! $selected_poll_options)
 			{
-				$this->errors[] = $this->EE->lang->line('no_options_submitted');
+				$this->errors[] = ee()->lang->line('no_options_submitted');
 				die( $this->show_errors() );
 			}
 			
 			// If this poll only accecpts one poll option and the user submitted more than one
 			if (($this->poll_settings['multiple_options'] == FALSE AND count($selected_poll_options) > 1))
 			{
-				$this->errors[] = sprintf($this->EE->lang->line('no_options_submitted'), count($selected_poll_options));
+				$this->errors[] = sprintf(ee()->lang->line('no_options_submitted'), count($selected_poll_options));
 				die( $this->show_errors() );
 			}
 			
@@ -251,7 +258,7 @@ class Vwm_polls {
 					// If the user selects less than the allowed number of options
 					if (count($selected_poll_options) < $this->poll_settings['multiple_options_min'])
 					{
-						$this->errors[] = sprintf($this->EE->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
+						$this->errors[] = sprintf(ee()->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
 					}
 				}
 			
@@ -261,7 +268,7 @@ class Vwm_polls {
 					// If the user selects more than the allowed number of optoins
 					if (count($selected_poll_options) > $this->poll_settings['multiple_options_max'])
 					{
-						$this->errors[] = sprintf($this->EE->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_max'], count($selected_poll_options));
+						$this->errors[] = sprintf(ee()->lang->line('too_many_options_submitted'), $this->poll_settings['multiple_options_max'], count($selected_poll_options));
 					}
 				}
 			}
@@ -271,7 +278,7 @@ class Vwm_polls {
 			{
 				if ( ! in_array($option, $valid_poll_option_ids))
 				{
-					$this->errors[] = $this->EE->lang->line('invalid_poll_option');
+					$this->errors[] = ee()->lang->line('invalid_poll_option');
 					die( $this->show_errors() );
 				}
 			}
@@ -285,19 +292,19 @@ class Vwm_polls {
 			if (! $this->errors)
 			{
 				// We are gonna need some cookies up in here
-				$this->EE->input->set_cookie($this->entry_id . '-' . $this->field_id, json_encode($selected_poll_options), 31536000); // Cookie expires in ~1 year
+				ee()->input->set_cookie($this->entry_id . '-' . $this->field_id, json_encode($selected_poll_options), 31536000); // Cookie expires in ~1 year
 	
 				// Cast a vote for each poll option
 				foreach ($selected_poll_options as $option_id)
 				{
 					// Record this vote
-					$this->EE->vwm_polls_m->cast_vote($option_id);
+					ee()->vwm_polls_m->cast_vote($option_id);
 	
 					// If this option is of type "other"
 					if ( $this->poll_options[$option_id]['type'] == 'other')
 					{
 						// Record this "other" vote
-						$this->EE->vwm_polls_m->record_other_vote($option_id, $other_options[$option]);
+						ee()->vwm_polls_m->record_other_vote($option_id, $other_options[$option]);
 					}
 				}
 			}
@@ -314,10 +321,10 @@ class Vwm_polls {
 			if (AJAX_REQUEST)
 			{
 				// Get updated poll options
-				$this->EE->vwm_polls_m->poll_options($this->poll_settings['options_order']);
+				ee()->vwm_polls_m->poll_options($this->poll_settings['options_order']);
 
-				$updated_total_votes = $this->EE->vwm_polls_m->total_votes;
-				$updated_options = calculate_results($this->EE->vwm_polls_m->poll_options, $updated_total_votes);
+				$updated_total_votes = ee()->vwm_polls_m->total_votes;
+				$updated_options = calculate_results(ee()->vwm_polls_m->poll_options, $updated_total_votes);
 				$updated_chart = str_replace('&amp;', '&', google_chart($this->poll_settings, $updated_options)); // The ampersands in "&amp;" end up getting encoded again...
 
 				$data = array(
@@ -327,11 +334,11 @@ class Vwm_polls {
 				);
 
 				// Send updated poll options
-				$this->EE->output->send_ajax_response($data);
+				ee()->output->send_ajax_response($data);
 			}
 			else
 			{
-				$this->EE->functions->redirect($redirect);
+				ee()->functions->redirect($redirect);
 			}
 		}
 		// No vote for you!
@@ -339,6 +346,60 @@ class Vwm_polls {
 		{
 			die( $this->show_errors() );
 		}
+	}
+
+	/**
+	 * Determine if a user has already voted
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	public function already_voted()
+	{
+		// Check cookies to see if user has already voted
+		if ( isset($_COOKIE[$this->entry_id . '-' . $this->field_id]) )
+		{
+			$this->already_voted = TRUE;
+		}
+
+		// If there are no cookies that say the user has already voted, and config is TRUE, check database for matching IP address
+		if (ee()->config->item('vwm_polls_check_ip_address') === TRUE)
+		{
+			// If this member or IP address has voted in this poll
+			ee()->db->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE);
+
+			// If this is a guest member
+			if ( empty($this->member_id) )
+			{
+				ee()->db->where('ip_address', $this->ip_address);
+			}
+			// If this is a registered member
+			else
+			{
+				ee()->db->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE);
+			}
+
+			$query = ee()->db->get('vwm_polls_votes');
+
+			if ($query->num_rows() > 0)
+			{
+				$this->already_voted = TRUE;
+			}
+		}
+
+		// If we want to check "unique" JavaScript attribute
+		if (ee()->config->item('vwm_polls_check_javascript_attributes') === TRUE)
+		{
+			ee()->db->where("(hash = '" . $this->get_javascript_attribute_hash() . "' AND field_id = " . $this->field_id . ')', NULL, FALSE);
+			$query = ee()->db->get('vwm_polls_votes');
+
+			if ($query->num_rows() > 0)
+			{
+				$this->already_voted = TRUE;
+			}
+		}
+
+		return $this->already_voted;
 	}
 
 	/**
@@ -353,7 +414,7 @@ class Vwm_polls {
 		$this->user_details();
 
 		// Use the entry data to see if this poll is open
-		$query = $this->EE->db
+		$query = ee()->db
 			->where('entry_id', $this->entry_id)
 			->limit(1)
 			->get('channel_titles');
@@ -363,7 +424,7 @@ class Vwm_polls {
 		// Is this entry open?
 		if ($row->status != 'open')
 		{
-			$this->errors[] = $this->EE->lang->line('poll_not_open');
+			$this->errors[] = ee()->lang->line('poll_not_open');
 			return FALSE;
 		}
 
@@ -373,7 +434,7 @@ class Vwm_polls {
 			// Has this entry expired?
 			if (time() > $row->expiration_date)
 			{
-				$this->errors[] = sprintf($this->EE->lang->line('poll_expired'), date('Y-m-d', $row->expiration_date));
+				$this->errors[] = sprintf(ee()->lang->line('poll_expired'), date('Y-m-d', $row->expiration_date));
 				return FALSE;
 			}
 		}
@@ -381,7 +442,7 @@ class Vwm_polls {
 		// If this poll is not open to any member groups
 		if ( $this->poll_settings['member_groups_can_vote'] === 'NONE' )
 		{
-			$this->errors[] = $this->EE->lang->line('member_group_cannot_vote');
+			$this->errors[] = ee()->lang->line('member_group_cannot_vote');
 			return FALSE;
 		}
 		// Else, is this poll is only open to select member groups
@@ -389,58 +450,15 @@ class Vwm_polls {
 		{
 			if ( ! in_array($this->group_id, $this->poll_settings['member_groups_can_vote']))
 			{
-				$this->errors[] = $this->EE->lang->line('member_group_cannot_vote');
+				$this->errors[] = ee()->lang->line('member_group_cannot_vote');
 				return FALSE;
 			}
 		}
 
-		// Check cookies to see if user has already voted
-		if ( isset($_COOKIE[$this->entry_id . '-' . $this->field_id]) )
-		{
-			$this->already_voted = TRUE;
-		}
-
-		// If there are no cookies that say the user has already voted, and config is TRUE, check database for matching IP address
-		if ($this->EE->config->item('vwm_polls_check_ip_address') === TRUE)
-		{
-			// If this member or IP address has voted in this poll
-			$this->EE->db->where('(entry_id = ' . $this->entry_id . ' AND field_id = ' . $this->field_id . ')', NULL, FALSE);
-
-			// If this is a guest member
-			if ( empty($this->member_id) )
-			{
-				$this->EE->db->where('ip_address', $this->ip_address);
-			}
-			// If this is a registered member
-			else
-			{
-				$this->EE->db->where('(member_id = ' . (int)$this->member_id . ' OR ip_address = ' . (int)$this->ip_address . ')', NULL, FALSE);
-			}
-
-			$query = $this->EE->db->get('vwm_polls_votes');
-
-			if ($query->num_rows() > 0)
-			{
-				$this->already_voted = TRUE;
-			}
-		}
-
-		// If we want to check "unique" JavaScript values
-		if ($this->EE->config->item('vwm_polls_check_javascript') === TRUE)
-		{
-			$this->EE->db->where("(hash = '" . $this->get_hash() . "' AND field_id = " . $this->field_id . ')', NULL, FALSE);
-			$query = $this->EE->db->get('vwm_polls_votes');
-
-			if ($query->num_rows() > 0)
-			{
-				$this->already_voted = TRUE;
-			}
-		}
-
 		// If this poll does not allow multiple votes, make sure user has not already voted
-		if ( ! $this->poll_settings['multiple_votes'] AND $this->already_voted)
+		if ( ! $this->poll_settings['multiple_votes'] AND $this->already_voted() === TRUE)
 		{
-			$this->errors[] = $this->EE->lang->line('can_only_vote_once');
+			$this->errors[] = ee()->lang->line('can_only_vote_once');
 			return FALSE;
 		}
 
@@ -459,12 +477,12 @@ class Vwm_polls {
 		// If this is an AJAX request
 		if (AJAX_REQUEST)
 		{
-			$this->EE->output->send_ajax_response(array('errors' => $this->errors, 'xid' => $this->refresh_xid()), TRUE); // Send JSON with a 500 status code
+			ee()->output->send_ajax_response(array('errors' => $this->errors, 'xid' => $this->refresh_xid()), TRUE); // Send JSON with a 500 status code
 		}
 		// No AJAX
 		else
 		{
-			$this->EE->output->show_user_error('submission', $this->errors);
+			ee()->output->show_user_error('submission', $this->errors);
 		}
 	}
 	
@@ -481,17 +499,17 @@ class Vwm_polls {
 	private function refresh_xid()
 	{
 		// If secure forms are enabled
-		if ($this->EE->config->item('secure_forms') == 'y')
+		if (ee()->config->item('secure_forms') == 'y')
 		{
-			$hash = $this->EE->functions->random('encrypt');
+			$hash = ee()->functions->random('encrypt');
 
 			$data = array(
-				'date' => $this->EE->localize->now,
-				'session_id' => $this->EE->session->userdata('session_id'),
+				'date' => ee()->localize->now,
+				'session_id' => ee()->session->userdata('session_id'),
 				'hash' => $hash
 			);
 
-			$this->EE->db->insert('security_hashes', $data);
+			ee()->db->insert('security_hashes', $data);
 		}
 		// If secure forms are not enabled
 		else
