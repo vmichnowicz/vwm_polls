@@ -23,7 +23,7 @@
 					<th><?php echo lang('option_color'); ?></th>
 					<th><?php echo lang('option_type'); ?></th>
 					<th><?php echo lang('option_text'); ?></th>
-					<th>&nbsp;</td>
+					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tfoot class="vwm_polls_new_option">
@@ -144,6 +144,10 @@
 				<tr>
 					<td><?php echo lang('results_chart_height', 'results_chart_height'); ?></td>
 					<td><input type="text" name="results_chart_height[<?php echo $field_id; ?>]" id="results_chart_height" value="<?php echo $data['results_chart_height']; ?>" /></td>
+				</tr>
+				<tr>
+					<td><?php echo lang('results_chart_labels', 'results_chart_labels'); ?></td>
+					<td><?php echo form_dropdown('results_chart_labels[' . $field_id . ']', array(lang('no'), lang('yes')), isset($data['results_chart_labels']) ? $data['results_chart_labels'] : 1, 'id="results_chart_labels"'); ?></td>
 				</tr>
 			</tbody>
 		</table>
