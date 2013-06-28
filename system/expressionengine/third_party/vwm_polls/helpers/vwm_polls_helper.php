@@ -13,8 +13,8 @@
 // -----------------------------------------------------------------------------
 
 /**
- * Make sure we are dealing with a (at least somewhat) valid hex color
- * If no color is provided, just output a default color
+ * Make sure we are dealing with a (at least somewhat) valid hex color. If no color is provided, just output a default
+ * color
  *
  * @access public
  * @param string		User submitted hex color

@@ -21,6 +21,7 @@ class Vwm_polls_m extends CI_Model {
 	public $poll_options = array();
 	public $valid_poll_option_ids = array();
 	public $total_votes = 0;
+	private $hash;
 
 	/**
 	 * Model construct
@@ -38,7 +39,7 @@ class Vwm_polls_m extends CI_Model {
 	 * Set entry ID
 	 *
 	 * @access public
-	 * @param int			Entry ID
+	 * @param $entry_id int Entry ID
 	 * @return object
 	 */
 	public function entry_id($entry_id)
@@ -51,7 +52,7 @@ class Vwm_polls_m extends CI_Model {
 	 * Set field ID and field name
 	 *
 	 * @access public
-	 * @param int			Field ID
+	 * @param $field_id int Field ID
 	 * @return object
 	 */
 	public function field_id($field_id)
@@ -64,14 +65,19 @@ class Vwm_polls_m extends CI_Model {
 		return $this;
 	}
 
+	public function set_hash($hash)
+	{
+		$this->hash = $hash;
+		return $this;
+	}
+
 	/**
 	 * Get poll options for a given poll
 	 *
 	 * @access public
-	 * @param int			Entry ID
-	 * @param int			Field ID
-	 * @param string		Option order ("custom", "alphabetical", "reverse_alphabetical", "asc", "desc", or "random")
-	 * @retrun array		Returns the poll_options array
+	 * @param $order string Option order ("custom", "alphabetical", "reverse_alphabetical", "asc", "desc", or "random")
+	 * @param $other_votes bool
+	 * @return array
 	 */
 	public function poll_options($order = 'custom', $other_votes = FALSE)
 	{
@@ -209,10 +215,11 @@ class Vwm_polls_m extends CI_Model {
 	 * Update (or delete) a poll option
 	 *
 	 * @access public
-	 * @param int			Option ID
-	 * @param string		Option type ("defined" or "other")
-	 * @param string		Option hex color
-	 * @param string		Option text
+	 * @param $id int Option ID
+	 * @param $type string Option type ("defined" or "other")
+	 * @param $color string Option hex color
+	 * @param $text string Option text
+	 * @param $order bool|string "defined" or "other"
 	 * @return void
 	 */
 	public function update_option($id, $type, $color, $text, $order = false)
@@ -256,7 +263,7 @@ class Vwm_polls_m extends CI_Model {
 	 * Delete a poll option
 	 *
 	 * @access public
-	 * @param int			Option ID
+	 * @param $id int Option ID
 	 * @return bool
 	 */
 	public function remove_option($id)
@@ -280,11 +287,11 @@ class Vwm_polls_m extends CI_Model {
 	/**
 	 * Insert a new option
 	 *
-	 * @access pbli
-	 * @param string		Option type ("defined" or "other")
-	 * @param string		Option hex color
-	 * @param string		Option text
-	 * @param int			Option order
+	 * @access public
+	 * @param $type string Option type ("defined" or "other")
+	 * @param $color string Option hex color
+	 * @param $text string Option text
+	 * @param $order int Option order
 	 * @return bool
 	 */
 	public function insert_option($type, $color, $text, $order = 0)
@@ -355,7 +362,7 @@ class Vwm_polls_m extends CI_Model {
 	 * Cast a vote
 	 *
 	 * @access public
-	 * @param int			Option ID
+	 * @param $option_id int Option ID
 	 * @return void
 	 */
 	public function cast_vote($option_id)
@@ -368,7 +375,8 @@ class Vwm_polls_m extends CI_Model {
 			'poll_option_id' => $option_id,
 			'member_id' => empty($member_id) ? NULL : (int)$member_id,
 			'ip_address' => $this->session->userdata('ip_address'),
-			'timestamp' => time()
+			'hash' => $this->hash,
+			'timestamp' => ee()->localize->now
 		);
 
 		// Update poll votes table
@@ -385,8 +393,8 @@ class Vwm_polls_m extends CI_Model {
 	 * Record an "other" vote
 	 *
 	 * @access public
-	 * @param int			Option ID
-	 * @param string		Other option text
+	 * @param $option_id int Option ID
+	 * @param $text string Other option text
 	 * @return void
 	 */
 	public function record_other_vote($option_id, $text)

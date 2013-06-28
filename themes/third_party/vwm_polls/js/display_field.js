@@ -1,105 +1,105 @@
 $(document).ready(function() {
 
-// Add new option input focus set to "false" by default
-var option_focus = false;
+	// Add new option input focus set to "false" by default
+	var option_focus = false;
 
-/**
- * When new option text input (our color and text fields) gets and loses focus
- */
-$('.vwm_polls_new_option input[type="text"]').live('focusin focusout', function(e) {
-	e.type == 'focusin' ? option_focus = true : option_focus = false;
-});
+	/**
+	 * When new option text input (our color and text fields) gets and loses focus
+	 */
+	$('.vwm_polls_new_option input[type="text"]').live('focusin focusout', function(e) {
+		e.type == 'focusin' ? option_focus = true : option_focus = false;
+	});
 
-/**
- * When the publish form is subitted
- */
-$('#publishForm').submit(function(e) {
-	// If our a option text or color input has focus
-	if (option_focus) {
-		// Stop the form submission (so we can add this poll option)
-		e.preventDefault();
-	}
-});
-
-/**
- * On keyup inside a new poll option text input
- */
-$('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
-	// If the use pressed the "enter" key
-	if (e.which == 13) {
-		add_option( $(this).closest('tfoot') );
-	}
-});
-
-/**
- * When the "add new poll option" button is clicked
- */
-$('input[type="button"].vwm_polls_new_option').live('click', function() {
-	add_option( $(this).closest('tfoot') );
-});
-
-/**
- * Make poll options sortable!
- */
-var make_sortable = function make_sortable() {
-	// Select poll options table tbody
-	$('body').find('table[id^="vwm_polls_options"] > tbody').sortable({
-		axis: 'y',
-		handle: 'td.drag',
-		containment: 'parent',
-		update: function() {
-
-			// Grab entry ID
-			var entry_id = $('#publishForm input[name="entry_id"]').val();
-
-			var options = [];
-
-			options = $(this).children('tr');
-			var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
-
-			// Loop through all of our new poll options and update each one to reflect their new order
-			$(options).each(function(i, option) {
-				var color = $(option).find('input[name*="color"]');
-				var type = $(option).find('select[name*="type"]');
-				var text = $(option).find('input[name*="text"]');
-				var id = $(option).find('input[name*="id"]');
-
-				$(color).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][color]');
-				$(type).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][type]');
-				$(text).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][text]');
-				$(id).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][id]');
-			});
+	/**
+	 * When the publish form is subitted
+	 */
+	$('#publishForm').submit(function(e) {
+		// If our a option text or color input has focus
+		if (option_focus) {
+			// Stop the form submission (so we can add this poll option)
+			e.preventDefault();
 		}
 	});
 
-	return make_sortable;
-}();
+	/**
+	 * On keyup inside a new poll option text input
+	 */
+	$('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
+		// If the use pressed the "enter" key
+		if (e.which == 13) {
+			add_option( $(this).closest('tfoot') );
+		}
+	});
 
-/**
- * Add a poll option
- *
- * @param object		Table row of our new option
- */
-function add_option(new_option) {
+	/**
+	 * When the "add new poll option" button is clicked
+	 */
+	$('input[type="button"].vwm_polls_new_option').live('click', function() {
+		add_option( $(this).closest('tfoot') );
+	});
 
-	// Options table info
-	var options_table = $(new_option).closest('table');
-	var options_tbody = $(options_table).children('tbody');
-	var options_table_id = $(options_table).attr('id');
+	/**
+	 * Make poll options sortable!
+	 */
+	var make_sortable = function make_sortable() {
+		// Select poll options table tbody
+		$('body').find('table[id^="vwm_polls_options"] > tbody').sortable({
+			axis: 'y',
+			handle: 'td.drag',
+			containment: 'parent',
+			update: function() {
 
-	// IDs
-	var entry_id = $('#publishForm input[name="entry_id"]').val();
-	var field_id = $(new_option).find('input[name="vwm_polls_field_id"]').val();
+				// Grab entry ID
+				var entry_id = $('#publishForm input[name="entry_id"]').val();
 
-	// Option data
-	var text = $(new_option).find('input[name="vwm_polls_new_option_text"]').val().replace(/^\s+|\s+$/g,''); // Trim of whitespace
-	var type = $(new_option).find('select[name="vwm_polls_new_option_type"]').val();
-	var color = $(new_option).find('input[name="vwm_polls_new_option_color"]').val();
+				var options = [];
 
-	// If the user just entered whitespace
-	if (text == '') {
-		return;
-	}
+				options = $(this).children('tr');
+				var field_id = $(this).closest('table').find('input[name="vwm_polls_field_id"]').val();
+
+				// Loop through all of our new poll options and update each one to reflect their new order
+				$(options).each(function(i, option) {
+					var color = $(option).find('input[name*="color"]');
+					var type = $(option).find('select[name*="type"]');
+					var text = $(option).find('input[name*="text"]');
+					var id = $(option).find('input[name*="id"]');
+
+					$(color).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][color]');
+					$(type).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][type]');
+					$(text).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][text]');
+					$(id).attr('name', 'vwm_polls_options[' + field_id + '][' + i + '][id]');
+				});
+			}
+		});
+
+		return make_sortable;
+	}();
+
+	/**
+	 * Add a poll option
+	 *
+	 * @param object		Table row of our new option
+	 */
+	function add_option(new_option) {
+
+		// Options table info
+		var options_table = $(new_option).closest('table');
+		var options_tbody = $(options_table).children('tbody');
+		var options_table_id = $(options_table).attr('id');
+
+		// IDs
+		var entry_id = $('#publishForm input[name="entry_id"]').val();
+		var field_id = $(new_option).find('input[name="vwm_polls_field_id"]').val();
+
+		// Option data
+		var text = $(new_option).find('input[name="vwm_polls_new_option_text"]').val().replace(/^\s+|\s+$/g,''); // Trim of whitespace
+		var type = $(new_option).find('select[name="vwm_polls_new_option_type"]').val();
+		var color = $(new_option).find('input[name="vwm_polls_new_option_color"]').val();
+
+		// If the user just entered whitespace
+		if (text == '') {
+			return;
+		}
 
 		// Get the index of our new option
 		var option_index = $(options_tbody).children('tr').length ? $(options_tbody).children('tr').length : 0;
@@ -133,106 +133,106 @@ function add_option(new_option) {
 
 		// Cleanup as if this was an Ajax request
 		ajaxCleanup();
-}
-
-// Tabs on publish page
-$('div[id^="vwm_polls_tabs"]').tabs();
-
-// Poll "other" votes
-$('table.vwm_polls_results ul').hide();
-$('table.vwm_polls_results a').click(function() {
-	$(this).siblings('ul').slideToggle('slow');
-});
-
-// Toggle min & max poll options
-(function() {
-	// Min & max inputs
-	var min = $('#multiple_options_min');
-	var max = $('#multiple_options_max');
-
-	// Multiple option select input
-	var multiple_options = $('#multiple_options');
-
-	// Hide and reset min & max inputs
-	function hide_min_max() {
-		$(min).val(0).closest('tr').hide();
-		$(max).val(0).closest('tr').hide();
 	}
 
-	// Show min and max inputs
-	function show_min_max() {
-		$(min).closest('tr').show();
-		$(max).closest('tr').show();
-	}
+	// Tabs on publish page
+	$('div[id^="vwm_polls_tabs"]').tabs();
 
-	// On page load, if multiple options are disabled, hide min and max inputs
-	if ( $(multiple_options).val() == 0 ) {
-		hide_min_max()
-	}
-
-	// When the multiple option select input is changed
-	$(multiple_options).change(function() {
-		if ( $(this).val() == 1 ) {
-			show_min_max();
-		}
-		else {
-			hide_min_max();
-		}
+	// Poll "other" votes
+	$('table.vwm_polls_results ul').hide();
+	$('table.vwm_polls_results a').click(function() {
+		$(this).siblings('ul').slideToggle('slow');
 	});
 
-})();
+	// Toggle min & max poll options
+	(function() {
+		// Min & max inputs
+		var min = $('#multiple_options_min');
+		var max = $('#multiple_options_max');
 
+		// Multiple option select input
+		var multiple_options = $('#multiple_options');
 
-/**
- * jQuery Pill plugin
- */
-$.fn.pill = function() {
-	this.each(function() {
-			var pill = $(this);
-			var radios = $(pill).find('input[type="radio"]');
+		// Hide and reset min & max inputs
+		function hide_min_max() {
+			$(min).val(0).closest('tr').hide();
+			$(max).val(0).closest('tr').hide();
+		}
 
-			// Add "checked" class on plugin load
-			$(radios).filter(':checked').closest('div').addClass('checked');
+		// Show min and max inputs
+		function show_min_max() {
+			$(min).closest('tr').show();
+			$(max).closest('tr').show();
+		}
 
-			// Toggle on radio change
-			$(radios).live('change', function() {
-				var parent = $(this).closest('div');
-				var siblings = $(parent).siblings('div');
-				$(siblings).removeClass('checked');
-				$(this).closest('div').addClass('checked');
-			});
+		// On page load, if multiple options are disabled, hide min and max inputs
+		if ( $(multiple_options).val() == 0 ) {
+			hide_min_max()
+		}
+
+		// When the multiple option select input is changed
+		$(multiple_options).change(function() {
+			if ( $(this).val() == 1 ) {
+				show_min_max();
+			}
+			else {
+				hide_min_max();
+			}
 		});
 
-	return this;
-}
+	})();
 
-/**
- * Get our pills runnin'
- */
-var pill = function pill() {
-	$('body').find('.pill').pill();
-	return pill;
-}();
 
-/**
- * Run cleanup function on Ajax complete!
- */
-$('body').ajaxComplete(function() {
-	ajaxCleanup();
-});
+	/**
+	 * jQuery Pill plugin
+	 */
+	$.fn.pill = function() {
+		this.each(function() {
+				var pill = $(this);
+				var radios = $(pill).find('input[type="radio"]');
 
-/**
- * Run Ajax cleanup functions!
- */
-var ajaxCleanup = function ajaxCleanup() {
-	// Run cleanup functions
-	pill();
-	jscolor.bind(); // rebind the jscolor picker
-	make_sortable();
-	$('.vwm_polls_remove_option').not('done').addClass('done').click(function() {
-		$(this).closest('tr').find(':input[name*="text"]').val('');
+				// Add "checked" class on plugin load
+				$(radios).filter(':checked').closest('div').addClass('checked');
+
+				// Toggle on radio change
+				$(radios).live('change', function() {
+					var parent = $(this).closest('div');
+					var siblings = $(parent).siblings('div');
+					$(siblings).removeClass('checked');
+					$(this).closest('div').addClass('checked');
+				});
+			});
+
+		return this;
+	}
+
+	/**
+	 * Get our pills runnin'
+	 */
+	var pill = function pill() {
+		$('body').find('.pill').pill();
+		return pill;
+	}();
+
+	/**
+	 * Run cleanup function on Ajax complete!
+	 */
+	$('body').ajaxComplete(function() {
+		ajaxCleanup();
 	});
-	return ajaxCleanup;
-}
+
+	/**
+	 * Run Ajax cleanup functions!
+	 */
+	var ajaxCleanup = function ajaxCleanup() {
+		// Run cleanup functions
+		pill();
+		jscolor.bind(); // rebind the jscolor picker
+		make_sortable();
+		$('.vwm_polls_remove_option').not('done').addClass('done').click(function() {
+			$(this).closest('tr').find(':input[name*="text"]').val('');
+		});
+		return ajaxCleanup;
+	}
 
 });
