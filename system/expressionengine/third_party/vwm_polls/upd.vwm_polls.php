@@ -26,9 +26,6 @@ class Vwm_polls_upd {
 	 */
 	public function __construct()
 	{
-		// Make a local reference to the ExpressionEngine super object
-		ee() =& get_instance();
-
 		if ( version_compare(APP_VER, '2.6.0', '<') )
 		{
 			show_error("VWM Polls version $this->version requires ExpressionEngine 2.6.0 or greater. Please use version 0.7 for older versions of ExpressionEngine.");
@@ -148,6 +145,7 @@ class Vwm_polls_upd {
 	 * Module Updater
 	 *
 	 * @access	public
+	 * @param $current string
 	 * @return	bool
 	 */	
 	public function update($current = NULL)

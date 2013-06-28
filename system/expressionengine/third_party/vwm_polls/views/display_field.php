@@ -23,7 +23,7 @@
 					<th><?php echo lang('option_color'); ?></th>
 					<th><?php echo lang('option_type'); ?></th>
 					<th><?php echo lang('option_text'); ?></th>
-					<th>&nbsp;</td>
+					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tfoot class="vwm_polls_new_option">

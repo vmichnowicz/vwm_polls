@@ -92,13 +92,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	/**
 	 * Set the member groups can vote
 	 *
-	 * Take member_groups_can_vote ("ALL", "NONE", or "SELECT") and
-	 * $select_member_groups_can_vote (array of member group IDs) and determine
-	 * the member_groups_can_vote property.
+	 * Take member_groups_can_vote ("ALL", "NONE", or "SELECT") and $select_member_groups_can_vote (array of member
+	 * group IDs) and determine the member_groups_can_vote property.
 	 *
 	 * @access private
-	 * @param string
-	 * @param array
+	 * @param $member_groups_can_vote string
+	 * @param $select_member_groups_can_vote array
 	 * @return object
 	 */
 	private function set_member_groups_can_vote($member_groups_can_vote, array $select_member_groups_can_vote)
@@ -147,8 +146,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	/**
 	 * Load CSS and JavaScript
 	 *
-	 * We need this to protect against CSS & JS getting included multiple times.
-	 * This could happen if a user puts more than one poll in an entry
+	 * We need this to protect against CSS & JS getting included multiple times. This could happen if a user puts more
+	 * than one poll in an entry
 	 *
 	 * @access private
 	 * @param string
@@ -176,7 +175,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Display Field on Publish
 	 *
 	 * @access public
-	 * @param string		Existing data
+	 * @param $data string Existing data
 	 * @return string
 	 */
 	public function display_field($data)
@@ -265,7 +264,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Save poll data from entry form
 	 *
 	 * @access public
-	 * @param string		New poll data
+	 * @param $data string New poll data
 	 * @return string
 	 */
 	public function save($data)
@@ -331,7 +330,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Update or add new poll options (Now that we have an entry ID)
 	 *
 	 * @access public
-	 * @param string
+	 * @param $data string
 	 * @return void
 	 */
 	public function post_save($data)
@@ -366,8 +365,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Used in EE templates to pass the field ID to our polls module
 	 *
 	 * @access public
-	 * @param string		Existing data
-	 * @return string		Replacement text
+	 * @param $data string Existing data
+	 * @return string Replacement text
 	 */
 	public function replace_field_id($data)
 	{
@@ -378,7 +377,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Display Global Settings
 	 *
 	 * @access public
-	 * @return string		Form contents
+	 * @return string
 	 */
 	public function display_global_settings()
 	{
@@ -389,7 +388,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Save Global Settings
 	 *
 	 * @access public
-	 * @return string		Global settings
+	 * @return string
 	 */
 	public function save_global_settings()
 	{
@@ -400,12 +399,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Display Settings Screen
 	 *
 	 * @access public
-	 * @param string		Existing data
+	 * @param $data string Existing data
 	 * @return void
 	 */
 	public function display_settings($data)
 	{
-		// Load our JavaScipt (but only if we need to)
+		// Load our JavaScript (but only if we need to)
 		$this->load_css_and_javascript();
 
 		// Member groups
@@ -492,7 +491,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 * Save Settings
 	 *
 	 * @access public
-	 * @param string		Form data
+	 * @param $data string Form data
 	 * @return array
 	 */
 	public function save_settings($data)
