@@ -54,15 +54,13 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	{
 		parent::__construct();
 
-		// Make a local reference to the ExpressionEngine super object
-		$this->EE =& get_instance();
-
 		// Make damn sure module path is defined
-		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
+		ee()->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 
 		// Load helper & model
-		$this->EE->lang->loadfile('vwm_polls');
-		$this->EE->load->model('vwm_polls_m');
+		ee()->lang->loadfile('vwm_polls');
+		ee()->load->model('vwm_polls_m');
+		ee()->load->helper('vwm_polls');
 
 		// Set member groups
 		$this->set_member_groups();
@@ -78,8 +76,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	{
 		if ( ! self::$member_groups)
 		{
-			$this->EE->load->model('member_model');
-			$member_groups = $this->EE->member_model->get_member_groups();
+			ee()->load->model('member_model');
+			$member_groups = ee()->member_model->get_member_groups();
 
 			foreach ($member_groups->result_array() as $group)
 			{
@@ -162,13 +160,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		if ( ! self::$css_and_javascript_loaded)
 		{
 			// jQuery UI tabs
-			$this->EE->cp->add_js_script( array('ui' => array('sortable', 'tabs'), 'plugin' => array('jscolor')) );
+			ee()->cp->add_js_script( array('ui' => array('sortable', 'tabs'), 'plugin' => array('jscolor')) );
 
-			$this->EE->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
-			$this->EE->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . $this->EE->config->item('cp_url') . '";  EE.vwm_polls_option_text_removed = "'.$this->EE->lang->line('option_text_removed').'";</script>');
-			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
-			$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
-			//$this->EE->cp->add_to_head('<script type="text/javascript" src="' . $this->EE->config->item('theme_folder_url') . 'third_party/vwm_polls/js/jquery.crayonpicker.js"></script>');
+			ee()->cp->add_to_head('<link rel="stylesheet" type="text/css" href="' . ee()->config->item('theme_folder_url') . 'third_party/vwm_polls/css/vwm_polls.css" />');
+			ee()->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . ee()->config->item('cp_url') . '";  EE.vwm_polls_option_text_removed = "'.ee()->lang->line('option_text_removed').'";</script>');
+			ee()->cp->add_to_head('<script type="text/javascript" src="' . ee()->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
+			ee()->cp->add_to_head('<script type="text/javascript" src="' . ee()->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
 
 			// CSS and JavaScript have been loaded!
 			self::$css_and_javascript_loaded = TRUE;
@@ -184,7 +181,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function display_field($data)
 	{
-		// Load our JavaScipt (but only if we need to)
+		// Load our JavaScript (but only if we need to)
 		$this->load_css_and_javascript();
 
 		// If this is an existing entry that has poll settings
@@ -194,24 +191,15 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			$poll_settings = json_decode(htmlspecialchars_decode($data, ENT_QUOTES), TRUE);
 
 			// Get all poll options
-			$poll_options = $this->EE->vwm_polls_m
-				->entry_id( $this->EE->input->get('entry_id') ) // Set entry ID
+			$poll_options = ee()->vwm_polls_m
+				->entry_id( ee()->input->get('entry_id') ) // Set entry ID
 				->field_id($this->field_id) // Set field ID
 				->poll_options('custom', TRUE); // Make sure we add in all "other" votes
 
-			/**
-			 * Google chart time
-			 * 
-			 * Let's reference the google cart method which is a duplicate of
-			 * what is found in the helper file.
-			 * 
-			 * @todo Figure out why the hell the EE load helper does not work
-			 * consistently. Recommendation: beat head against brick wall for
-			 * ~30 minutes.
-			 */
-			$chart = $this->google_chart($poll_settings, $poll_options);
+			// EE load helper seems to work as of EE 2.6.0 (for some reason it did not work earlier)
+			$chart = google_chart($poll_settings, $poll_options);
 		}
-		// If we dont have any poll settings (either a new entry OR an existing entry with no poll settings)
+		// If we don't have any poll settings (either a new entry OR an existing entry with no poll settings)
 		else
 		{
 			// Load default settings
@@ -229,15 +217,15 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			);
 
 			// If this is an existing entry but does not have any poll settings
-			if ($this->EE->input->get('entry_id'))
+			if (ee()->input->get('entry_id'))
 			{
 				// Get all poll options
-				$this->EE->vwm_polls_m
-					->entry_id( $this->EE->input->get('entry_id') ) // Set entry ID
+				ee()->vwm_polls_m
+					->entry_id( ee()->input->get('entry_id') ) // Set entry ID
 					->field_id($this->field_id) // Set field ID
 					->poll_options();
 
-				$poll_options = $this->EE->vwm_polls_m->poll_other_options()->poll_options; // Make sure we add in all "other" votes
+				$poll_options = ee()->vwm_polls_m->poll_other_options()->poll_options; // Make sure we add in all "other" votes
 			}
 
 			// If this is a new poll we will not have any poll options
@@ -263,14 +251,14 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$data = array(
 			'data' => $poll_settings,
 			'options' => $poll_options,
-			'total_votes' => $this->EE->vwm_polls_m->total_votes,
+			'total_votes' => ee()->vwm_polls_m->total_votes,
 			'chart' => $chart,
 			'member_groups' => self::$member_groups,
 			'field_name' => $this->field_name,
 			'field_id' => $this->field_id
 		);
 
-		return $this->EE->load->view('display_field', $data, TRUE);
+		return ee()->load->view('display_field', $data, TRUE);
 	}
 
 	/**
@@ -282,8 +270,8 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function save($data)
 	{
-		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote'); // Allowed member groups
-		$select_member_groups_can_vote = $this->EE->input->post('select_member_groups_can_vote'); // Select allowed member groups
+		$member_groups_can_vote = ee()->input->post('member_groups_can_vote'); // Allowed member groups
+		$select_member_groups_can_vote = ee()->input->post('select_member_groups_can_vote'); // Select allowed member groups
 
 		$member_groups_can_vote = isset($member_groups_can_vote[$this->field_id]) ? $member_groups_can_vote[$this->field_id] : 'NONE'; // Default to "NONE"
 		$select_member_groups_can_vote = ( isset($select_member_groups_can_vote[$this->field_id]) AND is_array($select_member_groups_can_vote[$this->field_id]) AND count($select_member_groups_can_vote[$this->field_id]) > 0 ) ? $select_member_groups_can_vote[$this->field_id] : array();
@@ -292,35 +280,35 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$this->set_member_groups_can_vote($member_groups_can_vote, $select_member_groups_can_vote);
 
 		// Multiple votes
-		$multiple_votes = $this->EE->input->post('multiple_votes');
+		$multiple_votes = ee()->input->post('multiple_votes');
 		$multiple_votes = (bool)$multiple_votes[$this->field_id];
 
 		// Multiple options
-		$multiple_options = $this->EE->input->post('multiple_options');
+		$multiple_options = ee()->input->post('multiple_options');
 		$multiple_options = (bool)$multiple_options[$this->field_id];
 		
 		// Multiple options min
-		$multiple_options_min = $this->EE->input->post('multiple_options_min');
+		$multiple_options_min = ee()->input->post('multiple_options_min');
 		$multiple_options_min = (int)$multiple_options_min[$this->field_id];
 
 		// Multiple options max
-		$multiple_options_max = $this->EE->input->post('multiple_options_max');
+		$multiple_options_max = ee()->input->post('multiple_options_max');
 		$multiple_options_max = (int)$multiple_options_max[$this->field_id];
 
 		// Options order
-		$options_order = $this->EE->input->post('options_order');
+		$options_order = ee()->input->post('options_order');
 		$options_order = in_array($options_order[$this->field_id], $this->valid_options['options_order']) ? $options_order[$this->field_id] : $this->default_settings['options_order'];
 
 		// Results chart type
-		$results_chart_type = $this->EE->input->post('results_chart_type');
+		$results_chart_type = ee()->input->post('results_chart_type');
 		$results_chart_type = in_array($results_chart_type[$this->field_id], $this->valid_options['results_chart_type']) ? $results_chart_type[$this->field_id] : $this->default_settings['results_chart_type'];
 
 		// Results chart width
-		$results_chart_width = $this->EE->input->post('results_chart_width');
+		$results_chart_width = ee()->input->post('results_chart_width');
 		$results_chart_width = (int)$results_chart_width[$this->field_id];
 
 		// Results chart height
-		$results_chart_height = $this->EE->input->post('results_chart_height');
+		$results_chart_height = ee()->input->post('results_chart_height');
 		$results_chart_height = (int)$results_chart_height[$this->field_id];
 
 		// JSON all up in this piece
@@ -349,12 +337,12 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	public function post_save($data)
 	{	
 		// Set entry ID & field ID
-		$this->EE->vwm_polls_m
+		ee()->vwm_polls_m
 			->entry_id($this->settings['entry_id'])
 			->field_id($this->field_id);
 
 		// Get all POSTed poll options
-		$options = $this->EE->input->post('vwm_polls_options');
+		$options = ee()->input->post('vwm_polls_options');
 
 		// Narrow it down to all poll options for this field ID
 		$options = isset($options[$this->field_id]) ? $options[$this->field_id] : array();
@@ -364,10 +352,10 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		{
 			if ($option['id'] == "new") {
 				// Insert new option, since we no longer use AJAX
-				$this->EE->vwm_polls_m->insert_option($option['type'], $option['color'], $option['text'], $order);
+				ee()->vwm_polls_m->insert_option($option['type'], $option['color'], $option['text'], $order);
 			} else {
 				// Update (or remove) option
-				$this->EE->vwm_polls_m->update_option($option['id'], $option['type'], $option['color'], $option['text'], $order);
+				ee()->vwm_polls_m->update_option($option['id'], $option['type'], $option['color'], $option['text'], $order);
 			}
 		}
 	}
@@ -441,60 +429,60 @@ class Vwm_polls_ft extends EE_Fieldtype {
 		$results_chart_height = isset($data['results_chart_height']) ? (int)$data['results_chart_height'] : $this->settings['results_chart_height'];
 
 		// Member groups
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('member_groups_can_vote', 'member_groups_can_vote'),
 			form_dropdown('member_groups_can_vote', array('ALL' => lang('all'), 'NONE' => lang('none'), 'SELECT' => lang('select')), $member_groups_can_vote, 'id="member_groups_can_vote"')
 		);
 
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('select_member_groups_can_vote', 'select_member_groups_can_vote'),
 			form_multiselect('select_member_groups_can_vote[]', self::$member_groups, $select_member_groups_can_vote, 'id="select_member_groups_can_vote"')
 		);
 
 		// Multiple votes
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('multiple_votes', 'multiple_votes'),
 			form_dropdown('multiple_votes', array(lang('no'), lang('yes')), $multiple_votes, 'id="multiple_votes"')
 		);
 
 		// Multiple options
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('multiple_options', 'multiple_options'),
 			form_dropdown('multiple_options', array(lang('no'), lang('yes')), $multiple_options, 'id="multiple_options"')
 		);
 		
 		// Multiple options min
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('multiple_options_min', 'multiple_options_min'),
 			form_input(array('name' => 'multiple_options_min', 'id' => 'multiple_options_min', 'value' => $multiple_options_min))
 		);
 
 		// Multiple options max
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('multiple_options_max', 'multiple_options_max'),
 			form_input(array('name' => 'multiple_options_max', 'id' => 'multiple_options_max', 'value' => $multiple_options_max))
 		);
 
 		// Options order
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('options_order', 'options_order'),
 			form_dropdown('options_order', array('asc' => lang('order_asc'), 'desc' => lang('order_desc'), 'alphabetical' => lang('order_alphabetical'), 'reverse_alphabetical' => lang('order_reverse_alphabetical'), 'random' => lang('order_random'), 'custom' => lang('order_custom')), $options_order, 'id="options_order"')
 		);
 
 		// Results chart type
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('results_chart_type', 'results_chart_type'),
 			form_dropdown('results_chart_type', array('bar' => lang('chart_bar'), 'pie' => lang('chart_pie')), $results_chart_type, 'id="results_chart_type"')
 		);
 
 		// Chart width
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('results_chart_width', 'results_chart_width'),
 			form_input(array('name' => 'results_chart_width', 'id' => 'results_chart_width', 'value' => $results_chart_width))
 		);
 
 		// Chart height
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('results_chart_height', 'results_chart_height'),
 			form_input(array('name' => 'results_chart_height', 'id' => 'results_chart_height', 'value' => $results_chart_height))
 		);
@@ -509,21 +497,21 @@ class Vwm_polls_ft extends EE_Fieldtype {
 	 */
 	public function save_settings($data)
 	{
-		$member_groups_can_vote = $this->EE->input->post('member_groups_can_vote'); // "ALL", "NONE", or "SELECT"
-		$select_member_groups_can_vote = is_array($this->EE->input->post('select_member_groups_can_vote')) ? $this->EE->input->post('select_member_groups_can_vote') : array(); // Array of member group IDs
+		$member_groups_can_vote = ee()->input->post('member_groups_can_vote'); // "ALL", "NONE", or "SELECT"
+		$select_member_groups_can_vote = is_array(ee()->input->post('select_member_groups_can_vote')) ? ee()->input->post('select_member_groups_can_vote') : array(); // Array of member group IDs
 
 		$this->set_member_groups_can_vote($member_groups_can_vote, $select_member_groups_can_vote);
 
 		return array(
 			'member_groups_can_vote' => $this->member_groups_can_vote,
-			'multiple_votes' => $this->EE->input->post('multiple_votes'),
-			'multiple_options' => $this->EE->input->post('multiple_options'),
-			'multiple_options_min' => $this->EE->input->post('multiple_options_min'),
-			'multiple_options_max' => $this->EE->input->post('multiple_options_max'),
-			'options_order' => $this->EE->input->post('options_order'),
-			'results_chart_type' => $this->EE->input->post('results_chart_type'),
-			'results_chart_width' => $this->EE->input->post('results_chart_width'),
-			'results_chart_height' => $this->EE->input->post('results_chart_height')
+			'multiple_votes' => ee()->input->post('multiple_votes'),
+			'multiple_options' => ee()->input->post('multiple_options'),
+			'multiple_options_min' => ee()->input->post('multiple_options_min'),
+			'multiple_options_max' => ee()->input->post('multiple_options_max'),
+			'options_order' => ee()->input->post('options_order'),
+			'results_chart_type' => ee()->input->post('results_chart_type'),
+			'results_chart_width' => ee()->input->post('results_chart_width'),
+			'results_chart_height' => ee()->input->post('results_chart_height')
 		);
 	}
 
@@ -547,70 +535,6 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			'results_chart_width' => $this->default_settings['results_chart_width'],
 			'results_chart_height' => $this->default_settings['results_chart_height']
 		);
-	}
-
-	/**
-	 * Generate a Google chart (duplicate of function found in helper file)
-	 *
-	 * Code duplicated in vwm_polls_helper.php
-	 *
-	 * @access public
-	 * @param array			Poll settings
-	 * @param array			Poll options
-	 * @return string
-	 */
-	public function google_chart($poll_settings, $poll_options)
-	{
-		// Google charts URL
-		$data = 'http://chart.apis.google.com/chart?';
-
-		// Chart size
-		$data .= 'chs=' . $poll_settings['results_chart_width'] . 'x' . $poll_settings['results_chart_height'];
-
-		// Chart type
-		switch($poll_settings['results_chart_type'])
-		{
-			case 'pie':
-				$data .= AMP . 'cht=p';
-				$chds = NULL; // Don't need this for pie charts
-				break;
-			case 'bar':
-				$data .= AMP . 'chbh=a';
-				$data .= AMP . 'cht=bhs';
-				$data .= AMP . 'chg=10,0,5,5';
-				//$data .= AMP . 'chxr=0,100';
-				$chds = AMP . 'chds=0,';
-				break;
-		}
-
-		$most_votes = 0;
-
-		// Chart data
-		$chd = array(); // Chart data
-		$chdl = array(); // Chart labels
-		$chco = array(); // Chart colors
-
-		foreach ($poll_options as $option)
-		{
-			$votes = $option['votes'];
-			$most_votes = $votes > $most_votes ? $votes : $most_votes;
-
-			$chdl[ $option['id'] ] = $option['text'];
-			$chd[ $option['id'] ] = $votes;
-			$chco[ $option['id'] ] = $option['color'];
-		}
-
-		$chd = implode(',', $chd);
-		$chdl = implode('|', $chdl);
-		$chco = implode('|', $chco);
-
-		$data .= AMP . 'chd=t:' . $chd;
-		$data .= AMP . 'chdl=' . $chdl;
-		$data .= AMP . 'chf=bg,s,00000000';
-		$data .= AMP . 'chco=' . $chco;
-		$data .= $chds ? AMP . $chds . $most_votes : NULL;
-
-		return $data;
 	}
 }
 

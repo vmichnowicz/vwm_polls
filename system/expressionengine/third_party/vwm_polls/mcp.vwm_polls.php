@@ -24,11 +24,8 @@ class Vwm_polls_mcp {
 	 */
 	function __construct()
 	{
-		// Make a local reference to the ExpressionEngine super object
-		$this->EE =& get_instance();
-
 		// Make damn sure module path is defined
-		$this->EE->load->add_package_path(PATH_THIRD . 'vwm_polls/');
+		ee()->load->add_package_path(PATH_THIRD . 'vwm_polls/');
 	}
 
 	/**
@@ -39,8 +36,7 @@ class Vwm_polls_mcp {
 	 */
 	public function index()
 	{
-    ee()->view->cp_page_title = lang('vwm_polls_module_name');
-
+		ee()->view->cp_page_title = lang('vwm_polls_module_name');
 		return 'Please reference the VWM Polls <a href="https://github.com/vmichnowicz/vwm_polls/wiki">GitHub wiki</a> for more information.';
 	}
 
@@ -54,21 +50,21 @@ class Vwm_polls_mcp {
 	 */
 	public function ajax_add_option()
 	{
-		$this->EE->load->model('vwm_polls_m');
-		$this->EE->load->helper('vwm_polls');
+		ee()->load->model('vwm_polls_m');
+		ee()->load->helper('vwm_polls');
 
 		// Set entry ID & field ID
-		$this->EE->vwm_polls_m
-			->entry_id($this->EE->input->post('entry_id'))
-			->field_id($this->EE->input->post('field_id'));
+		ee()->vwm_polls_m
+			->entry_id(ee()->input->post('entry_id'))
+			->field_id(ee()->input->post('field_id'));
 
-		if ( $this->EE->vwm_polls_m->insert_option($this->EE->input->post('type'), $this->EE->input->post('color'), $this->EE->input->post('text'), $this->EE->input->post('order')) )
+		if ( ee()->vwm_polls_m->insert_option(ee()->input->post('type'), ee()->input->post('color'), ee()->input->post('text'), ee()->input->post('order')) )
 		{
-			$this->EE->output->send_ajax_response(array('result' => 'success'));
+			ee()->output->send_ajax_response(array('result' => 'success'));
 		}
 		else
 		{
-			$this->EE->output->send_ajax_response(array('errors' => 'Error.'), TRUE);
+			ee()->output->send_ajax_response(array('errors' => 'Error.'), TRUE);
 		}
 	}
 
@@ -82,14 +78,14 @@ class Vwm_polls_mcp {
 	 */
 	public function ajax_update_order()
 	{		
-		$options = $this->EE->input->post('options') ? $this->EE->input->post('options') : array();
+		$options = ee()->input->post('options') ? ee()->input->post('options') : array();
 
 		foreach ($options as $option_id => $option_order)
 		{
 			$option_id = abs( (int)$option_id );
 			$option_order = abs( (int)$option_order );
 
-			$this->EE->db->where('id', $option_id)->update('vwm_polls_options', array('custom_order' => $option_order));
+			ee()->db->where('id', $option_id)->update('vwm_polls_options', array('custom_order' => $option_order));
 		}
 		die; // Nothing to see here
 	}

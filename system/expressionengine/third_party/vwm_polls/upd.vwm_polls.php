@@ -27,7 +27,7 @@ class Vwm_polls_upd {
 	public function __construct()
 	{
 		// Make a local reference to the ExpressionEngine super object
-		$this->EE =& get_instance();
+		ee() =& get_instance();
 
 		if ( version_compare(APP_VER, '2.6.0', '<') )
 		{
@@ -51,17 +51,17 @@ class Vwm_polls_upd {
 			'has_publish_fields' => 'n'
 		);
 
-		$this->EE->db->insert('modules', $data);
+		ee()->db->insert('modules', $data);
 
 		// For exp_actions
 		$action_vote = array('class' => 'Vwm_polls', 'method' => 'vote');
-		$this->EE->db->insert('actions', $action_vote);
+		ee()->db->insert('actions', $action_vote);
 
 		// Get database prefix
-		$prefix = $this->EE->db->dbprefix;
+		$prefix = ee()->db->dbprefix;
 
 		// Table to record poll votes
-		$this->EE->db->query("
+		ee()->db->query("
 			CREATE TABLE IF NOT EXISTS `{$prefix}vwm_polls_votes` (
 				`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 				`entry_id` int(10) unsigned NOT NULL,
@@ -76,7 +76,7 @@ class Vwm_polls_upd {
 		");
 
 		// Table to store poll options
-		$this->EE->db->query("
+		ee()->db->query("
 			CREATE TABLE IF NOT EXISTS `{$prefix}vwm_polls_options` (
 				`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 				`entry_id` int(10) unsigned NOT NULL,
@@ -91,7 +91,7 @@ class Vwm_polls_upd {
 		");
 
 		// Table to store "other" poll votes
-		$this->EE->db->query("
+		ee()->db->query("
 		CREATE TABLE IF NOT EXISTS `{$prefix}vwm_polls_other_votes` (
 			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_option_id` int(10) unsigned NOT NULL,
@@ -112,34 +112,34 @@ class Vwm_polls_upd {
 	public function uninstall()
 	{
 		// Get database prefix
-		$prefix = $this->EE->db->dbprefix;
+		$prefix = ee()->db->dbprefix;
 		
 		// Get module ID
-		$query = $this->EE->db
+		$query = ee()->db
 			->select('module_id')
 			->where('module_name', 'Vwm_polls')
 			->limit(1)
 			->get('modules');
 
 		// Delete from module_member_groups
-		$this->EE->db
+		ee()->db
 			->where('module_id', $query->row('module_id'))
 			->delete('module_member_groups');
 
 		// Delete from modules
-		$this->EE->db
+		ee()->db
 			->where('module_id', $query->row('module_id'))
 			->delete('modules');
 
 		// Delete from actions
-		$this->EE->db
+		ee()->db
 			->where('class', 'Vwm_polls')
 			->delete('actions');
 
 		// Delete all extra tables
-		$this->EE->db->query("DROP TABLE {$prefix}vwm_polls_options");
-		$this->EE->db->query("DROP TABLE {$prefix}vwm_polls_other_votes");
-		$this->EE->db->query("DROP TABLE {$prefix}vwm_polls_votes");
+		ee()->db->query("DROP TABLE {$prefix}vwm_polls_options");
+		ee()->db->query("DROP TABLE {$prefix}vwm_polls_other_votes");
+		ee()->db->query("DROP TABLE {$prefix}vwm_polls_votes");
 
 		return TRUE;
 	}
@@ -153,11 +153,11 @@ class Vwm_polls_upd {
 	public function update($current = NULL)
 	{
 		// Get database prefix
-		$prefix = $this->EE->db->dbprefix;
+		$prefix = ee()->db->dbprefix;
 
 		if ( version_compare($current, '0.5.1', '<') )
 		{
-			$this->EE->db->query("
+			ee()->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_options` CHANGE `id` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 				CHANGE `entry_id` `entry_id` INT(10) UNSIGNED NOT NULL,
 				CHANGE `field_id` `field_id` INT(10) UNSIGNED NOT NULL,
@@ -171,7 +171,7 @@ class Vwm_polls_upd {
 
 		if ( version_compare($current, '0.7.0', '<') )
 		{
-			$this->EE->db->query("
+			ee()->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_votes`
 				CHANGE `ip_address` `ip_address` varchar(39) NOT NULL
 			");
@@ -179,7 +179,7 @@ class Vwm_polls_upd {
 
 		if ( version_compare($current, '0.8.0', '<') )
 		{
-			$this->EE->db->query("
+			ee()->db->query("
 				ALTER TABLE `{$prefix}vwm_polls_votes`
 				ADD `hash` VARCHAR(32) NULL DEFAULT NULL AFTER `ip_address`
 			");
