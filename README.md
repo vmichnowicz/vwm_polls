@@ -47,7 +47,7 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 	* Everything under {options}
 	* {percent} - The percent of the votes for this item as 2 digits (eg 98)
 	* {percent_decimal} - The percent of the votes as a non-rounded decimal (eg 0.3141569)
-	
+
 
 ## Video Tutorial (Installation and Configuration)
 
@@ -58,7 +58,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 ### 0.8
 
 * Custom JavaScript unique user checks
-* Required ExpressionEngine 2.6.0 or higher
+* Requires ExpressionEngine 2.6.0 or higher
+* Add option to remove chart labels from Google chart
+* Now using ExpressionEngine Localize class introduced in 2.6.0
+* Cleaned up code
 
 ### 0.7
 
