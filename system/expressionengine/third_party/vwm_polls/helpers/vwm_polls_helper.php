@@ -48,19 +48,20 @@ function hex_color($color)
 function calculate_results($options, $total_votes)
 {
 	$options = array_values($options);
+	$prefix = config_item('vwm_polls_template_prefix');
 
 	foreach($options as &$option)
 	{
 		if ($total_votes)
 		{
-			$percent_decimal = $option['votes'] / $total_votes;
-			$option['percent_decimal'] = $percent_decimal;
-			$option['percent'] = round($percent_decimal * 100, 2);
+			$percent_decimal = $option[$prefix . 'votes'] / $total_votes;
+			$option[$prefix . 'percent_decimal'] = $percent_decimal;
+			$option[$prefix . 'percent'] = round($percent_decimal * 100, 2);
 		}
 		else
 		{
-			$option['percent_decimal'] = 0;
-			$option['percent'] = 0;
+			$option[$prefix . 'percent_decimal'] = 0;
+			$option[$prefix . 'percent'] = 0;
 		}
 	}
 
