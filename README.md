@@ -59,6 +59,7 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 * Custom JavaScript unique user checks
 * Requires ExpressionEngine 2.6.0 or higher
+* Add config option to prefix template variables
 * Add option to remove chart labels from Google chart
 * Now using ExpressionEngine Localize class introduced in 2.6.0
 * Cleaned up code

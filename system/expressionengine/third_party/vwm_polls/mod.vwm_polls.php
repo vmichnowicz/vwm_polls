@@ -118,17 +118,17 @@ class Vwm_polls {
 		</script>';
 
 		// Template variable data
-		$variables[] = array(
-			$this->prefix . 'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
-			$this->prefix . 'input_name' => 'vwm_polls_options[]',
-			$this->prefix . 'max_options' => $this->poll_settings['multiple_options_max'],
-			$this->prefix . 'can_vote' => $this->can_vote(),
-			$this->prefix . 'already_voted' => $this->already_voted(),
-			$this->prefix . 'chart' => google_chart($this->poll_settings, $this->poll_options),
-			$this->prefix . 'total_votes' => ee()->vwm_polls_m->total_votes,
-			$this->prefix . 'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
-			$this->prefix . 'options_results' => calculate_results($this->poll_options, ee()->vwm_polls_m->total_votes),
-		);
+		$variables[] = $this->prefix(array(
+			'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
+			'input_name' => 'vwm_polls_options[]',
+			'max_options' => $this->poll_settings['multiple_options_max'],
+			'can_vote' => $this->can_vote(),
+			'already_voted' => $this->already_voted(),
+			'chart' => google_chart($this->poll_settings, $this->poll_options),
+			'total_votes' => ee()->vwm_polls_m->total_votes,
+			'options' => array_values($this->poll_options), // I guess our array indexes need to start at 0...
+			'options_results' => calculate_results($this->poll_options, ee()->vwm_polls_m->total_votes),
+		));
 
 		// Get hidden fields, class, and ID for our form
 		$form_data = array(
@@ -155,6 +155,25 @@ class Vwm_polls {
 
 		// Make the magic happen
 		return ee()->functions->form_declaration($form_data) . ee()->TMPL->parse_variables(ee()->TMPL->tagdata, $variables) . '</form>' . $javascript;
+	}
+
+	/**
+	 * Prefix template variables (only prefix non-numeric array keys)
+	 *
+	 * @access public
+	 * @param array $array
+	 * @param array $output
+	 * @return array
+	 */
+	public function prefix(array $array, array $output = array())
+	{
+		foreach ($array as $key => $value)
+		{
+			$prefixed_key = is_int($key) ? $key : $this->prefix . $key; // Only prefix non-numeric array keys
+			$output[ $prefixed_key ] = is_array($value) ? $this->prefix($value) : $value;
+		}
+
+		return $output;
 	}
 
 	/**
