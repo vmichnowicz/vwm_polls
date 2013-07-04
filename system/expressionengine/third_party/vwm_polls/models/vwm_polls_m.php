@@ -182,7 +182,7 @@ class Vwm_polls_m extends CI_Model {
 	{
 		// Search cookies for previous votes
 		$previous_votes = $this->previous_votes();
-		
+
 		foreach ($this->poll_options as &$option)
 		{
 			$option['other_name'] = $option['type'] == 'other' ? 'vwm_polls_other_options[' . $option['id'] . ']' : NULL; // Used in EE templates so user can submit a text input
