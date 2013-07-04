@@ -6,6 +6,6 @@
  */
 $config['vwm_polls_check_ip_address'] = FALSE; //TRUE;
 $config['vwm_polls_check_javascript_attributes'] = TRUE; // Check "unique" JavaScript attributes
-$config['vwm_polls_template_prefix'] = 'vwm_polls_';
+$config['vwm_polls_template_prefix'] = '';
 
 // EOF
