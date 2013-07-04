@@ -41,6 +41,7 @@ $lang = array(
 	'results_chart_type'			=> 'Chart type',
 	'results_chart_width'			=> 'Chart width (<acronym title="Pixels">px</acronym>)',
 	'results_chart_height'			=> 'Chart height (<acronym title="Pixels">px</acronym>)',
+	'results_chart_labels' 			=> 'Chart labels',
 
 	// Member & groups selections
 	'all'							=> 'All',

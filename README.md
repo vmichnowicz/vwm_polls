@@ -1,6 +1,6 @@
 # VWM Polls
 
-VWM Polls is a polling module & fieldtype for ExpressionEngine 2.
+VWM Polls is a polling module & fieldtype for ExpressionEngine 2 (version 2.6.0 and up).
 
 ## License
 
@@ -47,13 +47,22 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 	* Everything under {options}
 	* {percent} - The percent of the votes for this item as 2 digits (eg 98)
 	* {percent_decimal} - The percent of the votes as a non-rounded decimal (eg 0.3141569)
-	
+
 
 ## Video Tutorial (Installation and Configuration)
 
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.8
+
+* Custom JavaScript unique user checks
+* Requires ExpressionEngine 2.6.0 or higher
+* Add config option to prefix template variables
+* Add option to remove chart labels from Google chart
+* Now using ExpressionEngine Localize class introduced in 2.6.0
+* Cleaned up code
 
 ### 0.7
 

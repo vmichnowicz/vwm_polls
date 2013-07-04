@@ -13,8 +13,8 @@
 // -----------------------------------------------------------------------------
 
 /**
- * Make sure we are dealing with a (at least somewhat) valid hex color
- * If no color is provided, just output a default color
+ * Make sure we are dealing with a (at least somewhat) valid hex color. If no color is provided, just output a default
+ * color
  *
  * @access public
  * @param string		User submitted hex color
@@ -84,6 +84,9 @@ function google_chart($poll_settings, $poll_options)
 	// Chart size
 	$data .= 'chs=' . $poll_settings['results_chart_width'] . 'x' . $poll_settings['results_chart_height'];
 
+	// Display chart labels
+	$labels = isset($poll_settings['results_chart_labels']) && $poll_settings['results_chart_labels'];
+
 	// Chart type
 	switch($poll_settings['results_chart_type'])
 	{
@@ -122,7 +125,7 @@ function google_chart($poll_settings, $poll_options)
 	$chco = implode('|', $chco);
 
 	$data .= AMP . 'chd=t:' . $chd;
-	$data .= AMP . 'chdl=' . $chdl;
+	if ($labels) { $data .= AMP . 'chdl=' . $chdl; }
 	$data .= AMP . 'chf=bg,s,00000000';
 	$data .= AMP . 'chco=' . $chco;
 	$data .= $chds ? AMP . $chds . $most_votes : NULL;
