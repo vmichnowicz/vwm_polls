@@ -66,6 +66,7 @@ class Vwm_polls_upd {
 				`poll_option_id` int(10) unsigned NOT NULL,
 				`member_id` int(10) unsigned DEFAULT NULL,
 				`ip_address` varchar(39) NOT NULL,
+				`hash` VARCHAR(32) NULL DEFAULT NULL,
 				`timestamp` int(10) unsigned NOT NULL,
 				PRIMARY KEY (`id`),
 				KEY `entry_id` (`entry_id`,`field_id`)
