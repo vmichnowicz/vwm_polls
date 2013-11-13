@@ -78,6 +78,10 @@ class Vwm_polls {
 		$this->entry_id = ee()->TMPL->fetch_param('entry_id');
 		$this->field_id = ee()->TMPL->fetch_param('field_id');
 
+		$action = (! ee()->TMPL->fetch_param('action'))
+			? ee()->config->item('base_url')
+			: ee()->TMPL->fetch_param('action');
+
 		// The entry ID is required
 		if ( ! $this->entry_id ) { return FALSE; }
 
@@ -134,6 +138,7 @@ class Vwm_polls {
 		$form_data = array(
 			'id' => 'vwm_polls_poll_' . $this->entry_id,
 			'class' => 'vwm_polls_poll',
+			'action' => $action,
 			'hidden_fields' => array(
 				'ACT' => ee()->functions->fetch_action_id('Vwm_polls', 'vote'),
 				'RET' => ( ! ee()->TMPL->fetch_param('return'))  ? '' : ee()->TMPL->fetch_param('return'),
@@ -205,7 +210,7 @@ class Vwm_polls {
 			$this->errors[] = ee()->lang->line('invalid_xid');
 			die( $this->show_errors() );
 		}
-		
+
 		ee()->load->helper('html');
 
 		$redirect = ee()->input->post('redirect');
@@ -246,7 +251,7 @@ class Vwm_polls {
 			$this->errors[] = ee()->lang->line('poll_not_exist');
 			die( $this->show_errors() );
 		}
-		
+
 		// Results only?  (Useful to fetch the most updated results for clicking "view results" via AJAX for sites that use caching)
 		$results_only = FALSE;
 		if (AJAX_REQUEST && ee()->input->post('results_only')) {
@@ -260,14 +265,14 @@ class Vwm_polls {
 				$this->errors[] = ee()->lang->line('no_options_submitted');
 				die( $this->show_errors() );
 			}
-			
+
 			// If this poll only accecpts one poll option and the user submitted more than one
 			if (($this->poll_settings['multiple_options'] == FALSE AND count($selected_poll_options) > 1))
 			{
 				$this->errors[] = sprintf(ee()->lang->line('no_options_submitted'), count($selected_poll_options));
 				die( $this->show_errors() );
 			}
-			
+
 			// If this poll accecpts multiple options
 			if ($this->poll_settings['multiple_options'] == TRUE)
 			{
@@ -280,7 +285,7 @@ class Vwm_polls {
 						$this->errors[] = sprintf(ee()->lang->line('too_few_options_submitted'), $this->poll_settings['multiple_options_min'], count($selected_poll_options));
 					}
 				}
-			
+
 				// If multiple options limit is set (a limit of "0" means there is no limit to the amount of options a user can select)
 				if ($this->poll_settings['multiple_options_max'] > 0)
 				{
@@ -291,7 +296,7 @@ class Vwm_polls {
 					}
 				}
 			}
-			
+
 			// Make sure the user submitted a valid poll option
 			foreach ($selected_poll_options as $option)
 			{
@@ -301,24 +306,24 @@ class Vwm_polls {
 					die( $this->show_errors() );
 				}
 			}
-			
+
 			// Lets make sure this person can vote
 			if ( ! $this->can_vote() ) {
 				die( $this->show_errors() );
 			}
-			
+
 			// Actually vote
 			if (! $this->errors)
 			{
 				// We are gonna need some cookies up in here
 				ee()->input->set_cookie($this->entry_id . '-' . $this->field_id, json_encode($selected_poll_options), 31536000); // Cookie expires in ~1 year
-	
+
 				// Cast a vote for each poll option
 				foreach ($selected_poll_options as $option_id)
 				{
 					// Record this vote
 					ee()->vwm_polls_m->cast_vote($option_id);
-	
+
 					// If this option is of type "other"
 					if ( $this->poll_options[$option_id]['type'] == 'other')
 					{
@@ -504,15 +509,15 @@ class Vwm_polls {
 			ee()->output->show_user_error('submission', $this->errors);
 		}
 	}
-	
+
 	/**
 	 * Refresh the XID
-	 * 
+	 *
 	 * After a user submits a poll that has errors the XID is destroyed. We must
 	 * create a new one so the user can successfully submit the poll again.
 	 *
 	 * EE 2.5.4 changed the schema for the security_hashes table
-	 * 
+	 *
 	 * @return string
 	 */
 	private function refresh_xid()
@@ -535,7 +540,7 @@ class Vwm_polls {
 		{
 			$hash = NULL;
 		}
-		
+
 		return $hash;
 	}
 }
