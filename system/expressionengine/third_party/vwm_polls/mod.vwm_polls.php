@@ -344,6 +344,8 @@ class Vwm_polls {
 			// Great success!
 			if (AJAX_REQUEST)
 			{
+				$previous_votes = ee()->vwm_polls_m->previous_votes();
+
 				// Get updated poll options
 				ee()->vwm_polls_m->poll_options($this->poll_settings['options_order']);
 
@@ -351,10 +353,19 @@ class Vwm_polls {
 				$updated_options = calculate_results(ee()->vwm_polls_m->poll_options, $updated_total_votes);
 				$updated_chart = str_replace('&amp;', '&', google_chart($this->poll_settings, $updated_options)); // The ampersands in "&amp;" end up getting encoded again...
 
+				if ( is_array($updated_options) && is_array($previous_votes) )
+				{
+					foreach($updated_options as $key => $option)
+					{
+						$updated_options[$key]['user_vote'] = in_array($option['id'], $previous_votes);
+					}
+				}
+
 				$data = array(
 					'options' => $updated_options,
 					'total_votes' => $updated_total_votes,
-					'chart' => $updated_chart
+					'chart' => $updated_chart,
+					'user_votes' => $previous_votes,
 				);
 
 				// Send updated poll options

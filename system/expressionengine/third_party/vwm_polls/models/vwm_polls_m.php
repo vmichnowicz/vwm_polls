@@ -196,7 +196,7 @@ class Vwm_polls_m extends CI_Model {
 	 * @access private
 	 * @return array
 	 */
-	private function previous_votes()
+	public function previous_votes()
 	{
 		$votes = array();
 
