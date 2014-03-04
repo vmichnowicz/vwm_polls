@@ -26,7 +26,14 @@ class Vwm_polls_upd {
 	 */
 	public function __construct()
 	{
-		if ( version_compare(APP_VER, '2.6.0', '<') )
+		/**
+		 * APP_VER not defined during install
+		 * @see https://github.com/vmichnowicz/vwm_polls/issues/28
+		 */
+		$app_ver = defined('APP_VER') ? APP_VER : NULL;
+		$app_ver = empty($app_ver) && function_exists('ee') ? ee()->version : $app_ver;
+
+		if ( version_compare($app_ver, '2.6.0', '<') )
 		{
 			show_error("VWM Polls version $this->version requires ExpressionEngine 2.6.0 or greater. Please use version 0.7 for older versions of ExpressionEngine.");
 		}

@@ -55,6 +55,12 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.9
+
+* Fix issue when upgrading ExpressionEngine
+* Add previous votes to Ajax response
+* Add the ability to override the form action
+
 ### 0.8
 
 * Custom JavaScript unique user checks
