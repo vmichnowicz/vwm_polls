@@ -392,7 +392,7 @@ class Vwm_polls {
 	public function already_voted()
 	{
 		// Check cookies to see if user has already voted
-		if ( isset($_COOKIE[$this->entry_id . '-' . $this->field_id]) )
+		if ( ee()->input->cookie($this->entry_id . '-' . $this->field_id) )
 		{
 			$this->already_voted = TRUE;
 		}

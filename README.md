@@ -55,6 +55,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.9.1
+
+* Fix issue with detecting previous votes with cookies
+
 ### 0.9
 
 * Fix issue when upgrading ExpressionEngine
