@@ -55,6 +55,11 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.10
+
+* Add unvote ability for testing (only can be used by admins)
+* Fix upgrade error
+
 ### 0.9.1
 
 * Fix issue with detecting previous votes with cookies

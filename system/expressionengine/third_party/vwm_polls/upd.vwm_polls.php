@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.8';
+	public $version = '0.10';
 
 	/**
 	 * Constructor
@@ -185,10 +185,20 @@ class Vwm_polls_upd {
 
 		if ( version_compare($current, '0.8.0', '<') )
 		{
-			ee()->db->query("
-				ALTER TABLE `{$prefix}vwm_polls_votes`
-				ADD `hash` VARCHAR(32) NULL DEFAULT NULL AFTER `ip_address`
-			");
+			// If this field does not already exist
+			if ( !in_array('hash', ee()->db->list_fields('vwm_polls_votes') ) )
+			{
+				ee()->db->query("
+					ALTER TABLE `{$prefix}vwm_polls_votes`
+					ADD `hash` VARCHAR(32) NULL DEFAULT NULL AFTER `ip_address`
+				");
+			}
+		}
+
+		if ( version_compare($current, '0.9.0', '<') )
+		{
+			$action_unvote = array('class' => 'Vwm_polls', 'method' => 'unvote');
+			ee()->db->insert('actions', $action_unvote);
 		}
 
 		return TRUE;
