@@ -123,7 +123,7 @@ class Vwm_polls {
 
 		// Template variable data
 		$variables[] = $this->prefix(array(
-			'unvote_url' => $action . '?ACT=' . ee()->functions->fetch_action_id('Vwm_polls', 'unvote') . '&entry_id=' . $this->entry_id . '&field_id=' . $this->field_id . '&redirect=' . basename($_SERVER['PHP_SELF']),
+			'unvote_url' => $action . '?ACT=' . ee()->functions->fetch_action_id('Vwm_polls', 'unvote') . '&entry_id=' . $this->entry_id . '&field_id=' . $this->field_id . '&redirect=' . current_url(),
 			'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
 			'input_name' => 'vwm_polls_options[]',
 			'max_options' => $this->poll_settings['multiple_options_max'],
