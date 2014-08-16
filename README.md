@@ -55,6 +55,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.9.2
+
+* Second attempt to fix issue with detecting previous votes with cookies (Issue #34)
+
 ### 0.9.1
 
 * Fix issue with detecting previous votes with cookies

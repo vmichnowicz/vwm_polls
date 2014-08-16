@@ -199,12 +199,10 @@ class Vwm_polls_m extends CI_Model {
 	public function previous_votes()
 	{
 		$votes = array();
+		$cookie = ee()->input->cookie($this->entry_id . '-' . $this->field_id);
 
-		$id = $this->entry_id . '-' . $this->field_id;
-
-		if (isset($_COOKIE[$id]))
+		if ( !empty($cookie) )
 		{
-			$cookie = $_COOKIE[$id];
 			$votes = json_decode($cookie, TRUE);
 		}
 
