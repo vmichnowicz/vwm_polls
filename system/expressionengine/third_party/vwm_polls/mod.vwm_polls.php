@@ -123,6 +123,7 @@ class Vwm_polls {
 
 		// Template variable data
 		$variables[] = $this->prefix(array(
+			'unvote_url' => $action . '?ACT=' . ee()->functions->fetch_action_id('Vwm_polls', 'unvote') . '&entry_id=' . $this->entry_id . '&field_id=' . $this->field_id . '&redirect=' . current_url(),
 			'input_type' => $this->poll_settings['multiple_options'] ? 'checkbox' : 'radio',
 			'input_name' => 'vwm_polls_options[]',
 			'max_options' => $this->poll_settings['multiple_options_max'],
@@ -380,6 +381,41 @@ class Vwm_polls {
 		else
 		{
 			die( $this->show_errors() );
+		}
+	}
+
+	/**
+	 * Remove a vote from cookies and database
+	 */
+	public function unvote()
+	{
+		$entry_id = ee()->input->get_post('entry_id');
+		$field_id = ee()->input->get_post('field_id');
+		$redirect = ee()->input->get_post('redirect');
+		$member_id = ee()->session->userdata('member_id');
+		$group_id = (int)ee()->session->userdata('group_id');
+
+
+		// Only admin group can unvote
+		if ($group_id === 1)
+		{
+			ee()->input->delete_cookie($entry_id . '-' . $field_id);
+
+			if ( !empty($member_id) )
+			{
+				$removed = ee()->vwm_polls_m->remove_votes($entry_id, $field_id, $member_id);
+
+				ee()->output->show_message(array(
+					'title' => 'Unvote',
+					'heading' => 'Unvote',
+					'content' => "Removed $removed votes.",
+					'redirect' => $redirect,
+				));
+			}
+		}
+		else
+		{
+			ee()->output->show_user_error('submission', 'Must be admin to unvote.');
 		}
 	}
 

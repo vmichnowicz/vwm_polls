@@ -34,6 +34,7 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 * {max_options} - The max number of options that can be selected (or 0 for no maximum)
 * {min_options} - The minimum number of options that must be selected (or 0 for no minimum)
 * {total_votes} - The total number of votes
+* {unvote_url} - URL to remove all user votes (admin only)
 * {options} - Loop of the options
 	* {color} - The color for the option
 	* {id} - Option ID
@@ -54,6 +55,11 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.10
+
+* Add unvote ability for testing (only can be used by admins)
+* Fix upgrade error
 
 ### 0.9.2
 

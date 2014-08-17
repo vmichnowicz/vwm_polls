@@ -387,6 +387,70 @@ class Vwm_polls_m extends CI_Model {
 			->update('vwm_polls_options');
 	}
 
+
+	/**
+	 * Remove all votes for a provided member and return number of removed votes
+	 *
+	 * @param int $entry_id
+	 * @param int $field_id
+	 * @param int $member_id
+	 * @return int
+	 */
+	public function remove_votes($entry_id, $field_id, $member_id)
+	{
+		if ( empty($member_id) )
+		{
+			return FALSE;
+		}
+
+		// Key value array of option ID and total number of votes
+		$options = array();
+
+		// Get all votes this user made for this poll
+		$votes = $this->db
+			->where('entry_id', $entry_id)
+			->where('field_id', $field_id)
+			->where('member_id', $member_id)
+			->get('vwm_polls_votes')->result_array();
+
+		if ( !empty($votes) )
+		{
+			foreach($votes as $vote)
+			{
+				if ( isset($options[ $vote['poll_option_id'] ]) )
+				{
+					$options[ $vote['poll_option_id'] ]++;
+				}
+				else
+				{
+					$options[ $vote['poll_option_id'] ] = 1;
+				}
+			}
+		}
+
+		if ( !empty($options) )
+		{
+			foreach($options as $option_id => $total)
+			{
+				$this->db
+					->where('id', $option_id)
+					->set('votes', 'votes - ' . $total, FALSE)
+					->update('vwm_polls_options');
+
+				// @todo need to remove other votes
+			}
+		}
+
+		// Remove all votes this user made for this poll
+		$this->db
+			->where('entry_id', $entry_id)
+			->where('field_id', $field_id)
+			->where('member_id', $member_id)
+			->delete('vwm_polls_votes');
+
+		return $this->db->affected_rows();
+	}
+
 	/**
 	 * Record an "other" vote
 	 *
