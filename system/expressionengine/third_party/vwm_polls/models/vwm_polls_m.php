@@ -114,6 +114,7 @@ class Vwm_polls_m extends CI_Model {
 		$this->poll_options = array();
 		$this->total_votes = 0;
 		$this->valid_poll_option_ids = array();
+		$counter = 0;
 
 		if ($query->num_rows() > 0)
 		{
@@ -131,8 +132,12 @@ class Vwm_polls_m extends CI_Model {
 					'type' => $row->type,
 					'color' => $row->color,
 					'text' => htmlspecialchars($row->text, ENT_QUOTES, 'UTF-8'),
-					'votes' => $row->votes
+					'votes' => $row->votes,
+					'first' => $counter === 0,
+					'last' => $counter === $query->num_rows() - 1
 				);
+
+				$counter++;
 			}
 		}
 

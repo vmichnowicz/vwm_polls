@@ -168,7 +168,38 @@
 				</thead>
 				<tfoot>
 					<tr>
-						<td colspan="2"><img src="<?php echo $chart; ?>" alt="" /></td>
+						<td colspan="2">
+							<script type="text/javascript">
+								google.load("visualization", "1", {packages:["corechart"]});
+								google.setOnLoadCallback(drawChart);
+								function drawChart() {
+									var data = google.visualization.arrayToDataTable([
+										['Option', 'Votes'],
+										<?php foreach ($options as $option): ?>
+											['<?php echo $option['text']; ?>', <?php echo $option['votes']; ?>]
+											<?php echo empty($option['last']) ? ',' : ''; ?>
+										<?php endforeach; ?>
+									]);
+
+									var options = {
+										title: 'What is your fav color?',
+										backgroundColor: 'transparent',
+										colors:
+										[
+											<?php foreach ($options as $option): ?>
+												'#<?php echo $option['color'];  ?>'
+												<?php echo empty($option['last']) ? ',' : ''; ?>
+											<?php endforeach; ?>
+										]
+									};
+
+									var chart = new google.visualization.PieChart(document.getElementById("vwm-polls-<?php echo $field_id; ?>"));
+									chart.draw(data, options);
+								}
+							</script>
+
+							<div id="vwm-polls-<?php echo $field_id; ?>"></div>
+						</td>
 					</tr>
 					<tr>
 						<td colspan="2"><?php echo lang('total_votes'); ?>: <?php echo $total_votes; ?></td>

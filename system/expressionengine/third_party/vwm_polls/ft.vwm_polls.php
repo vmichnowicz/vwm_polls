@@ -166,6 +166,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 			ee()->cp->add_to_head('<script type="text/javascript">EE.CP_URL = "' . ee()->config->item('cp_url') . '";  EE.vwm_polls_option_text_removed = "'.ee()->lang->line('option_text_removed').'";</script>');
 			ee()->cp->add_to_head('<script type="text/javascript" src="' . ee()->config->item('theme_folder_url') . 'third_party/vwm_polls/js/vwm_polls.js"></script>');
 			ee()->cp->add_to_head('<script type="text/javascript" src="' . ee()->config->item('theme_folder_url') . 'third_party/vwm_polls/js/display_field.js"></script>');
+			ee()->cp->add_to_head('<script type="text/javascript" src="https://www.google.com/jsapi"></script>');
 
 			// CSS and JavaScript have been loaded!
 			self::$css_and_javascript_loaded = TRUE;
