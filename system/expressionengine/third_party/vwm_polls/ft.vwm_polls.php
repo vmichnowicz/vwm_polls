@@ -18,7 +18,7 @@ class Vwm_polls_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'						=> 'VWM Polls',
-		'version'					=> '0.10'
+		'version'					=> '0.11'
 	);
 
 	public $valid_options = array(

@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.10';
+	public $version = '0.11';
 
 	/**
 	 * Constructor

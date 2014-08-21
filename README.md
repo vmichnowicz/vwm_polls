@@ -44,6 +44,8 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 	* {type} - "defined" or "other"
 	* {user_vote} - If this is the users vote
 	* {votes} - The number of votes
+	* {first} - If this is the first poll option
+	* {last} - If this is the last poll option
 * {options_results} - Loop of the options with the results
 	* Everything under {options}
 	* {percent} - The percent of the votes for this item as 2 digits (eg 98)
@@ -55,6 +57,12 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 A quick video tutorial detailing the installation and configuration of VWM Polls (version 0.4.2) on ExpressionEngine 2.4 can be found on [Vimeo](http://vimeo.com/vmichnowicz/vwm-polls-installation-and-configuration)
 
 ## Change Log
+
+### 0.11
+
+* Depricate Google Chart Images API usage
+* Add support for new Google Google Visualization API
+* New poll option template variables
 
 ### 0.10
 
