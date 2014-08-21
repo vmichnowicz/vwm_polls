@@ -60,7 +60,7 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ### 0.11
 
-* Depricate Google Chart Images API usage
+* Deprecated Google Chart Images API usage
 * Add support for new Google Google Visualization API
 * New poll option template variables
 
