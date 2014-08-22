@@ -28,7 +28,7 @@ Please visit the [wiki](https://github.com/vmichnowicz/vwm_polls/wiki) for the l
 {exp:vwm_polls:poll entry_id="{entry_id}" field_id="{poll_1:field_id}" redirect="index"} - Supplies the form tag
 * {already_voted} - If the user already voted
 * {can_vote} - If the user can vote
-* {chart} - The image URL for the Google Chart
+* {chart} - The image URL for the Google Chart (deprecated)
 * {input_name} - The name for the input (currently always vwm_polls_options[])
 * {input_type} - Type of input (checkbox or radio)
 * {max_options} - The max number of options that can be selected (or 0 for no maximum)
