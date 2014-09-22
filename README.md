@@ -56,6 +56,10 @@ A quick video tutorial detailing the installation and configuration of VWM Polls
 
 ## Change Log
 
+### 0.10.1
+
+* Fix error when URL helper not loaded
+
 ### 0.10
 
 * Add unvote ability for testing (only can be used by admins)

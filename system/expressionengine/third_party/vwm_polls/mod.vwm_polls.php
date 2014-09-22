@@ -44,6 +44,7 @@ class Vwm_polls {
 		// Load lang, helper, config, and model
 		ee()->lang->loadfile('vwm_polls');
 		ee()->load->helper('vwm_polls');
+		ee()->load->helper('url');
 		ee()->load->model('vwm_polls_m');
 		ee()->config->load('vwm_polls');
 
