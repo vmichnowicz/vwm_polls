@@ -115,7 +115,7 @@ function google_chart($poll_settings, $poll_options)
 		$votes = $option['votes'];
 		$most_votes = $votes > $most_votes ? $votes : $most_votes;
 
-		$chdl[ $option['id'] ] = $option['text'];
+		$chdl[ $option['id'] ] = urlencode($option['text']);
 		$chd[ $option['id'] ] = $votes;
 		$chco[ $option['id'] ] = $option['color'];
 	}
