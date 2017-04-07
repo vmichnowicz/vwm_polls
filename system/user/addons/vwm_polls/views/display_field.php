@@ -1,9 +1,9 @@
 <input type="hidden" name="<?php echo $field_name; ?>" id="<?php echo $field_name; ?>" value="<?php echo $data['json']; ?>" />
 
 <div id="vwm_polls_tabs_<?php echo $field_id; ?>">
-	
+
 	<!-- Tabs -->
-	<ul class="tabs">
+	<ul>
 		<li><a href="#vwm_polls_options_container_<?php echo $field_id; ?>">Options</a></li>
 		<li><a href="#vwm_polls_settings_container_<?php echo $field_id; ?>">Settings</a></li>
 		<?php if ($total_votes): ?>
@@ -31,6 +31,7 @@
 					<td class="drag">
 						<input type="button" value="" title="Add poll option" class="vwm_polls_new_option" />
 						<input type="hidden" name="vwm_polls_field_id" value="<?php echo $field_id; ?>" />
+						<input type="hidden" name="entry_id" value="<?php echo $entry_id; ?>" />
 					</td>
 					<td class="color"><input type="hidden" name="vwm_polls_new_option_id" value="new" /><input type="text" name="vwm_polls_new_option_color" value="FFFFFF" class="color" /></td>
 					<td class="type">
@@ -50,9 +51,9 @@
 						</div>
 					</td>
 					<td>
-						<input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo lang('option_text_placeholder'); ?>" />
+						<input type="text" name="vwm_polls_new_option_text" placeholder="<?php echo ee()->lang->line('option_text_placeholder'); ?>" />
 					</td>
-					<td class="remove"><input type="button" value="" title="Remove poll option" name="vwm_polls_remove" class="vwm_polls_remove_option" /></td>
+					<td class="remove"><input type="button" onClick="removeOption(this)" value="" title="Remove poll option" name="vwm_polls_remove" class="vwm_polls_remove_option" /></td>
 				</tr>
 			</tfoot>
 			<tbody id="vwm_polls_options_tbody">
@@ -77,10 +78,10 @@
 								</div>
 							</div>
 						</td>
-						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $order; ?>][text]" value="<?php echo $option['text']; ?>" placeholder="<?php echo lang('option_text_removed'); ?>" /></td>
-						<td class="remove"><input type="button" value="" title="Remove poll option" class="vwm_polls_remove_option" /></td>
+						<td><input type="text" name="vwm_polls_options[<?php echo $field_id; ?>][<?php echo $order; ?>][text]" value="<?php echo $option['text']; ?>" placeholder="<?php echo ee()->lang->line('option_text_removed'); ?>" /></td>
+						<td class="remove"><input type="button" onClick="removeOption(this)" value="" title="Remove poll option" class="vwm_polls_remove_option" /></td>
 					</tr>
-				<?php $order++; 
+				<?php $order++;
 					endforeach; ?>
 			</tbody>
 		</table>

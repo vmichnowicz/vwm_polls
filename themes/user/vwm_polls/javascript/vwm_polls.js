@@ -29,7 +29,7 @@ $(document).ready(function() {
 		return toggle_select_groups;
 	}();
 
-	$(member_groups_can_vote).live('change', function() {
+	$(member_groups_can_vote).on('change', function() {
 		toggle_select_groups();
 	});
 

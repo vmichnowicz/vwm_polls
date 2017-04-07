@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
+<?php if ( ! defined('BASEPATH')) { exit('Invalid file request'); }
 
 /**
  * VWM Polls
@@ -16,7 +16,7 @@
 
 class Vwm_polls_upd {
 
-	public $version = '0.10.1';
+	public $version = '1.0.0';
 
 	/**
 	 * Constructor
@@ -33,9 +33,9 @@ class Vwm_polls_upd {
 		$app_ver = defined('APP_VER') ? APP_VER : NULL;
 		$app_ver = empty($app_ver) && function_exists('ee') ? ee()->version : $app_ver;
 
-		if ( version_compare($app_ver, '2.6.0', '<') )
+		if ( version_compare($app_ver, '3.4.6', '<') )
 		{
-			show_error("VWM Polls version $this->version requires ExpressionEngine 2.6.0 or greater. Please use version 0.7 for older versions of ExpressionEngine.");
+			show_error("VWM Polls version $this->version requires ExpressionEngine 3.4.6 or greater. Please use version 0.10.0 for ExpressionEngine 2.x.");
 		}
 	}
 
@@ -44,7 +44,7 @@ class Vwm_polls_upd {
 	 *
 	 * @access public
 	 * @return bool
-	 */	
+	 */
 	public function install()
 	{
 		// VWM Polls module information
@@ -113,12 +113,12 @@ class Vwm_polls_upd {
 	 *
 	 * @access public
 	 * @return bool
-	 */	
+	 */
 	public function uninstall()
 	{
 		// Get database prefix
 		$prefix = ee()->db->dbprefix;
-		
+
 		// Get module ID
 		$query = ee()->db
 			->select('module_id')
@@ -155,7 +155,7 @@ class Vwm_polls_upd {
 	 * @access	public
 	 * @param $current string
 	 * @return	bool
-	 */	
+	 */
 	public function update($current = NULL)
 	{
 		// Get database prefix

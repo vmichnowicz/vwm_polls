@@ -1,6 +1,5 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
-
-/**
+<?php if ( ! defined('BASEPATH')) { exit('Invalid file request'); }
+/*
  * VWM Polls
  *
  * Main polling class
@@ -207,7 +206,7 @@ class Vwm_polls {
 	public function vote()
 	{
 		// Check XID
-		if ( ! ee()->security->secure_forms_check(ee()->input->post('XID')) )
+		if ( ! ee()->input->get_post('csrf_token', TRUE) )
 		{
 			$this->errors[] = ee()->lang->line('invalid_xid');
 			die( $this->show_errors() );

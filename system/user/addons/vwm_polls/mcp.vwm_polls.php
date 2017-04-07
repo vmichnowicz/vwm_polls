@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
+<?php if ( ! defined('BASEPATH')) { exit('Invalid file request'); }
 
 /**
  * VWM Polls
@@ -77,7 +77,7 @@ class Vwm_polls_mcp {
 	 * @return string
 	 */
 	public function ajax_update_order()
-	{		
+	{
 		$options = ee()->input->post('options') ? ee()->input->post('options') : array();
 
 		foreach ($options as $option_id => $option_order)

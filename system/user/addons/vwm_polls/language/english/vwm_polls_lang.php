@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
+<?php if ( ! defined('BASEPATH')) { exit('Invalid file request'); }
 
 /**
  * VWM Polls

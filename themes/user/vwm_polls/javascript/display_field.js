@@ -6,8 +6,10 @@ $(document).ready(function() {
 	/**
 	 * When new option text input (our color and text fields) gets and loses focus
 	 */
-	$('.vwm_polls_new_option input[type="text"]').live('focusin focusout', function(e) {
-		e.type == 'focusin' ? option_focus = true : option_focus = false;
+	$('.vwm_polls_new_option input[type="text"]').on('focus', function(e) {
+		 option_focus = true;
+	}).on('blur', function(e) {
+		option_focus = false;
 	});
 
 	/**
@@ -24,7 +26,7 @@ $(document).ready(function() {
 	/**
 	 * On keyup inside a new poll option text input
 	 */
-	$('.vwm_polls_new_option input[type="text"]').live('keyup', function(e) {
+	$('.vwm_polls_new_option input[type="text"]').on('keyup', function(e) {
 		// If the use pressed the "enter" key
 		if (e.which == 13) {
 			add_option( $(this).closest('tfoot') );
@@ -34,7 +36,7 @@ $(document).ready(function() {
 	/**
 	 * When the "add new poll option" button is clicked
 	 */
-	$('input[type="button"].vwm_polls_new_option').live('click', function() {
+	$('input[type="button"].vwm_polls_new_option').on('click', function() {
 		add_option( $(this).closest('tfoot') );
 	});
 
@@ -195,7 +197,7 @@ $(document).ready(function() {
 				$(radios).filter(':checked').closest('div').addClass('checked');
 
 				// Toggle on radio change
-				$(radios).live('change', function() {
+				$(radios).on('change', function() {
 					var parent = $(this).closest('div');
 					var siblings = $(parent).siblings('div');
 					$(siblings).removeClass('checked');

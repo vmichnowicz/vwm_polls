@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
+<?php if ( ! defined('BASEPATH')) { exit('No direct script access allowed'); }
 
 /**
  * VWM Polls
@@ -124,7 +124,7 @@ class Vwm_polls_m extends CI_Model {
 
 				// Update votes total
 				$this->total_votes += $row->votes;
-				
+
 				$this->poll_options[$row->id] = array(
 					'id' => $row->id,
 					'order' => $row->custom_order,
@@ -239,7 +239,7 @@ class Vwm_polls_m extends CI_Model {
 				'text' => $text,
 				'color' => $color
 			);
-			
+
 			if ($order !== false) { // strict type check since this could be 0
 				$data['custom_order'] = $order;
 			}
@@ -296,7 +296,7 @@ class Vwm_polls_m extends CI_Model {
 	{
 		// Order
 		$order = abs((int)$order);
-		
+
 		// Option type (make sure it is either "defined" or "other")
 		$type = in_array($type, array('defined', 'other')) ? $type : 'defined';
 
@@ -317,7 +317,6 @@ class Vwm_polls_m extends CI_Model {
 				'entry_id' => $this->entry_id,
 				'field_id' => $this->field_id
 			);
-
 			$this->db->insert('vwm_polls_options', $data);
 
 			return $this->db->affected_rows() > 0 ? TRUE : FALSE;

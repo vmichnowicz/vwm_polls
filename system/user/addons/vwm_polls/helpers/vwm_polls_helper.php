@@ -1,4 +1,4 @@
-<?php if ( ! defined('EXT')) { exit('Invalid file request'); }
+<?php if ( ! defined('BASEPATH')) { exit('Invalid file request'); }
 
 /**
  * VWM Polls
@@ -80,7 +80,7 @@ function google_chart($poll_settings, $poll_options)
 {
 	// Google charts URL
 	$data = 'http://chart.apis.google.com/chart?';
-
+	$chds = NULL;
 	// Chart size
 	$data .= 'chs=' . $poll_settings['results_chart_width'] . 'x' . $poll_settings['results_chart_height'];
 

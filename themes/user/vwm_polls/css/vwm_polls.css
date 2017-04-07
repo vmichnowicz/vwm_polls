@@ -78,7 +78,7 @@ table.vwm_polls_results ul {
  * UI Tabs
  */
  ul.tabs {
-	 display: none; /* Hide tabs on Safecracker form */
+	/* display: none; /* Hide tabs on Safecracker form */
 }
 
 #publish ul.tabs {
